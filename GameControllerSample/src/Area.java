@@ -38,9 +38,8 @@ public class Area {
 
     /*
         Check whether something with a radius is in the target area
-        STILL TO BE IMPLEMENTED
     */
     public boolean isHit(double x,double y,double radius){
-        return false;
+        return (y+radius>bottomBoundary)&(y-radius<topBoundary)&(x+radius>leftBoundary)&(x-radius<rightBoundary);
     }
 }
