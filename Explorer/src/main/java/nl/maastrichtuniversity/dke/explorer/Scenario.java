@@ -6,6 +6,7 @@
 package nl.maastrichtuniversity.dke.explorer;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
@@ -19,16 +20,16 @@ import java.util.ArrayList;
  * @author joel
  */
 public class Scenario {
-    
+
     protected double baseSpeedIntruder;
     protected double sprintSpeedIntruder;
     protected double baseSpeedGuard;
-    
+
     protected String mapDoc;
     protected int gameMode;
     private final Path filePath;
     private final static Charset ENCODING = StandardCharsets.UTF_8;
-    
+
     protected String name;
     protected String gameFile;
     protected int mapHeight;
@@ -42,23 +43,23 @@ public class Scenario {
     protected ArrayList<Area> walls;
     protected ArrayList<TelePortal> teleports;
     protected ArrayList<Area> shaded;
-    
+
     public Scenario(String mapFile){
         // set parameters
         mapDoc=mapFile;
-                
+
         // initialize variables
          walls = new ArrayList<>(); // create list of walls
          shaded = new ArrayList<>(); // create list of low-visability areas
          teleports = new ArrayList<>(); // create list of teleports e.g. stairs
-        
+
         // read scenario
         filePath = Paths.get(mapDoc); // get path
         System.out.println(filePath);
         readMap();
     }
-    
-    public void readMap(){ 
+
+    public void readMap(){
         try (Scanner scanner =  new Scanner(filePath, ENCODING.name())){
             while (scanner.hasNextLine()){
                 parseLine(scanner.nextLine());
@@ -68,12 +69,12 @@ public class Scenario {
         {
         }
     }
-    
+
     /*
-        
-     */    
+
+     */
     protected void parseLine(String line){
-        //use a second Scanner to parse the content of each line 
+        //use a second Scanner to parse the content of each line
         try(Scanner scanner = new Scanner(line)){
             scanner.useDelimiter("=");
             if (scanner.hasNext()){
@@ -147,8 +148,8 @@ public class Scenario {
                 }
             }
         }
-    }  
-    
+    }
+
     public ArrayList<Area> getWalls(){
         return walls;
     }
@@ -162,22 +163,22 @@ public class Scenario {
         }
         return(tmp);
     }
-    
+
     public ArrayList<Area> getShaded(){
         return shaded;
     }
-    
+
     public ArrayList<TelePortal> getTeleportals(){
         return teleports;
     }
-    
+
     public Area getTargetArea(){
         return targetArea;
     }
-    
+
     public double[][] spawnGuards(){
         double[][] tmp = new double[numGuards][4];
-        double dx=spawnAreaGuards.rightBoundary-spawnAreaGuards.rightBoundary;
+        double dx=spawnAreaGuards.rightBoundary-spawnAreaGuards.leftBoundary;
         double dy=spawnAreaGuards.topBoundary-spawnAreaGuards.bottomBoundary;
         for(int i=0; i<numGuards; i++){
             tmp[i][0]=spawnAreaGuards.leftBoundary+Math.random()*dx;
@@ -189,7 +190,7 @@ public class Scenario {
 
     public double[][] spawnIntruders(){
         double[][] tmp = new double[numIntruders][4];
-        double dx=spawnAreaIntruders.rightBoundary-spawnAreaIntruders.rightBoundary;
+        double dx=spawnAreaIntruders.rightBoundary-spawnAreaIntruders.leftBoundary;
         double dy=spawnAreaIntruders.topBoundary-spawnAreaIntruders.bottomBoundary;
         for(int i=0; i<numIntruders; i++){
             tmp[i][0]=spawnAreaIntruders.leftBoundary+Math.random()*dx;
@@ -198,11 +199,27 @@ public class Scenario {
         }
         return tmp;
     }
-    
+
+    public double getBaseSpeedIntruder() {
+        return baseSpeedIntruder;
+    }
+
+    public double getSprintSpeedIntruder() {
+        return sprintSpeedIntruder;
+    }
+
+    public double getBaseSpeedGuard() {
+        return baseSpeedGuard;
+    }
+
+    public int getNumIntruders() {
+        return numIntruders;
+    }
+
     public int getNumGuards(){
         return numGuards;
     }
-    
+
     public String getGameFile(){
         return gameFile;
     }
@@ -210,8 +227,16 @@ public class Scenario {
     public String getMapDoc(){
         return mapDoc;
     }
-    
+
     public double getScaling(){
         return scaling;
+    }
+
+    public int getMapHeight() {
+        return mapHeight;
+    }
+
+    public int getMapWidth() {
+        return mapWidth;
     }
 }
