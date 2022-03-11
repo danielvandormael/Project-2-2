@@ -8,10 +8,15 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import nl.maastrichtuniversity.dke.explorer.Scenario;
+
+import javax.swing.*;
+import java.io.FileNotFoundException;
+import java.net.URISyntaxException;
 
 public class IntroScene extends GUIMain {
 
-    private Scene introScene;
+    private Scene introScene, expScene;
     private StackPane beginPane;
     private Label introLabel;
     private VBox introBox;
@@ -51,7 +56,16 @@ public class IntroScene extends GUIMain {
     private void setButtonActions() {
 
         beginButton.setOnAction(e -> {
-            // Change to ExplorerScene
+            mainStage.setFullScreen(true);
+            mainStage.setResizable(false);
+            mainStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
+            mainStage.close();
+
+            try {
+                expSc.setExplorerFrame();
+            } catch (FileNotFoundException | URISyntaxException ex) {
+                ex.printStackTrace();
+            }
         });
 
         exitButton.setOnAction(e -> { System.exit(0); });

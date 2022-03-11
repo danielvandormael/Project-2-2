@@ -6,6 +6,7 @@
 package nl.maastrichtuniversity.dke.explorer;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Array;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -44,14 +45,16 @@ public class Scenario {
     protected ArrayList<TelePortal> teleports;
     protected ArrayList<Area> shaded;
 
+
+    // Default String Constructor
     public Scenario(String mapFile){
         // set parameters
-        mapDoc=mapFile;
+        mapDoc = mapFile;
 
         // initialize variables
-         walls = new ArrayList<>(); // create list of walls
-         shaded = new ArrayList<>(); // create list of low-visability areas
-         teleports = new ArrayList<>(); // create list of teleports e.g. stairs
+        walls = new ArrayList<>(); // create list of walls
+        shaded = new ArrayList<>(); // create list of low-visability areas
+        teleports = new ArrayList<>(); // create list of teleports e.g. stairs
 
         // read scenario
         filePath = Paths.get(mapDoc); // get path
@@ -168,7 +171,7 @@ public class Scenario {
         return shaded;
     }
 
-    public ArrayList<TelePortal> getTeleportals(){
+    public ArrayList<TelePortal> getTeleports(){
         return teleports;
     }
 
@@ -178,8 +181,9 @@ public class Scenario {
 
     public double[][] spawnGuards(){
         double[][] tmp = new double[numGuards][4];
-        double dx=spawnAreaGuards.rightBoundary-spawnAreaGuards.leftBoundary;
-        double dy=spawnAreaGuards.topBoundary-spawnAreaGuards.bottomBoundary;
+        double dx = spawnAreaGuards.rightBoundary-spawnAreaGuards.leftBoundary;
+        double dy = spawnAreaGuards.topBoundary-spawnAreaGuards.bottomBoundary;
+
         for(int i=0; i<numGuards; i++){
             tmp[i][0]=spawnAreaGuards.leftBoundary+Math.random()*dx;
             tmp[i][1]=spawnAreaGuards.bottomBoundary+Math.random()*dy;
@@ -224,9 +228,7 @@ public class Scenario {
         return gameFile;
     }
 
-    public String getMapDoc(){
-        return mapDoc;
-    }
+    public String getMapDoc(){ return mapDoc; }
 
     public double getScaling(){
         return scaling;

@@ -4,6 +4,7 @@ import nl.maastrichtuniversity.dke.explorer.GUI.GamePanel;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
@@ -20,44 +21,44 @@ public class TileManager {
     }
 
     public void getTileImage16bit(){
-        try{
+        try {
             tile[0] = new Tile();
-            tile[0].image = ImageIO.read(new FileInputStream("C:\\Users\\danie\\Projects\\Project-2-2\\Explorer\\src\\main\\resources\\16bit\\objects\\floor.png"));
+            tile[0].image = ImageIO.read(TileManager.class.getResourceAsStream("/16bit/objects/floor.png"));
 
             tile[1] = new Tile();
-            tile[1].image = ImageIO.read(new FileInputStream("C:\\Users\\danie\\Projects\\Project-2-2\\Explorer\\src\\main\\resources\\16bit\\objects\\wall.png"));
+            tile[1].image = ImageIO.read(TileManager.class.getResourceAsStream("/16bit/objects/wall.png"));
 
             tile[2] = new Tile();
-            tile[2].image = ImageIO.read(new FileInputStream("C:\\Users\\danie\\Projects\\Project-2-2\\Explorer\\src\\main\\resources\\16bit\\objects\\teleport.png"));
+            tile[2].image = ImageIO.read(TileManager.class.getResourceAsStream("/16bit/objects/teleport.png"));
 
             tile[3] = new Tile();
-            tile[3].image = ImageIO.read(new FileInputStream("C:\\Users\\danie\\Projects\\Project-2-2\\Explorer\\src\\main\\resources\\16bit\\objects\\shaded.png"));
+            tile[3].image = ImageIO.read(TileManager.class.getResourceAsStream("/16bit/objects/shaded.png"));
 
             tile[4] = new Tile();
-            tile[4].image = ImageIO.read(new FileInputStream("C:\\Users\\danie\\Projects\\Project-2-2\\Explorer\\src\\main\\resources\\16bit\\objects\\target.png"));
-        }catch (IOException e){
+            tile[4].image = ImageIO.read(TileManager.class.getResourceAsStream("/16bit/objects/target.png"));
+        } catch (IOException e){
             e.printStackTrace();
         }
     }
 
 
     public void getTileImage8bit(){
-        try{
+        try {
             tile[0] = new Tile();
-            tile[0].image = ImageIO.read(new FileInputStream("C:\\Users\\danie\\Projects\\Project-2-2\\Explorer\\src\\main\\resources\\objects\\floor.png"));
+            tile[0].image = ImageIO.read(TileManager.class.getResourceAsStream("/16bit/objects/floor.png"));
 
             tile[1] = new Tile();
-            tile[1].image = ImageIO.read(new FileInputStream("C:\\Users\\danie\\Projects\\Project-2-2\\Explorer\\src\\main\\resources\\objects\\wall.png"));
+            tile[1].image = ImageIO.read(TileManager.class.getResourceAsStream("/16bit/objects/wall.png"));
 
             tile[2] = new Tile();
-            tile[2].image = ImageIO.read(new FileInputStream("C:\\Users\\danie\\Projects\\Project-2-2\\Explorer\\src\\main\\resources\\objects\\teleport.png"));
+            tile[2].image = ImageIO.read(TileManager.class.getResourceAsStream("/16bit/objects/teleport.png"));
 
             tile[3] = new Tile();
-            tile[3].image = ImageIO.read(new FileInputStream("C:\\Users\\danie\\Projects\\Project-2-2\\Explorer\\src\\main\\resources\\objects\\shaded.png"));
+            tile[3].image = ImageIO.read(TileManager.class.getResourceAsStream("/16bit/objects/shaded.png"));
 
             tile[4] = new Tile();
-            tile[4].image = ImageIO.read(new FileInputStream("C:\\Users\\danie\\Projects\\Project-2-2\\Explorer\\src\\main\\resources\\objects\\target.png"));
-        }catch (IOException e){
+            tile[4].image = ImageIO.read(TileManager.class.getResourceAsStream("/16bit/objects/target.png"));
+        } catch (IOException e){
             e.printStackTrace();
         }
     }
@@ -71,8 +72,8 @@ public class TileManager {
         }
 
         //draw portal
-        for(int i  = 0; i< gamePanel.scenario.getTeleportals().size(); i++){
-            g.drawImage(tile[2].image, gamePanel.scenario.getTeleportals().get(i).getLeftBoundary()*gamePanel.getTileSize(), gamePanel.scenario.getTeleportals().get(i).getBottomBoundary()*gamePanel.getTileSize(), gamePanel.getTileSize()*5, gamePanel.getTileSize()*5, null);
+        for(int i  = 0; i< gamePanel.scenario.getTeleports().size(); i++){
+            g.drawImage(tile[2].image, gamePanel.scenario.getTeleports().get(i).getLeftBoundary()*gamePanel.getTileSize(), gamePanel.scenario.getTeleports().get(i).getBottomBoundary()*gamePanel.getTileSize(), gamePanel.getTileSize()*5, gamePanel.getTileSize()*5, null);
         }
 
         //draw walls

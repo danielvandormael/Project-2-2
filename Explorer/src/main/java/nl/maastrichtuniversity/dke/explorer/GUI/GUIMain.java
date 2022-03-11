@@ -11,6 +11,7 @@ public class GUIMain extends Application {
 
     protected static Stage mainStage;
     protected static IntroScene introSc;
+    protected static ExplorerScene expSc;
     protected static Rectangle2D screenBounds;
 
     public GUIMain(String[] args) {
@@ -29,7 +30,7 @@ public class GUIMain extends Application {
         screenBounds = Screen.getPrimary().getBounds();
 
         introSc = new IntroScene();
-        //expSc = new ExplorerScene();
+        expSc = new ExplorerScene();
         introSc.setIntroScene();
 
         mainStage.setScene(introSc.getIntroScene());
