@@ -1,0 +1,40 @@
+/* ROOT CONFIGURATION */
+.root {
+    -fx-background-image: url('prison.png');
+    -fx-background-size: cover;
+    /*-fx-background-color: black;*/
+}
+
+/* LABEL CONFIGURATIONS */
+.introLabel {
+    -fx-font: 100px SansSerifBold;
+    -fx-font-weight: bold;
+    -fx-text-fill: linear-gradient(#000000 10%, #303030 55%, #ffffff 95%);
+    -fx-border-color: white;
+    -fx-border-width: 1 0 1 0;
+    -fx-border-radius: 10px;
+}
+
+.introLabel .text {
+    -fx-stroke: white;
+    -fx-stroke-width: 2px;
+}
+
+/* BUTTON CONFIGURATIONS */
+.beginButton,.exitButton {
+    -fx-font: 30px SansSerifBold;
+    -fx-text-fill: black;
+    -fx-font-weight: bold;
+    -fx-background-color: rgba(56,56,56,0.8);
+    /*-fx-background-color: linear-gradient(from 13px 38px to 52px 52px, reflect, #2b8d04, #412c02 100%);*/
+    -fx-background-radius: 15;
+}
+
+.exitButton:hover, .beginButton:hover {
+    -fx-text-fill: white;
+    /*-fx-background-color: linear-gradient(from 13px 38px to 52px 52px, repeat,  #d2691e, #ffa500 100%);*/
+    /*-fx-background-image: url('exit.png');
+    -fx-background-size: 60px;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: 50%;*/
+}
