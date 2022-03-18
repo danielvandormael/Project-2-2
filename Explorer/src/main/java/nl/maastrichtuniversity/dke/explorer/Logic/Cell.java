@@ -5,8 +5,10 @@ import java.util.ArrayList;
 public class Cell {
     private int parentDirection; // 0 = north, 1 = east, 2 = south, 3 = west
     private int status; // 0 = unexplored, 1 = explored, 2 = visited, 3 = wall, 4 = teleport
-    private double x;
-    private double y;
+    private int x;
+    private int y;
+    private int agentID;
+    private Cell parent;
 
     public int getParentDirection() {
         return parentDirection;
@@ -16,11 +18,11 @@ public class Cell {
         return status;
     }
 
-    public double getX() {
+    public int getX() {
         return x;
     }
 
-    public double getY() {
+    public int getY() {
         return y;
     }
 
@@ -64,5 +66,28 @@ public class Cell {
         }
 
         return moves;
+    }
+
+    public int getAgentID() {
+        return agentID;
+    }
+
+    public void setAgentID(int agentID) {
+        this.agentID = agentID;
+    }
+
+    public void setMark(int i) {
+        status = i;
+    }
+
+    public int getMark() {
+        return status;
+    }
+
+    public void setParent(Cell oldPos) {
+        parent = oldPos;
+    }
+    public Cell getParent() {
+        return parent;
     }
 }

@@ -1,8 +1,11 @@
 package nl.maastrichtuniversity.dke.explorer.Logic;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ExpGuard {
-    private double x;
-    private double y;
+    private int x;
+    private int y;
     private int status;
     private double angle;
     private double baseSpeed;
@@ -12,7 +15,7 @@ public class ExpGuard {
     private Cell[][] map;
     private Cell currentCell;
 
-    public ExpGuard(double x, double y, int status, double angle, double baseSpeed, int id, int distanceViewing, double currentSpeed){
+    public ExpGuard(int x, int y, int status, double angle, double baseSpeed, int id, int distanceViewing, double currentSpeed){
         this.x = x;
         this.y = y;
         this.status = status;
@@ -36,11 +39,11 @@ public class ExpGuard {
         currentCell = map[x][y];
     }
 
-    public double getX() {
+    public int getX() {
         return x;
     }
 
-    public double getY() {
+    public int getY() {
         return y;
     }
 
@@ -86,5 +89,34 @@ public class ExpGuard {
             return 3;
         }
         else return 4;
+    }
+
+    public List<Cell> getPossibleMoves() {
+        //This methods returns 3 neighbour cells around the agent
+        // cell infront, left + right cell
+        //Since we don't know how to get the coordinates, this is what we have
+        List<Cell> neighbours = new ArrayList<>();
+        Cell cell1 = map[(int) (x+1)][(int) (y)];
+        Cell cell2 = map[(int) (x-1)][(int) (y)];
+        Cell cell3 = map[(int) (x)][(int) (y+1)];
+        neighbours.add(cell1);
+        neighbours.add(cell2);
+        neighbours.add(cell3);
+        return neighbours;
+    }
+
+    public List<Cell> getViewingArea() {
+        // This method returns a list a Cells in front of the agent within the distance Viewing
+        List<Cell> viewingArea = new ArrayList<>();
+        for (int i = 1; i <= getBaseSpeed(); i++) {
+            //Add the Cell to the viewing area according to the base speed(maximum cell that agent can move)
+            //Since we don't know how to get the coordinates, this is what we have
+
+            Cell a = map[(int) x][(int) (y+i)];
+            viewingArea.add(a);
+
+        }
+
+        return viewingArea;
     }
 }

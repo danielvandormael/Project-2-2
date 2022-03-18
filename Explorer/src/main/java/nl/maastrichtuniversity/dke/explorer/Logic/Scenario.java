@@ -153,7 +153,7 @@ public class Scenario {
         return walls;
     }
 
-    public boolean inWall(double x, double y){
+    public static boolean inWall(double x, double y){
         boolean tmp = false;
         for(int j=0;j<walls.size();j++){
             if(walls.get(j).isHit(x,y)){
