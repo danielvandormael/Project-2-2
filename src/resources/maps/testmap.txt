@@ -1,5 +1,5 @@
 name = test scenario
-gameFile = src/main/resources/maps/testmap.txt
+gameFile = C:\Users\jiska\OneDrive\Documents\Maastricht University\Project 2-2 New\src\resources\maps\gameFile.txt
 gameMode = 0
 height = 80
 width = 120
