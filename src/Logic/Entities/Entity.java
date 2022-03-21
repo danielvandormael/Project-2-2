@@ -75,8 +75,6 @@ public class Entity {
 
     public void update(){
 
-        setAction(actionMove, actionRotate);
-
         rotate();
 
         collision = false;
