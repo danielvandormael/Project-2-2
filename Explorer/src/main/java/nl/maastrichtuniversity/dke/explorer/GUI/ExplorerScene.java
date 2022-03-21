@@ -11,8 +11,12 @@ import java.net.URISyntaxException;
 
 public class ExplorerScene extends GUIMain {
 
-    private Scene expScene;
-    private JFrame expFrame;
+    public Scene expScene;
+    public JFrame expFrame;
+    private JMenuBar expMenuBar;
+    private JMenu keyMenu;
+    // Respectively: 0 - wall, 1 - noShadeBlock, 2 - shadeBlock, 3 - target, 4 - teleport, 5 - guard, 6 - intruder
+    private JMenuItem[] keyItems;
 
     public ExplorerScene() {
         // Empty.
@@ -24,7 +28,8 @@ public class ExplorerScene extends GUIMain {
         ImageIcon logo = new ImageIcon("src/main/resources/logo.png");
         expFrame.setIconImage(logo.getImage());
         expFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        //frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        expFrame.setResizable(false);
+        //expFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 
         // Decentralize absolute pathing
         File file = new File("src/main/resources/maps/testmap.txt");
@@ -33,13 +38,61 @@ public class ExplorerScene extends GUIMain {
 
         GamePanel gamePanel = new GamePanel(new Scenario(absPath));
         expFrame.add(gamePanel);
+
         expFrame.pack();
         expFrame.setLocationRelativeTo(null);
         expFrame.setVisible(true);
 
+        setExplorerKey();
+
         gamePanel.startGameThread();
         //expScene = new Scene(frame, screenBounds.getWidth(), screenBounds.getHeight());
 
+    }
+
+    @SuppressWarnings("unchecked")
+    public void setExplorerKey() {
+
+        expMenuBar = new JMenuBar();
+        keyMenu = new JMenu();
+        keyItems = new JMenuItem[7];
+        for(int i = 0; i < keyItems.length; i++) {
+            keyItems[i] = new JMenuItem();
+        }
+
+        keyMenu.setText("Exploration Key");
+
+        //menuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK));
+        keyItems[0].setIcon(new ImageIcon("src/main/resources/bit8/tiles/wall.png"));
+        keyItems[0].setText("Wall");
+
+        keyItems[1].setIcon(new ImageIcon("src/main/resources/bit8/tiles/floor.png"));
+        keyItems[1].setText("Unshaded Floor");
+
+        keyItems[2].setIcon(new ImageIcon("src/main/resources/bit8/tiles/shaded.png"));
+        keyItems[2].setText("Shaded Floor");
+
+        keyItems[3].setIcon(new ImageIcon("src/main/resources/bit8/tiles/target.png"));
+        keyItems[3].setText("Target");
+
+        keyItems[4].setIcon(new ImageIcon("src/main/resources/bit8/tiles/teleport.png"));
+        keyItems[4].setText("Teleport");
+
+        keyItems[5].setIcon(new ImageIcon("src/main/resources/bit16/guard/front_standing.png"));
+        keyItems[5].setText("Guard");
+
+        keyItems[6].setIcon(new ImageIcon("src/main/resources/bit16/prisoner/front_standing.png"));
+        keyItems[6].setText("Intruder");
+
+        for(int i = 0; i < keyItems.length; i++) {
+            keyMenu.add(keyItems[i]);
+        }
+
+        expMenuBar.add(keyMenu);
+        expFrame.setJMenuBar(expMenuBar);
+
+        GroupLayout expLayout = new GroupLayout(expFrame.getContentPane());
+        expFrame.getContentPane().setLayout(expLayout);
     }
 
 //    public Scene getExplorerScene() { return this.expScene; }

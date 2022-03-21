@@ -1,12 +1,10 @@
 package nl.maastrichtuniversity.dke.explorer.GUI;
 
-
 import nl.maastrichtuniversity.dke.explorer.Logic.CollisionDetection;
 import nl.maastrichtuniversity.dke.explorer.Logic.Objects.ObjectManager;
 import nl.maastrichtuniversity.dke.explorer.Logic.Scenario;
 import nl.maastrichtuniversity.dke.explorer.Logic.Entities.EntityManager;
 import nl.maastrichtuniversity.dke.explorer.Logic.Tiles.TileManager;
-
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,8 +18,9 @@ public class GamePanel extends JPanel implements Runnable {
 
     final int maxScreenCol = 120;
     final int maxScreenRow = 80;
+    final int expKeyHeight = 22;
     final int screenWidth = tileSize * maxScreenCol;
-    final int screenHeight = tileSize * maxScreenRow;
+    final int screenHeight = (tileSize * maxScreenRow) + expKeyHeight;
     final int FPS = 60;
     public Scenario scenario;
 
