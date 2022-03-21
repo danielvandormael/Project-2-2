@@ -23,10 +23,44 @@ public class Area {
     }
 
     public Area(int x1, int y1, int x2, int y2){
-        leftBoundary=Math.min(x1,x2);
-        rightBoundary=Math.max(x1,x2);
-        topBoundary=Math.max(y1,y2);
-        bottomBoundary=Math.min(y1,y2);
+        leftBoundary= Math.min(x1,x2);
+        rightBoundary= Math.max(x1,x2);
+        topBoundary= Math.max(y1,y2);
+        bottomBoundary= Math.min(y1,y2);
+    }
+    /*
+        Line Segments array:
+           s_px = position x
+           s_py = position y
+           s_dx = direction x
+           s_dy = direction y
+        { {s_px, s_py, s_dx, s_dy} }
+     */
+    public double [][] getLineSegments(){
+        double [][] temp = new double[4][4];
+        temp[0][0] = leftBoundary; //s_px
+        temp[0][1] = bottomBoundary; //s_py
+        temp[0][2] = rightBoundary - leftBoundary; //s_dx
+        temp[0][3] = 0; //s_dy
+
+        temp[1][0] = rightBoundary;
+        temp[1][1] = bottomBoundary;
+        temp[1][2] = 0;
+        temp[1][3] = topBoundary - bottomBoundary;
+
+
+        temp[2][0] = rightBoundary;
+        temp[2][1] = topBoundary;
+        temp[2][2] = leftBoundary - rightBoundary;
+        temp[2][3] = 0;
+
+        temp[3][0] = leftBoundary;
+        temp[3][1] = topBoundary;
+        temp[3][2] = 0;
+        temp[3][3] = bottomBoundary - topBoundary;
+
+        return temp;
+
     }
 
     /*

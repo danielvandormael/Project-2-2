@@ -8,55 +8,107 @@ import java.io.IOException;
 
 public class TileManager {
 
-    Tile[] tile;
+    public Tile[] tile;
+    public int [][] mapTile;
 
     GamePanel gamePanel;
+
+    /*
+           Tiles:
+           0 - floor
+           1 - wall
+           2 - shaded
+           3 - teleport
+           4 - target
+     */
 
     public TileManager(GamePanel gamePanel){
         this.gamePanel = gamePanel;
         tile = new Tile[5];
-        getTileImage16bit();
+        getTileImage8bit();
+        generateMap();
     }
 
+    public void generateMap(){
+        mapTile = new int[gamePanel.scenario.getMapWidth()][gamePanel.scenario.getMapHeight()];
+
+        //add floor
+        for(int i = 0; i < mapTile.length; i++){
+            for(int j = 0; j < mapTile[0].length; j++){
+                mapTile[i][j] = 0;
+            }
+        }
+
+        //add walls
+        for(int x = 0; x < gamePanel.scenario.getWalls().size(); x++){
+            for(int i = gamePanel.scenario.getWalls().get(x).getLeftBoundary(); i < gamePanel.scenario.getWalls().get(x).getRightBoundary(); i++){
+                for(int j = gamePanel.scenario.getWalls().get(x).getBottomBoundary(); j < gamePanel.scenario.getWalls().get(x).getTopBoundary(); j++){
+                    mapTile[i][j] = 1;
+                }
+            }
+        }
+
+        //add shaded
+        for(int x = 0; x < gamePanel.scenario.getShaded().size(); x++){
+            for(int i = gamePanel.scenario.getShaded().get(x).getLeftBoundary(); i < gamePanel.scenario.getShaded().get(x).getRightBoundary(); i++){
+                for(int j = gamePanel.scenario.getShaded().get(x).getBottomBoundary(); j < gamePanel.scenario.getShaded().get(x).getTopBoundary(); j++){
+                    mapTile[i][j] = 2;
+                }
+            }
+        }
+
+        //add teleport
+        for(int x = 0; x < gamePanel.scenario.getTeleportals().size(); x++){
+            for(int i = gamePanel.scenario.getTeleportals().get(x).getLeftBoundary(); i < gamePanel.scenario.getTeleportals().get(x).getRightBoundary(); i++){
+                for(int j = gamePanel.scenario.getTeleportals().get(x).getBottomBoundary(); j < gamePanel.scenario.getTeleportals().get(x).getTopBoundary(); j++){
+                    mapTile[i][j] = 3;
+                }
+            }
+        }
+
+        //add target
+        for(int i = gamePanel.scenario.getTargetArea().getLeftBoundary(); i < gamePanel.scenario.getTargetArea().getRightBoundary(); i++){
+            for(int j = gamePanel.scenario.getTargetArea().getBottomBoundary(); j < gamePanel.scenario.getTargetArea().getTopBoundary(); j++){
+                mapTile[i][j] = 4;
+            }
+        }
+    }
+
+
     public void getTileImage16bit(){
-        try {
-            tile[0] = new Tile();
-            tile[0].image = ImageIO.read(TileManager.class.getResourceAsStream("/bit8/objects/floor.png"));
+        try{
+            //floor
+            tile[0] = new Tile(false, ImageIO.read(getClass().getResource("/resources/bit16/tiles/floor.png")));
 
-            tile[1] = new Tile();
-            tile[1].image = ImageIO.read(TileManager.class.getResourceAsStream("/bit8/objects/wall.png"));
+            //wall
+            tile[1] = new Tile(true, ImageIO.read(getClass().getResource("/resources/bit16/tiles/wall.png")));
 
-            tile[2] = new Tile();
-            tile[2].image = ImageIO.read(TileManager.class.getResourceAsStream("/bit8/objects/teleport.png"));
+            //shaded
+            tile[2] = new Tile(false, ImageIO.read(getClass().getResource("/resources/bit16/tiles/shaded.png")));
 
-            tile[3] = new Tile();
-            tile[3].image = ImageIO.read(TileManager.class.getResourceAsStream("/bit8/objects/shaded.png"));
+            //teleport
+            tile[3] = new Tile(false, ImageIO.read(getClass().getResource("/resources/bit16/tiles/teleport.png")));
 
-            tile[4] = new Tile();
-            tile[4].image = ImageIO.read(TileManager.class.getResourceAsStream("/bit8/objects/target.png"));
-        } catch (IOException e){
+            //target
+            tile[4] = new Tile(false, ImageIO.read(getClass().getResource("/resources/bit16/tiles/target.png")));
+        }catch (IOException e){
             e.printStackTrace();
         }
     }
 
 
     public void getTileImage8bit(){
-        try {
-            tile[0] = new Tile();
-            tile[0].image = ImageIO.read(TileManager.class.getResourceAsStream("/bit8/objects/floor.png"));
+        try{
+            tile[0] = new Tile(false, ImageIO.read(getClass().getResource("/resources/bit8/tiles/floor.png")));
 
-            tile[1] = new Tile();
-            tile[1].image = ImageIO.read(TileManager.class.getResourceAsStream("/bit8/objects/wall.png"));
+            tile[1] = new Tile(true, ImageIO.read(getClass().getResource("/resources/bit8/tiles/wall.png")));
 
-            tile[2] = new Tile();
-            tile[2].image = ImageIO.read(TileManager.class.getResourceAsStream("/bit8/objects/teleport.png"));
+            tile[2] = new Tile(false, ImageIO.read(getClass().getResource("/resources/bit8/tiles/shaded.png")));
 
-            tile[3] = new Tile();
-            tile[3].image = ImageIO.read(TileManager.class.getResourceAsStream("/bit8/objects/shaded.png"));
+            tile[3] = new Tile(false, ImageIO.read(getClass().getResource("/resources/bit8/tiles/teleport.png")));
 
-            tile[4] = new Tile();
-            tile[4].image = ImageIO.read(TileManager.class.getResourceAsStream("/bit8/objects/target.png"));
-        } catch (IOException e){
+            tile[4] = new Tile(false, ImageIO.read(getClass().getResource("/resources/bit8/tiles/target.png")));
+        }catch (IOException e){
             e.printStackTrace();
         }
     }
@@ -70,8 +122,8 @@ public class TileManager {
         }
 
         //draw portal
-        for(int i  = 0; i< gamePanel.scenario.getTeleports().size(); i++){
-            g.drawImage(tile[2].image, gamePanel.scenario.getTeleports().get(i).getLeftBoundary()*gamePanel.getTileSize(), gamePanel.scenario.getTeleports().get(i).getBottomBoundary()*gamePanel.getTileSize(), gamePanel.getTileSize()*5, gamePanel.getTileSize()*5, null);
+        for(int i  = 0; i< gamePanel.scenario.getTeleportals().size(); i++){
+            g.drawImage(tile[3].image, gamePanel.scenario.getTeleportals().get(i).getLeftBoundary()*gamePanel.getTileSize(), gamePanel.scenario.getTeleportals().get(i).getBottomBoundary()*gamePanel.getTileSize(), gamePanel.getTileSize()*5, gamePanel.getTileSize()*5, null);
         }
 
         //draw walls
@@ -97,7 +149,7 @@ public class TileManager {
 
             for(int j = lower; j < upper; j++){
                 for (int k = left; k < right; k++){
-                    g.drawImage(tile[3].image, k*gamePanel.getTileSize(), j*gamePanel.getTileSize(), gamePanel.getTileSize(), gamePanel.getTileSize(), null);
+                    g.drawImage(tile[2].image, k*gamePanel.getTileSize(), j*gamePanel.getTileSize(), gamePanel.getTileSize(), gamePanel.getTileSize(), null);
                 }
             }
         }

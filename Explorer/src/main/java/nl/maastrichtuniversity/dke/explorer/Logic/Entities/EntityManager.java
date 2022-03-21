@@ -23,31 +23,37 @@ public class EntityManager {
     public void generateGuards(){
         double [][] tmp = gamePanel.scenario.spawnGuards();
         for(int i = 0; i< gamePanel.scenario.getNumGuards(); i++){
-            guards[i]= new Guard(tmp[i][0], tmp[i][1], tmp[i][2], 5, 70, gamePanel.scenario.getBaseSpeedGuard(), gamePanel.scenario.getBaseSpeedGuard());
+            guards[i]= new DFSAgent(tmp[i][0], tmp[i][1], tmp[i][2], 8, 90, gamePanel.scenario.getBaseSpeedGuard(), gamePanel.scenario.getBaseSpeedGuard(), gamePanel);
         }
     }
 
     public void generateIntruder(){
         double [][] tmp = gamePanel.scenario.spawnIntruders();
         for(int i = 0; i< gamePanel.scenario.getNumIntruders(); i++){
-            intruders[i]= new Prisoner(tmp[i][0], tmp[i][1], tmp[i][2], 8, 70, gamePanel.scenario.getBaseSpeedIntruder(), gamePanel.scenario.getSprintSpeedIntruder());
+            intruders[i]= new Intruder(tmp[i][0], tmp[i][1], tmp[i][2], 12, 90, gamePanel.scenario.getBaseSpeedIntruder(), gamePanel.scenario.getSprintSpeedIntruder(), gamePanel);
         }
     }
+
+    public void update(){
+        for(int i = 0; i < guards.length; i++){
+            guards[i].update();
+        }
+        for(int i = 0; i < intruders.length; i++){
+            intruders[i].update();
+        }
+    }
+
 
     public void draw(Graphics2D g){
 
         //draw all guards
         for(int i = 0; i < guards.length; i++){
-            g.setColor(new Color(255, 250, 134, 70));
-            g.fillArc(((int) guards[i].x*gamePanel.getTileSize()-(( (int) guards[i].viewRange*gamePanel.getTileSize())/2)+(gamePanel.getTileSize()/2)), ((int) guards[i].y*gamePanel.getTileSize()-(( (int) guards[i].viewRange*gamePanel.getTileSize())/2)+(gamePanel.getTileSize()/2)), (int) guards[i].viewRange*gamePanel.getTileSize(),(int) guards[i].viewRange*gamePanel.getTileSize(), (int)guards[i].viewAngle - 30, (int) guards[i].viewAngle +30);
-            g.drawImage(guards[i].getImage(), (int) guards[i].x*gamePanel.getTileSize(), (int) guards[i].y*gamePanel.getTileSize(), gamePanel.getTileSize(),  gamePanel.getTileSize(), null);
+            guards[i].draw(g);
         }
 
         //draw all intruders
         for(int i = 0; i < intruders.length; i++){
-            g.setColor(new Color(255, 255, 255, 70));
-            g.fillArc(((int) intruders[i].x*gamePanel.getTileSize()-(( (int) intruders[i].viewRange*gamePanel.getTileSize())/2)+(gamePanel.getTileSize()/2)), ((int) intruders[i].y*gamePanel.getTileSize()-(( (int) intruders[i].viewRange*gamePanel.getTileSize())/2)+(gamePanel.getTileSize()/2)), (int) intruders[i].viewRange*gamePanel.getTileSize(),(int) intruders[i].viewRange*gamePanel.getTileSize(), (int)intruders[i].viewAngle - 30, (int) intruders[i].viewAngle +30);
-            g.drawImage(intruders[i].getImage(), (int) intruders[i].x*gamePanel.getTileSize(), (int) intruders[i].y*gamePanel.getTileSize(), gamePanel.getTileSize(),  gamePanel.getTileSize(), null);
+            intruders[i].draw(g);
         }
     }
 }

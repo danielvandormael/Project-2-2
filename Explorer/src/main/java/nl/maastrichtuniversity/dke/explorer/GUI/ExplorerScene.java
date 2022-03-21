@@ -31,11 +31,13 @@ public class ExplorerScene extends GUIMain {
         String absPath = file.getAbsolutePath();
         //System.out.println(absPath);
 
-        expFrame.add(new GamePanel(new Scenario(absPath)));
+        GamePanel gamePanel = new GamePanel(new Scenario(absPath));
+        expFrame.add(gamePanel);
         expFrame.pack();
         expFrame.setLocationRelativeTo(null);
         expFrame.setVisible(true);
 
+        gamePanel.startGameThread();
         //expScene = new Scene(frame, screenBounds.getWidth(), screenBounds.getHeight());
 
     }

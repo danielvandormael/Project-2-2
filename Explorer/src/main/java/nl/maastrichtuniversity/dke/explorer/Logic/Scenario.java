@@ -41,11 +41,9 @@ public class Scenario {
     protected ArrayList<TelePortal> teleports;
     protected ArrayList<Area> shaded;
 
-
-    // Default String Constructor
     public Scenario(String mapFile){
         // set parameters
-        mapDoc = mapFile;
+        mapDoc=mapFile;
 
         // initialize variables
         walls = new ArrayList<>(); // create list of walls
@@ -122,24 +120,24 @@ public class Scenario {
                         baseSpeedGuard = Double.parseDouble(value);
                         break;
                     case "targetArea":
-                        targetArea = new Area(Integer.parseInt(items[0]),Integer.parseInt(items[1]),Integer.parseInt(items[2]),Integer.parseInt(items[3]));
+                        targetArea = new Area(Integer.parseInt(items[0]), Integer.parseInt(items[1]), Integer.parseInt(items[2]), Integer.parseInt(items[3]));
                         break;
                     case "spawnAreaIntruders":
-                        spawnAreaIntruders = new Area(Integer.parseInt(items[0]),Integer.parseInt(items[1]),Integer.parseInt(items[2]),Integer.parseInt(items[3]));
+                        spawnAreaIntruders = new Area(Integer.parseInt(items[0]), Integer.parseInt(items[1]), Integer.parseInt(items[2]), Integer.parseInt(items[3]));
                         break;
                     case "spawnAreaGuards":
-                        spawnAreaGuards = new Area(Integer.parseInt(items[0]),Integer.parseInt(items[1]),Integer.parseInt(items[2]),Integer.parseInt(items[3]));
+                        spawnAreaGuards = new Area(Integer.parseInt(items[0]), Integer.parseInt(items[1]), Integer.parseInt(items[2]), Integer.parseInt(items[3]));
                         break;
                     case "wall":
-                        tmp = new Area(Integer.parseInt(items[0]),Integer.parseInt(items[1]),Integer.parseInt(items[2]),Integer.parseInt(items[3]));
+                        tmp = new Area(Integer.parseInt(items[0]), Integer.parseInt(items[1]), Integer.parseInt(items[2]), Integer.parseInt(items[3]));
                         walls.add(tmp);
                         break;
                     case "shaded":
-                        tmp = new Area(Integer.parseInt(items[0]),Integer.parseInt(items[1]),Integer.parseInt(items[2]),Integer.parseInt(items[3]));
+                        tmp = new Area(Integer.parseInt(items[0]), Integer.parseInt(items[1]), Integer.parseInt(items[2]), Integer.parseInt(items[3]));
                         shaded.add(tmp);
                         break;
                     case "teleport":
-                        TelePortal teletmp = new TelePortal(Integer.parseInt(items[0]),Integer.parseInt(items[1]),Integer.parseInt(items[2]),Integer.parseInt(items[3]),Integer.parseInt(items[4]),Integer.parseInt(items[5]),Double.parseDouble(items[6]));
+                        TelePortal teletmp = new TelePortal(Integer.parseInt(items[0]), Integer.parseInt(items[1]), Integer.parseInt(items[2]), Integer.parseInt(items[3]), Integer.parseInt(items[4]), Integer.parseInt(items[5]), Double.parseDouble(items[6]));
                         teleports.add(teletmp);
                         break;
                     case "texture":
@@ -167,7 +165,7 @@ public class Scenario {
         return shaded;
     }
 
-    public ArrayList<TelePortal> getTeleports(){
+    public ArrayList<TelePortal> getTeleportals(){
         return teleports;
     }
 
@@ -177,13 +175,12 @@ public class Scenario {
 
     public double[][] spawnGuards(){
         double[][] tmp = new double[numGuards][4];
-        double dx = spawnAreaGuards.rightBoundary-spawnAreaGuards.leftBoundary;
-        double dy = spawnAreaGuards.topBoundary-spawnAreaGuards.bottomBoundary;
-
+        double dx=spawnAreaGuards.rightBoundary-spawnAreaGuards.leftBoundary;
+        double dy=spawnAreaGuards.topBoundary-spawnAreaGuards.bottomBoundary;
         for(int i=0; i<numGuards; i++){
-            tmp[i][0]=spawnAreaGuards.leftBoundary+Math.random()*dx;
-            tmp[i][1]=spawnAreaGuards.bottomBoundary+Math.random()*dy;
-            tmp[i][2]=Math.random()*2*Math.PI;
+            tmp[i][0]=spawnAreaGuards.leftBoundary+ Math.random()*dx;
+            tmp[i][1]=spawnAreaGuards.bottomBoundary+ Math.random()*dy;
+            tmp[i][2]= Math.random()*2* Math.PI;
         }
         return tmp;
     }
@@ -193,9 +190,9 @@ public class Scenario {
         double dx=spawnAreaIntruders.rightBoundary-spawnAreaIntruders.leftBoundary;
         double dy=spawnAreaIntruders.topBoundary-spawnAreaIntruders.bottomBoundary;
         for(int i=0; i<numIntruders; i++){
-            tmp[i][0]=spawnAreaIntruders.leftBoundary+Math.random()*dx;
-            tmp[i][1]=spawnAreaIntruders.bottomBoundary+Math.random()*dy;
-            tmp[i][2]=Math.random()*2*Math.PI;
+            tmp[i][0]=spawnAreaIntruders.leftBoundary+ Math.random()*dx;
+            tmp[i][1]=spawnAreaIntruders.bottomBoundary+ Math.random()*dy;
+            tmp[i][2]= Math.random()*2* Math.PI;
         }
         return tmp;
     }
@@ -224,7 +221,9 @@ public class Scenario {
         return gameFile;
     }
 
-    public String getMapDoc(){ return mapDoc; }
+    public String getMapDoc(){
+        return mapDoc;
+    }
 
     public double getScaling(){
         return scaling;

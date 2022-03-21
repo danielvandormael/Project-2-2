@@ -1,6 +1,8 @@
 package nl.maastrichtuniversity.dke.explorer.GUI;
 
 
+import nl.maastrichtuniversity.dke.explorer.Logic.CollisionDetection;
+import nl.maastrichtuniversity.dke.explorer.Logic.Objects.ObjectManager;
 import nl.maastrichtuniversity.dke.explorer.Logic.Scenario;
 import nl.maastrichtuniversity.dke.explorer.Logic.Entities.EntityManager;
 import nl.maastrichtuniversity.dke.explorer.Logic.Tiles.TileManager;
@@ -20,17 +22,23 @@ public class GamePanel extends JPanel implements Runnable {
     final int maxScreenRow = 80;
     final int screenWidth = tileSize * maxScreenCol;
     final int screenHeight = tileSize * maxScreenRow;
+    final int FPS = 60;
     public Scenario scenario;
 
     Thread gameThread;
 
-    TileManager tileM;
-    EntityManager entities;
+    public TileManager tileM;
+    EntityManager entityM;
+    ObjectManager objectM;
+    public CollisionDetection collisionD;
 
     public GamePanel(Scenario scenario){
         this.scenario = scenario;
-        tileM = new TileManager(this);
-        entities = new EntityManager(this);
+
+        this.tileM = new TileManager(this);
+        this.entityM = new EntityManager(this);
+        this.objectM = new ObjectManager(this);
+        this.collisionD = new CollisionDetection(this);
 
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         this.setBackground(Color.GRAY);
@@ -43,19 +51,44 @@ public class GamePanel extends JPanel implements Runnable {
         gameThread.start();
     }
 
+    public void endGameThread(){
+        gameThread.interrupt();
+        System.out.println("You found the target area");
+    }
+
     @Override
     public void run() {
 
+        double interval = 1000000000/FPS;
+        double nextLoop = System.nanoTime() + interval;
+
         while (gameThread != null){
+
             update();
 
             repaint();
+
+            try{
+                double remainTime = nextLoop - System.nanoTime();
+                remainTime = remainTime/1000000;
+
+                if(remainTime < 0){
+                    remainTime = 0;
+                }
+                Thread.sleep((long) remainTime);
+
+                nextLoop += interval;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
         }
 
     }
 
     public void update(){
+
+        entityM.update();
 
     }
 
@@ -65,7 +98,8 @@ public class GamePanel extends JPanel implements Runnable {
         Graphics2D g2 = (Graphics2D)g;
 
         tileM.draw(g2);
-        entities.draw(g2);
+        entityM.draw(g2);
+        objectM.draw(g2);
 
         g2.dispose();
     }
@@ -74,3 +108,4 @@ public class GamePanel extends JPanel implements Runnable {
         return tileSize;
     }
 }
+
