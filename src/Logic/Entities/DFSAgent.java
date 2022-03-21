@@ -19,7 +19,7 @@ public class DFSAgent extends Guard{
         super(x, y, viewAngle, viewRange, viewAngleSize, baseSpeed, sprintSpeed, gamePanel);
     }
 
-    public int[] DFS(){
+    public void DFS(){
         decision[0] = 1;
         decision[1] = 1;
     }
