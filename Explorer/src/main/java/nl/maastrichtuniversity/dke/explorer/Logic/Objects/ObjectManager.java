@@ -1,6 +1,7 @@
 package nl.maastrichtuniversity.dke.explorer.Logic.Objects;
 
 import nl.maastrichtuniversity.dke.explorer.GUI.GamePanel;
+import nl.maastrichtuniversity.dke.explorer.Logic.Entities.Intruder;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -33,11 +34,11 @@ public class ObjectManager {
 
     public void getObjectImage8bit(){
         try {
-            object[0] = new Object(false, ImageIO.read(getClass().getResource("/resources/bit8/objects/alertMarker.png")));
-            object[1] = new Object(false, ImageIO.read(getClass().getResource("/resources/bit8/objects/cautionMarker.png")));
-            object[2] = new Object(false, ImageIO.read(getClass().getResource("/resources/bit8/objects/deadMarker.png")));
-            object[3] = new Object(false, ImageIO.read(getClass().getResource("/resources/bit8/objects/finishMarker.png")));
-            object[4] = new Object(false, ImageIO.read(getClass().getResource("/resources/bit8/objects/unexploredMarker.png")));
+            object[0] = new Object(false, ImageIO.read(ObjectManager.class.getResourceAsStream("/bit8/objects/alertMarker.png")));
+            object[1] = new Object(false, ImageIO.read(ObjectManager.class.getResourceAsStream("/bit8/objects/cautionMarker.png")));
+            object[2] = new Object(false, ImageIO.read(ObjectManager.class.getResourceAsStream("/bit8/objects/deadMarker.png")));
+            object[3] = new Object(false, ImageIO.read(ObjectManager.class.getResourceAsStream("/bit8/objects/finishMarker.png")));
+            object[4] = new Object(false, ImageIO.read(ObjectManager.class.getResourceAsStream("/bit8/objects/unexploredMarker.png")));
         }catch (IOException e){
             e.printStackTrace();
         }

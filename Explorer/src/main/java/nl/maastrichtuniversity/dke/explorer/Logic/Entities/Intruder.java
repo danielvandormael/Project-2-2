@@ -16,16 +16,16 @@ public class Intruder extends Entity {
 
     public void getPlayerImage(){
         try{
-            left_stand = ImageIO.read(getClass().getResource("/resources/bit16/prisoner/left_stand.png"));
-            left_walk = ImageIO.read(getClass().getResource("/resources/bit16/prisoner/left_walk.png"));
-            right_stand = ImageIO.read(getClass().getResource("/resources/bit16/prisoner/right_stand.png"));
-            right_walk = ImageIO.read(getClass().getResource("/resources/bit16/prisoner/right_walk.png"));
-            up_stand = ImageIO.read(getClass().getResource("/resources/bit16/prisoner/back_stand.png"));
-            up_walk1 = ImageIO.read(getClass().getResource("/resources/bit16/prisoner/back_walk1.png"));
-            up_walk2 = ImageIO.read(getClass().getResource("/resources/bit16/prisoner/back_walk2.png"));
-            down_stand = ImageIO.read(getClass().getResource("/resources/bit16/prisoner/front_standing.png"));
-            down_walk1 = ImageIO.read(getClass().getResource("/resources/bit16/prisoner/front_walk1.png"));
-            down_walk2 = ImageIO.read(getClass().getResource("/resources/bit16/prisoner/front_walk2.png"));
+            left_stand = ImageIO.read(Intruder.class.getResourceAsStream("/bit16/prisoner/left_stand.png"));
+            left_walk = ImageIO.read(Intruder.class.getResourceAsStream("/bit16/prisoner/left_walk.png"));
+            right_stand = ImageIO.read(Intruder.class.getResourceAsStream("/bit16/prisoner/right_stand.png"));
+            right_walk = ImageIO.read(Intruder.class.getResourceAsStream("/bit16/prisoner/right_walk.png"));
+            up_stand = ImageIO.read(Intruder.class.getResourceAsStream("/bit16/prisoner/back_stand.png"));
+            up_walk1 = ImageIO.read(Intruder.class.getResourceAsStream("/bit16/prisoner/back_walk1.png"));
+            up_walk2 = ImageIO.read(Intruder.class.getResourceAsStream("/bit16/prisoner/back_walk2.png"));
+            down_stand = ImageIO.read(Intruder.class.getResourceAsStream("/bit16/prisoner/front_standing.png"));
+            down_walk1 = ImageIO.read(Intruder.class.getResourceAsStream("/bit16/prisoner/front_walk1.png"));
+            down_walk2 = ImageIO.read(Intruder.class.getResourceAsStream("/bit16/prisoner/front_walk2.png"));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {

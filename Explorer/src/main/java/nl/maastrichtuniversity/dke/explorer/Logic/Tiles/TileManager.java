@@ -4,7 +4,9 @@ import nl.maastrichtuniversity.dke.explorer.GUI.GamePanel;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 
 public class TileManager {
 
@@ -99,15 +101,15 @@ public class TileManager {
 
     public void getTileImage8bit(){
         try{
-            tile[0] = new Tile(false, ImageIO.read(getClass().getResource("/resources/bit8/tiles/floor.png")));
+            tile[0] = new Tile(false, ImageIO.read(TileManager.class.getResourceAsStream("/bit8/tiles/floor.png")));
 
-            tile[1] = new Tile(true, ImageIO.read(getClass().getResource("/resources/bit8/tiles/wall.png")));
+            tile[1] = new Tile(true, ImageIO.read(TileManager.class.getResourceAsStream("/bit8/tiles/wall.png")));
 
-            tile[2] = new Tile(false, ImageIO.read(getClass().getResource("/resources/bit8/tiles/shaded.png")));
+            tile[2] = new Tile(false, ImageIO.read(TileManager.class.getResourceAsStream("/bit8/tiles/shaded.png")));
 
-            tile[3] = new Tile(false, ImageIO.read(getClass().getResource("/resources/bit8/tiles/teleport.png")));
+            tile[3] = new Tile(false, ImageIO.read(TileManager.class.getResourceAsStream("/bit8/tiles/teleport.png")));
 
-            tile[4] = new Tile(false, ImageIO.read(getClass().getResource("/resources/bit8/tiles/target.png")));
+            tile[4] = new Tile(false, ImageIO.read(TileManager.class.getResourceAsStream("/bit8/tiles/target.png")));
         }catch (IOException e){
             e.printStackTrace();
         }
