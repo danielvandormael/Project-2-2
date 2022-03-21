@@ -12,15 +12,21 @@ public class DFSAgent extends Guard{
     private double desiredAngle;
     private double ChooseOfMove;
 
+    int [] decision = new int[2];
+
 
     public DFSAgent(double x, double y, double viewAngle, double viewRange, double viewAngleSize, double baseSpeed, double sprintSpeed, GamePanel gamePanel) {
         super(x, y, viewAngle, viewRange, viewAngleSize, baseSpeed, sprintSpeed, gamePanel);
     }
 
-
-
-    public void checkView(){
-
+    public int[] DFS(){
+        decision[0] = 1;
+        decision[1] = 1;
     }
 
+    public void update(){
+        DFS();
+        setAction(decision[0], decision[1]);
+        super.update();
+    }
 }
