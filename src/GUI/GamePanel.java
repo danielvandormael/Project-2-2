@@ -2,6 +2,7 @@ package GUI;
 
 
 import Logic.CollisionDetection;
+import Logic.MDFS;
 import Logic.Objects.ObjectManager;
 import Logic.Scenario;
 import Logic.Entities.EntityManager;
@@ -26,6 +27,7 @@ public class GamePanel extends JPanel implements Runnable {
     final int screenHeight = tileSize * maxScreenRow;
     final int FPS = 60;
     public Scenario scenario;
+    public MDFS mdfs;
 
     Thread gameThread;
 
@@ -41,6 +43,7 @@ public class GamePanel extends JPanel implements Runnable {
         this.entityM = new EntityManager(this);
         this.objectM = new ObjectManager(this);
         this.collisionD = new CollisionDetection(this);
+        this.mdfs = new MDFS(scenario);
 
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         this.setBackground(Color.GRAY);

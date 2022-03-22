@@ -9,7 +9,7 @@ public class Main {
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         //frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        GamePanel gamePanel= new GamePanel(new Scenario("C:\\Users\\danie\\Projects\\Project2_2\\src\\resources\\maps\\demomap.txt"));
+        GamePanel gamePanel= new GamePanel(new Scenario("C:\\Users\\jiska\\OneDrive\\Documents\\Maastricht University\\Project 2-2 v1\\src\\resources\\maps\\demomap.txt"));
         frame.add(gamePanel);
         frame.pack();
         frame.setLocationRelativeTo(null);
