@@ -23,14 +23,14 @@ public class EntityManager {
     public void generateGuards(){
         double [][] tmp = gamePanel.scenario.spawnGuards();
         for(int i = 0; i< gamePanel.scenario.getNumGuards(); i++){
-            guards[i]= new DFSAgent(tmp[i][0], tmp[i][1], tmp[i][2], 8, 90, gamePanel.scenario.getBaseSpeedGuard(), gamePanel.scenario.getBaseSpeedGuard(), gamePanel);
+            guards[i]= new DFSAgent(tmp[i][0], tmp[i][1], 0, 8, 180, gamePanel.scenario.getBaseSpeedGuard(), gamePanel.scenario.getBaseSpeedGuard(), gamePanel);
         }
     }
 
     public void generateIntruder(){
         double [][] tmp = gamePanel.scenario.spawnIntruders();
         for(int i = 0; i< gamePanel.scenario.getNumIntruders(); i++){
-            intruders[i]= new Intruder(tmp[i][0], tmp[i][1], tmp[i][2], 12, 90, gamePanel.scenario.getBaseSpeedIntruder(), gamePanel.scenario.getSprintSpeedIntruder(), gamePanel);
+            intruders[i]= new Intruder(tmp[i][0], tmp[i][1], 0, 12, 180, gamePanel.scenario.getBaseSpeedIntruder(), gamePanel.scenario.getSprintSpeedIntruder(), gamePanel);
         }
     }
 

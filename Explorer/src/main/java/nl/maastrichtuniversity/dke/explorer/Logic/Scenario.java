@@ -68,7 +68,6 @@ public class Scenario {
     }
 
     /*
-
      */
     protected void parseLine(String line){
         //use a second Scanner to parse the content of each line

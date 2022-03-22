@@ -59,9 +59,6 @@ public class Entity {
         this.picSprite = 1;
         this.picSpriteCounter = 0;
         this.viewHinder = 1;
-
-        this.actionMove = 1;
-        this.actionRotate = 0;
     }
 
 
@@ -81,6 +78,7 @@ public class Entity {
             move();
         }
 
+        System.out.println("actionMove: " + actionMove);
         //update sprite
         if(actionMove > 0){
             if(picSprite == 0){
@@ -100,7 +98,9 @@ public class Entity {
         }
 
         onTopOf();
+
         rayCasting();
+
     }
 
     private void rotate(){
@@ -211,14 +211,13 @@ public class Entity {
 
     private void onTopOf(){
         if(gamePanel.tileM.mapTile[(int)x][(int)y] == 4 || gamePanel.tileM.mapTile[(int)(x + 1)][(int)(y + 1)] == 4){
-            gamePanel.endGameThread();
+            //gamePanel.endGameThread();
         }else if(gamePanel.tileM.mapTile[(int)x][(int)y] == 3 || gamePanel.tileM.mapTile[(int)(x + 1)][(int)(y + 1)] == 3){
             for(int i = 0; i < gamePanel.scenario.getTeleportals().size(); i++){
                 if(gamePanel.scenario.getTeleportals().get(i).isHit(x,y) || gamePanel.scenario.getTeleportals().get(i).isHit(x+1,y+1)){
                     int [] temp = gamePanel.scenario.getTeleportals().get(i).getNewLocation();
                     x = temp[0];
                     y = temp[1];
-                    System.out.println(x + "   " +y);
                 }
             }
         }else if(gamePanel.tileM.mapTile[(int)x][(int)y] == 2 || gamePanel.tileM.mapTile[(int)(x + 1)][(int)(y + 1)] == 2){
@@ -286,7 +285,7 @@ public class Entity {
             Polygon p = new Polygon(new int[]{arcX1, arcX2, arcX3}, new int[]{arcY1, arcY2, arcY3}, 3);
             g.fillPolygon(p);
         }
-        g.drawImage(getImage(), (int) x*gamePanel.getTileSize(), (int) y*gamePanel.getTileSize(), gamePanel.getTileSize()*2,  gamePanel.getTileSize()*2, null);
+        g.drawImage(getImage(), (int) x*gamePanel.getTileSize() - gamePanel.getTileSize()/2, (int) y*gamePanel.getTileSize() - gamePanel.getTileSize()/2, gamePanel.getTileSize()*2,  gamePanel.getTileSize()*2, null);
     }
 
     public double getX() {
@@ -299,6 +298,10 @@ public class Entity {
 
     public double getViewAngle() {
         return viewAngle;
+    }
+
+    public double getViewRange() {
+        return viewRange;
     }
 
     public double getBaseSpeed() {
@@ -320,4 +323,6 @@ public class Entity {
     public void setCollision(boolean collision) {
         this.collision = collision;
     }
+
+
 }
