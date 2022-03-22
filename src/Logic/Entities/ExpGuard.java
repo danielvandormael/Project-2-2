@@ -40,13 +40,21 @@ public class ExpGuard extends Guard {
         distanceViewing = 5;
         this.x = (int) x;
         this.y = (int) y;
+        desiredX = (int) x;
+        desiredY = (int) y;
+        desiredAngle = viewAngle;
+        currentCell = map.getCell(x, y);
     }
 
     public void update(){
         System.out.println("updating guard");
+        System.out.println("x " + getX() + " desired x " + desiredX);
+        System.out.println("y " + getY() + " desired y " + desiredY);
+        System.out.println("viewangle " + getViewAngle() + " desired viewangle " + desiredAngle);
 
 
         if ((int) getX() == desiredX && (int) getY() == desiredY && getViewAngle() == desiredAngle) {
+            System.out.println("entered if");
             finished = gamePanel.mdfs.nextStep(this);
             desiredX = targetCell.getX();
             desiredY = targetCell.getY();
