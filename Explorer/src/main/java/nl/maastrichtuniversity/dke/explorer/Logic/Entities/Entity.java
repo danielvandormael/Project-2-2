@@ -1,12 +1,12 @@
 package nl.maastrichtuniversity.dke.explorer.Logic.Entities;
 
-import javafx.geometry.Point2D;
 import nl.maastrichtuniversity.dke.explorer.GUI.GamePanel;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class Entity {
+
     private double x, y;
     private double viewAngle;
     private final double viewRange;
@@ -21,14 +21,14 @@ public class Entity {
     private double [][] rayT = new double[rayAmount][3];
 
     /*
-           Action Move:
-           0 - stand still
-           1 - walk
-           2 - run
-           Action Rotate:
-           0 - stand still
-           1 - rotate left
-           2 - rotate right
+       Action Move:
+       0 - stand still
+       1 - walk
+       2 - run
+       Action Rotate:
+       0 - stand still
+       1 - rotate left
+       2 - rotate right
      */
     private int actionMove;
     private int actionRotate;
@@ -40,9 +40,7 @@ public class Entity {
     int picSpriteCounter;
     Color viewColor;
 
-
     GamePanel gamePanel;
-
 
     public Entity(double x, double y, double viewAngle, double viewRange, double viewAngleSize, double baseSpeed, double sprintSpeed, Color viewColor, GamePanel gamePanel) {
         this.gamePanel = gamePanel;
@@ -134,8 +132,6 @@ public class Entity {
         Movement equation:
         current position + (relative size of a pixel) * (speed ratio)
      */
-
-
     private void move(){
         if(actionMove == 1){ //walk
             x += ( (1 / (double) gamePanel.getTileSize()) * (baseSpeed/speedRatio) ) * Math.cos(Math.toRadians(viewAngle));
@@ -166,7 +162,6 @@ public class Entity {
      T2 = (r_dx*(s_py-r_py) + r_dy*(r_px-s_px))/(s_dx*r_dy - s_dy*r_dx)
      T1 = (s_px+s_dx*T2-r_px)/r_dx
      */
-
     private double rayIntersectionSegment(double r_px, double r_py, double r_dx, double r_dy){
         double t1 = viewRange/viewHinder;
         double t2;
@@ -225,6 +220,32 @@ public class Entity {
         }else{
             viewHinder = 1;
         }
+    }
+
+    public void leaveMarker() {
+        /*
+        PSEUDOCODE
+        // This first check will depend on hierarchy of markers, if there's one more important than another,
+        // we might have to remove one of them. Otherwise, they can both coexist, even if that's not visible in the GUI.
+        // However, since we're using an ArrayList to keep track of objects, it should be possible to add AL of objects,
+        // but that would make checking for markers harder.
+        // This is why removing markers, having only one at a time, can be much easier to handle further down the line.
+         IF (cell/tile.hasMarker())
+            c/t.removeMarker()
+            newMarker = selectMarkerType()
+            c/t.addMarker(newMarker)
+         ELSE
+            newMarker = selectMarkerType()
+            c/t.addMarker(newMarker)
+         */
+    }
+
+    // Defines what type of marker to add later on
+    private int selectMarkerType() {
+
+        int markerIndex = 0; // either 0,1,2,3 or 4 (if 5 markers)
+
+        return markerIndex;
     }
 
     //sprite of entities
@@ -288,41 +309,22 @@ public class Entity {
         g.drawImage(getImage(), (int) x*gamePanel.getTileSize() - gamePanel.getTileSize()/2, (int) y*gamePanel.getTileSize() - gamePanel.getTileSize()/2, gamePanel.getTileSize()*2,  gamePanel.getTileSize()*2, null);
     }
 
-    public double getX() {
-        return x;
-    }
+    public double getX() { return x; }
 
-    public double getY() {
-        return y;
-    }
+    public double getY() { return y; }
 
-    public double getViewAngle() {
-        return viewAngle;
-    }
+    public double getViewAngle() { return viewAngle; }
 
-    public double getViewRange() {
-        return viewRange;
-    }
+    public double getViewRange() { return viewRange; }
 
-    public double getBaseSpeed() {
-        return baseSpeed;
-    }
+    public double getBaseSpeed() { return baseSpeed; }
 
-    public double getSprintSpeed() {
-        return sprintSpeed;
-    }
+    public double getSprintSpeed() { return sprintSpeed; }
 
-    public double getSpeedRatio() {
-        return speedRatio;
-    }
+    public double getSpeedRatio() { return speedRatio; }
 
-    public int getActionMove() {
-        return actionMove;
-    }
+    public int getActionMove() { return actionMove; }
 
-    public void setCollision(boolean collision) {
-        this.collision = collision;
-    }
-
+    public void setCollision(boolean collision) { this.collision = collision; }
 
 }
