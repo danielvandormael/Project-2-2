@@ -1,4 +1,4 @@
-# Explorer
+# Explorer - Project 2.2
 
 #### Run from Terminal/Command Line
 
