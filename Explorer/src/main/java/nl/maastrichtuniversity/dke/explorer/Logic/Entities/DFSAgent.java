@@ -64,6 +64,7 @@ public class DFSAgent extends Guard {
 
         //labeling parent cell
         if(currentCell.getStatus() == 0){
+            currentCell.setGuardThere(true);
             currentCell.setStatus(1);
             if(currentCell.getParentCell() == null){
                 Cell fromCell = currentCell;
@@ -102,12 +103,16 @@ public class DFSAgent extends Guard {
             targetCell = cellFront;
             desiredX = targetCell.getX();
             desiredY = targetCell.getY();
+
+            currentCell.setGuardThere(false);
             decision[0] = 1;
+            cellFront.setGuardThere(true);
             decision[1] = 0;
             return false;
         }
 
 
+        //FOR BACKTRACKING
         // check if left or right is still unexplored, if yes turn to one of them (favor left),
         // if not proceed with next part
         List<Cell> candidateCells = new ArrayList();
@@ -130,7 +135,9 @@ public class DFSAgent extends Guard {
 
         if(map.isInDirection(currentCell, targetCell, getViewAngle())) {
             // move towards target
+            currentCell.setGuardThere(false);
             decision[0] = 1;
+            targetCell.setGuardThere(true);
             decision[1] = 0;
             desiredX= targetCell.getX();
             desiredY= targetCell.getY();
