@@ -5,19 +5,19 @@ import nl.maastrichtuniversity.dke.explorer.Logic.Tiles.Cell;
 import nl.maastrichtuniversity.dke.explorer.Logic.Tiles.Map;
 
 import java.util.ArrayList;
-import java.util.List;
+
 
 public class RandomIntruder extends Intruder {
 
-//    private double desiredAngle;
+    //    private double desiredAngle;
 //    private int desiredX;
 //    private int desiredY;
     Cell previousCell;
     Cell targetCell;
-    Cell currentCell;
-    ArrayList<Cell> viewingArea;
 
-    int [] decision = new int[2]; // 1- movement  2- rotation
+    ArrayList<Cell> viewingArea = new ArrayList<>();
+
+    int[] decision = new int[2]; // 1- movement  2- rotation
 
     Map map;
 
@@ -29,22 +29,35 @@ public class RandomIntruder extends Intruder {
 //        desiredAngle = viewAngle;
     }
 
-    public void update(){
+    public void update() {
         randomlyMove();
         setAction(decision[0], decision[1]);
         super.update();
     }
 
     private void randomlyMove() {
-        if (identifyGuard()){
-            decision[1]=1;
-            decision[0]=2;
+        Cell currentCell = map.getCell(getX(), getY());
+        if (identifyGuard(currentCell)) {
+            decision[1] = 1;
+            decision[0] = 0;
+            runaway();
+        } else {
+
+            decision[0] = 1;
+
+            decision[1] = 0;
+
         }
-        decision[0] = 1;
-        decision[1] = 0;
     }
 
-    private boolean identifyGuard() {
+
+
+    private void runaway() {
+        decision[0] = 2;
+        decision[1] =0;
+    }
+
+    private boolean identifyGuard(Cell currentCell) {
 
         boolean guard = false;
 
