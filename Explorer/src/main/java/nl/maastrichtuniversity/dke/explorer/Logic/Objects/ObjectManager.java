@@ -17,8 +17,6 @@ public class ObjectManager {
 
     /*
         Types of Markers:
-        ? - Alert Marker
-        ? - Caution Marker
         (0) WARNING MARKER (for intruders only)
             -> Whenever an intruder sees a guard (since it has a bigger viewing area), it should turn back and
             leave a warning marker at that tile to warn the other intruder(s) that the guard had been checking
@@ -51,20 +49,30 @@ public class ObjectManager {
 
     public void getObjectImage8bit(){
         try {
-            objects[0] = new Object(false, ImageIO.read(ObjectManager.class.getResourceAsStream("/bit8/objects/alertMarker.png")));
-            objects[1] = new Object(false, ImageIO.read(ObjectManager.class.getResourceAsStream("/bit8/objects/cautionMarker.png")));
-            objects[2] = new Object(false, ImageIO.read(ObjectManager.class.getResourceAsStream("/bit8/objects/deadMarker.png")));
-            objects[3] = new Object(false, ImageIO.read(ObjectManager.class.getResourceAsStream("/bit8/objects/finishMarker.png")));
-            objects[4] = new Object(false, ImageIO.read(ObjectManager.class.getResourceAsStream("/bit8/objects/unexploredMarker.png")));
+            objects[0] = new Object(false, ImageIO.read(ObjectManager.class.getResourceAsStream("/bit8/objects/marker0.png")));
+            objects[1] = new Object(false, ImageIO.read(ObjectManager.class.getResourceAsStream("/bit8/objects/marker1.png")));
+            objects[2] = new Object(false, ImageIO.read(ObjectManager.class.getResourceAsStream("/bit8/objects/marker2.png")));
+            objects[3] = new Object(false, ImageIO.read(ObjectManager.class.getResourceAsStream("/bit8/objects/marker3.png")));
+            objects[4] = new Object(false, ImageIO.read(ObjectManager.class.getResourceAsStream("/bit8/objects/marker4.png")));
         }catch (IOException e){
             e.printStackTrace();
         }
     }
 
+    /**
+    @param x position on game panel
+    @param y position on game panel
+    @param markerIndex the index (on the arraylist) of the marker to remove
+     */
     public void removeMarker(int x, int y, int markerIndex) {
         activeObjects.remove(markerIndex);
     }
 
+    /**
+     @param x position on game panel
+     @param y position on game panel
+     @param typeIndex the index of the marker type to add
+     */
     public void addMarker(int x, int y, int typeIndex) {
         Object marker = objects[typeIndex];
         marker.setCoord(x, y);
