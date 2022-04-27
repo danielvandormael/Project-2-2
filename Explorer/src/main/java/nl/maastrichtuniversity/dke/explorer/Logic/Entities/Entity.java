@@ -1,6 +1,7 @@
 package nl.maastrichtuniversity.dke.explorer.Logic.Entities;
 
 import nl.maastrichtuniversity.dke.explorer.GUI.GamePanel;
+import nl.maastrichtuniversity.dke.explorer.Logic.Objects.ObjectManager;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -224,28 +225,41 @@ public class Entity {
 
     public void leaveMarker() {
         /*
-        PSEUDOCODE
-        // This first check will depend on hierarchy of markers, if there's one more important than another,
-        // we might have to remove one of them. Otherwise, they can both coexist, even if that's not visible in the GUI.
-        // However, since we're using an ArrayList to keep track of objects, it should be possible to add AL of objects,
-        // but that would make checking for markers harder.
-        // This is why removing markers, having only one at a time, can be much easier to handle further down the line.
-         IF (cell/tile.hasMarker())
-            c/t.removeMarker()
-            newMarker = selectMarkerType()
-            c/t.addMarker(newMarker)
-         ELSE
-            newMarker = selectMarkerType()
-            c/t.addMarker(newMarker)
+        This first check will depend on hierarchy of markers, if there's one more important than another,
+        we might have to remove one of them. Otherwise, they can both coexist, even if that's not visible in the GUI.
+        However, since we're using an ArrayList to keep track of objects, it should be possible to add AL of objects,
+        but that would make checking for markers harder.
+        This is why removing markers, having only one at a time, can be much easier to handle further down the line.
          */
+
+        // Firstly, check if there's a marker in the current tile (if there is, it'll be removed)
+        gamePanel.objectM.cleanMarker((int) x, (int) y);
+
+        int newMarkerIndex = selectMarkerType();
+        gamePanel.objectM.addMarker((int) x,(int) y, newMarkerIndex);
+
     }
 
-    // Defines what type of marker to add later on
+    /**
+     * Defines what type of marker to add later on
+     * Hierarchy of markers (i.e. which markers should have priority, since there can only be one at a time per tile)
+     * WARNING (O) > BY-WALL (4) > DEAD END (1) > TIME PHEROMONE (2)
+     * This means if none of the beforehand listed marker types is applicable, there will always be one to add.
+     *
+     * @return markerTypeIndex index of the type of the marker to add
+     */
     private int selectMarkerType() {
 
-        int markerIndex = 0; // either 0,1,2,3 or 4 (if 5 markers)
+        // Starts at 2, since the TIME PHEROMONE is the definite one to add (minimum, for the lack of others)
+        int markerTypeIndex = 2;
 
-        return markerIndex;
+        // TODO: DECIDE WHICH MARKER TO TELL TO ADD
+        /*
+        PSEUDOCODE
+
+         */
+
+        return markerTypeIndex;
     }
 
     //sprite of entities

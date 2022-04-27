@@ -4,7 +4,6 @@ import nl.maastrichtuniversity.dke.explorer.GUI.GamePanel;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 
@@ -16,12 +15,12 @@ public class TileManager {
     GamePanel gamePanel;
 
     /*
-           Tiles:
-           0 - floor
-           1 - wall
-           2 - shaded
-           3 - teleport
-           4 - target
+       Tiles:
+       0 - floor
+       1 - wall
+       2 - shaded
+       3 - teleport
+       4 - target
      */
 
     public TileManager(GamePanel gamePanel){
@@ -76,7 +75,6 @@ public class TileManager {
         }
     }
 
-
     public void getTileImage16bit(){
         try{
             //floor
@@ -97,7 +95,6 @@ public class TileManager {
             e.printStackTrace();
         }
     }
-
 
     public void getTileImage8bit(){
         try{

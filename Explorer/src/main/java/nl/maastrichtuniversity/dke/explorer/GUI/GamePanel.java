@@ -27,9 +27,10 @@ public class GamePanel extends JPanel implements Runnable {
     Thread gameThread;
 
     public TileManager tileM;
-    EntityManager entityM;
-    ObjectManager objectM;
+    public EntityManager entityM;
+    public ObjectManager objectM;
     public CollisionDetection collisionD;
+
 
     public GamePanel(Scenario scenario){
         this.scenario = scenario;
@@ -64,6 +65,7 @@ public class GamePanel extends JPanel implements Runnable {
         while (gameThread != null){
 
             update();
+            leaveMarker();
 
             repaint();
 
@@ -85,11 +87,9 @@ public class GamePanel extends JPanel implements Runnable {
 
     }
 
-    public void update(){
+    public void update() { entityM.update(); }
 
-        entityM.update();
-
-    }
+    public void leaveMarker() { entityM.leaveMarker(); }
 
     public void paintComponent(Graphics g){
         super.paintComponent(g);

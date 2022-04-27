@@ -60,12 +60,18 @@ public class ObjectManager {
     }
 
     /**
-    @param x position on game panel
-    @param y position on game panel
-    @param markerIndex the index (on the arraylist) of the marker to remove
+     @param x position on game panel
+     @param y position on game panel
      */
-    public void removeMarker(int x, int y, int markerIndex) {
-        activeObjects.remove(markerIndex);
+    public void cleanMarker(int x, int y) {
+        // Iterates all active marker objects (i.e. already created)
+        for(int i = 0; i < activeObjects.size(); i++) {
+            // Check if there is a marker in the provided position
+            if((activeObjects.get(i).getX() == x) && (activeObjects.get(i).getY() == y)) {
+                //System.out.println("FOUND A MARKER AT " + x + " " + y);
+                activeObjects.remove(i);
+            }
+        }
     }
 
     /**
@@ -74,9 +80,12 @@ public class ObjectManager {
      @param typeIndex the index of the marker type to add
      */
     public void addMarker(int x, int y, int typeIndex) {
-        Object marker = objects[typeIndex];
-        marker.setCoord(x, y);
-        activeObjects.add(newIndexCounter, marker);
+        Object newMarker = objects[typeIndex];
+        newMarker.setCoord(x,y);
+        newMarker.setMarkerType(typeIndex);
+
+        // TODO: Add visual queue of the newly added marker
+        activeObjects.add(newIndexCounter, newMarker);
         newIndexCounter++;
     }
 
