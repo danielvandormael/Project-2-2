@@ -104,10 +104,10 @@ public class DFSAgent extends Guard {
             desiredX = targetCell.getX();
             desiredY = targetCell.getY();
 
-            currentCell.setGuardThere(false);
             decision[0] = 1;
-            cellFront.setGuardThere(true);
+            currentCell.setGuardThere(false);
             decision[1] = 0;
+            cellFront.setGuardThere(true);
             return false;
         }
 
@@ -123,6 +123,7 @@ public class DFSAgent extends Guard {
             // turn and then check again how far you can go in that direction
             decision[0] = 0;
             decision[1] = 1;
+            currentCell.setGuardThere(true);
             desiredAngle = map.getDirection(currentCell, choice);
             desiredX= (int) getX();
             desiredY= (int) getY();
@@ -135,10 +136,11 @@ public class DFSAgent extends Guard {
 
         if(map.isInDirection(currentCell, targetCell, getViewAngle())) {
             // move towards target
-            currentCell.setGuardThere(false);
+
             decision[0] = 1;
-            targetCell.setGuardThere(true);
             decision[1] = 0;
+            currentCell.setGuardThere(false);
+            targetCell.setGuardThere(true);
             desiredX= targetCell.getX();
             desiredY= targetCell.getY();
             return false;
@@ -146,6 +148,7 @@ public class DFSAgent extends Guard {
             // turn towards target
             decision[0] = 0;
             decision[1] = 1;
+            currentCell.setGuardThere(true);
             desiredX= (int) getX();
             desiredY= (int) getY();
             desiredAngle = map.getDirection(currentCell, targetCell);
