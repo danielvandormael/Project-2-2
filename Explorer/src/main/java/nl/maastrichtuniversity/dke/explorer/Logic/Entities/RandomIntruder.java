@@ -4,6 +4,7 @@ import nl.maastrichtuniversity.dke.explorer.GUI.GamePanel;
 import nl.maastrichtuniversity.dke.explorer.Logic.Tiles.Cell;
 import nl.maastrichtuniversity.dke.explorer.Logic.Tiles.Map;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -11,12 +12,12 @@ import java.util.List;
 
 public class RandomIntruder extends Intruder {
 
-        private double desiredAngle;
+    private double desiredAngle;
     private int desiredX;
     private int desiredY;
     Cell previousCell;
     Cell targetCell;
-
+    Cell currentCell;
     ArrayList<Cell> viewingArea = new ArrayList<>();
 
     int[] decision = new int[2]; // 1- movement  2- rotation
@@ -38,7 +39,7 @@ public class RandomIntruder extends Intruder {
     }
 
     private void randomlyMove() {
-        Cell currentCell = map.getCell(getX(), getY());
+        currentCell = map.getCell(getX(), getY());
         targetCell = map.getCell(desiredX, desiredY);
 
         //check to see if neighbor cells are walls
@@ -88,11 +89,8 @@ public class RandomIntruder extends Intruder {
                 desiredY = (int) getY();
         }
 
-
-        else {
             //if cell in front is wall then check left and right cell and turn randomly to one of them
-
-            if (candidateCells.size() > 0) {
+            else if (candidateCells.size() > 0) {
                 Collections.shuffle(candidateCells);
                 Cell choice = candidateCells.get(0);
                 // turn and then check again how far you can go in that direction
@@ -103,7 +101,17 @@ public class RandomIntruder extends Intruder {
                 desiredY = (int) getY();
                 }
 
+        else
+        {
+            if(isTargetReached(currentCell)==true)
+            {
+                decision[0] = 0;
+                decision[1] = 0;
+                System.out.println("The target has reached");
             }
+        }
+
+
         }
 
 
@@ -125,21 +133,32 @@ public class RandomIntruder extends Intruder {
 
         boolean guard = false;
 
-        for (int i = 1; i <= getViewRange() ; i++) {
+        for (int i = 1; i <= getViewRange(); i++) {
             // For all cells in front within the viewRange
             // if the cells in front is not wall then continue to add to viewing Area
             //Only take straight cell infront into account
-            while(gamePanel.tileM.mapTile[currentCell.getX()][currentCell.getY()] != 1) {
+            while (gamePanel.tileM.mapTile[currentCell.getX()][currentCell.getY()] != 1) {
                 currentCell = map.getCellInFront(currentCell, getViewAngle());
                 viewingArea.add(currentCell);
             }
         }
 
-        for (Cell cell: viewingArea) {
+        for (Cell cell : viewingArea) {
             guard = cell.isGuardThere();
         }
         System.out.println(guard);
         return guard;
+
     }
+     public boolean isTargetReached(Cell currentCell)
+        {
+            if(currentCell==targetCell)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
 
 }
