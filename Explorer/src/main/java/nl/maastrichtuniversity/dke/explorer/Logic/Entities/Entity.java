@@ -250,13 +250,24 @@ public class Entity {
      */
     private int selectMarkerType() {
 
-        // Starts at 2, since the TIME PHEROMONE is the definite one to add (minimum, for the lack of others)
+        // Starts at 2, since the TIME PHEROMONE is the definite one to add (margin of error)
         int markerTypeIndex = 2;
 
-        // TODO: DECIDE WHICH MARKER TO TELL TO ADD
         /*
-        PSEUDOCODE
+        PSEUDOCODE:
 
+        // TODO: Add specific methods to handle the different types of marker checks
+        IF (INTRUDER.VIEWS(GUARD))
+            markerTypeIndex = 0; // WARNING
+        ELSE IF (INTRUDER/GUARD.IS_NEXT_TO(WALL))
+            markerTypeIndex = 4; // BY-WALL
+        ELSE IF (INTRUDER/GUARD.RETURNED_FROM_DEADEND())
+            markerTypeIndex = 1; // DEAD END (TO LEAVE AS IT'S EXITING THE DEAD END i.e. it saw the same squares again
+                                                so the marker will be left once it detects it can move into a new one)
+        ELSE
+            markerTypeIndex = 2; // TIME PHEROMONE (BASIC DEFAULT i.e. to be added (at least) every time! This marker
+                                                    implicates that type 3 markers are to be added too, could be done
+                                                    in the same method 2 is created)
          */
 
         return markerTypeIndex;

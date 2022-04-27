@@ -84,7 +84,11 @@ public class ObjectManager {
         newMarker.setCoord(x,y);
         newMarker.setMarkerType(typeIndex);
 
-        // TODO: Add visual queue of the newly added marker
+        // TODO: Add visual queue of the newly added marker (1)
+        // TODO: Find a way to make markers recognizable what each agent
+        //  should do once they see a certain marker, mostly, switch directions (2)
+        // TODO: Add time/step-based to the corresponding markers, some should wear out
+
         activeObjects.add(newIndexCounter, newMarker);
         newIndexCounter++;
     }
