@@ -186,10 +186,28 @@ public class Entity {
         return t1;
     }
 
+    // This should return an array of Tiles in which a guard is located
+    // If there are no guards, return null
+    public boolean guardsInView(){
+        int[][] tiles = tilesInView();
+        boolean guard = false;
+        Entity[] guards = gamePanel.getEntityManager().guards;
+
+        for (int i = 0; i < tiles.length; i++){
+            for (int j = 0; j < guards.length; j++){
+                if((int) guards[j].getX() == tiles[i][1] && (int) guards[j].getY() == tiles[i][2] && ((int) this.getX() != tiles[i][1] && (int)this.getY() != tiles[i][2])) {
+                    System.out.println("guard = true");
+                    guard = true;
+                }
+            }
+        }
+        return guard;
+    }
+
     public int[][] tilesInView(){
         int amount = 0;
         for(int i = 0; i < rayT.length; i++){
-            amount += rayT[i][0]*2;
+            amount += rayT[i][0]*5;
         }
 
         int [][] temp = new int[amount][3];
@@ -197,13 +215,15 @@ public class Entity {
         int counter = 0;
         for(int i = 0; i < rayT.length; i++){
             for(double j = 0; j < rayT[i][0]; j += 0.5){
-                int coordX = (int) (x + j*rayT[i][1]);
-                int coordY = (int) (y + j*rayT[i][2]);
+                int coordX = (int) (x + j*rayT[i][1])-1;
+                int coordY = (int) (y + j*rayT[i][2])-1;
 
-                temp [counter][0] = gamePanel.tileM.mapTile[coordX][coordY];
-                temp [counter][1] = coordX;
-                temp [counter][2] = coordY;
-                counter++;
+                if (coordX > 0 && coordY > 0 && coordX < gamePanel.tileM.mapTile.length-1 && coordY < gamePanel.tileM.mapTile[0].length-1) {
+                    temp[counter][0] = gamePanel.tileM.mapTile[coordX][coordY];
+                    temp[counter][1] = coordX;
+                    temp[counter][2] = coordY;
+                    counter++;
+                }
             }
         }
         return temp;

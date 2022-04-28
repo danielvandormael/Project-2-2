@@ -3,9 +3,11 @@ package nl.maastrichtuniversity.dke.explorer.Logic.Entities;
 import nl.maastrichtuniversity.dke.explorer.GUI.GamePanel;
 import nl.maastrichtuniversity.dke.explorer.Logic.Tiles.Cell;
 import nl.maastrichtuniversity.dke.explorer.Logic.Tiles.Map;
+import nl.maastrichtuniversity.dke.explorer.TestDFSAgent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class DFSAgent extends Guard {
 
@@ -97,6 +99,28 @@ public class DFSAgent extends Guard {
             cellRight.setStatus(3);
         }
 
+        if(guardsInView()){
+            Random rn = new Random();
+            double random = Math.random();
+            if (random < 0.33) {
+                System.out.println("Turn randomly");
+                List<Cell> candidateCells = new ArrayList();
+                if (cellLeft.getStatus() == 0) candidateCells.add(cellLeft);
+                if (cellRight.getStatus() == 0) candidateCells.add(cellRight);
+                if (candidateCells.size() > 0) {
+                    Cell choice = candidateCells.get(0);
+                    // turn and then check again how far you can go in that direction
+                    decision[0] = 0;
+                    decision[1] = 1;
+                    desiredAngle = map.getDirection(currentCell, choice);
+                    desiredX = (int) getX();
+                    desiredY = (int) getY();
+                    return false;
+                }
+            }
+
+        }
+
         if (cellFront.getStatus() == 0) {
             // we can continue in same direction
             targetCell = cellFront;
@@ -145,5 +169,9 @@ public class DFSAgent extends Guard {
             return false;
         }
 
+    }
+
+    public Map getMap() {
+        return map;
     }
 }
