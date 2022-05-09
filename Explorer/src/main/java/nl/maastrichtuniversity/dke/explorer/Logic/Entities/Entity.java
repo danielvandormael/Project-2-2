@@ -77,7 +77,7 @@ public class Entity {
             move();
         }
 
-        System.out.println("actionMove: " + actionMove);
+        //System.out.println("actionMove: " + actionMove);
         //update sprite
         if(actionMove > 0){
             if(picSprite == 0){
@@ -273,7 +273,7 @@ public class Entity {
         int markerTypeIndex = 2;
 
         // TODO: Duplicate markers that can be used by both, so they're easier to share/separate between sides (G vs I).
-        //  So, instead of 5 markers, we'll have:
+        //  So, instead of 5 markers, we'll have 9 (essentially 5 still):
         //  0 (exclusive for intruders) + 1 to 4 (other markers, for guards) + 5 to 8 (same markers, but for intruders)
         if(isGuard) { // Specific markers for *guards*
 

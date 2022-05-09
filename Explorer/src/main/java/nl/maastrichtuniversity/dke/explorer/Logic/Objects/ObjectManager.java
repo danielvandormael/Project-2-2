@@ -98,6 +98,7 @@ public class ObjectManager {
     public void draw(Graphics2D g){
         if(activeObjects != null){
             for(int i = 0; i < activeObjects.size(); i++){
+                System.out.println("drawing marker nr." + activeObjects.get(i).getMarkerType());
                 g.drawImage(activeObjects.get(i).image, activeObjects.get(i).x, activeObjects.get(i).y, gamePanel.getTileSize(), gamePanel.getTileSize(), null);
             }
         }
