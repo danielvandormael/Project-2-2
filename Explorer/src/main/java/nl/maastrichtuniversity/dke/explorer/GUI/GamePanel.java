@@ -21,7 +21,7 @@ public class GamePanel extends JPanel implements Runnable {
     final int expMenuHeight = 22;
     final int screenWidth = tileSize * maxScreenCol;
     final int screenHeight = (tileSize * maxScreenRow) + expMenuHeight;
-    final int FPS = 1000;
+    final int FPS = 60;
     public Scenario scenario;
 
     Thread gameThread;

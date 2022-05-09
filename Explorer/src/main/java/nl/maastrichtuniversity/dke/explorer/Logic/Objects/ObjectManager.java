@@ -43,12 +43,14 @@ public class ObjectManager {
     public ObjectManager(GamePanel gamePanel){
         this.gamePanel = gamePanel;
         this.objects = new Object[5];
+        this.activeObjects = new ArrayList<>();
         this.newIndexCounter = 0;
         getObjectImage8bit();
     }
 
     public void getObjectImage8bit(){
         try {
+            // Should be interactable
             objects[0] = new Object(false, ImageIO.read(ObjectManager.class.getResourceAsStream("/bit8/objects/marker0.png")));
             objects[1] = new Object(false, ImageIO.read(ObjectManager.class.getResourceAsStream("/bit8/objects/marker1.png")));
             objects[2] = new Object(false, ImageIO.read(ObjectManager.class.getResourceAsStream("/bit8/objects/marker2.png")));
@@ -89,8 +91,8 @@ public class ObjectManager {
         //  should do once they see a certain marker, mostly, switch directions (2)
         // TODO: Add time/step-based to the corresponding markers, some should wear out
 
-        activeObjects.add(newIndexCounter, newMarker);
-        newIndexCounter++;
+
+        activeObjects.add(newMarker);
     }
 
     public void draw(Graphics2D g){

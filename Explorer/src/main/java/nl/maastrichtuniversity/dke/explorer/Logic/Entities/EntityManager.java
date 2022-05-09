@@ -44,10 +44,10 @@ public class EntityManager {
 
     public void leaveMarker() {
         for(int i = 0; i < guards.length; i++) {
-            guards[i].leaveMarker();
+            guards[i].leaveMarker(true);
         }
         for(int i = 0; i < intruders.length; i++) {
-            intruders[i].leaveMarker();
+            intruders[i].leaveMarker(false);
         }
     }
 

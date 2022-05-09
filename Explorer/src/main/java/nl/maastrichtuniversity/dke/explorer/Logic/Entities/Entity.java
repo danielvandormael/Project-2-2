@@ -192,7 +192,7 @@ public class Entity {
         for (int i = 0; i < tiles.length; i++){
             for (int j = 0; j < guards.length; j++){
                 if((int) guards[j].getX() == tiles[i][1] && (int) guards[j].getY() == tiles[i][2] && ((int) this.getX() != tiles[i][1] && (int)this.getY() != tiles[i][2])) {
-                    System.out.println("guard = true");
+                    //System.out.println("guard = true");
                     guard = true;
                 }
             }
@@ -243,19 +243,18 @@ public class Entity {
         }
     }
 
-    public void leaveMarker() {
-        /*
-        This first check will depend on hierarchy of markers, if there's one more important than another,
-        we might have to remove one of them. Otherwise, they can both coexist, even if that's not visible in the GUI.
-        However, since we're using an ArrayList to keep track of objects, it should be possible to add AL of objects,
-        but that would make checking for markers harder.
-        This is why removing markers, having only one at a time, can be much easier to handle further down the line.
-         */
-
+    /*
+    This first check will depend on hierarchy of markers, if there's one more important than another,
+    we might have to remove one of them. Otherwise, they can both coexist, even if that's not visible in the GUI.
+    However, since we're using an ArrayList to keep track of objects, it should be possible to add AL of objects,
+    but that would make checking for markers harder.
+    This is why removing markers, having only one at a time, can be much easier to handle further down the line.
+     */
+    public void leaveMarker(boolean isGuard) {
         // Firstly, check if there's a marker in the current tile (if there is, it'll be removed)
         gamePanel.objectM.cleanMarker((int) x, (int) y);
 
-        int newMarkerIndex = selectMarkerType();
+        int newMarkerIndex = selectMarkerType(isGuard);
         gamePanel.objectM.addMarker((int) x,(int) y, newMarkerIndex);
 
     }
@@ -268,26 +267,43 @@ public class Entity {
      *
      * @return markerTypeIndex index of the type of the marker to add
      */
-    private int selectMarkerType() {
+    private int selectMarkerType(boolean isGuard) {
 
         // Starts at 2, since the TIME PHEROMONE is the definite one to add (margin of error)
         int markerTypeIndex = 2;
 
+        // TODO: Duplicate markers that can be used by both, so they're easier to share/separate between sides (G vs I).
+        //  So, instead of 5 markers, we'll have:
+        //  0 (exclusive for intruders) + 1 to 4 (other markers, for guards) + 5 to 8 (same markers, but for intruders)
+        if(isGuard) { // Specific markers for *guards*
+
+
+
+        } else { // Specific markers for *intruders*
+            if (guardsInView()) { // This one is exclusive for intruders
+                //System.out.println("FOUND GUARDS");
+                markerTypeIndex = 0; // WARNING MARKER
+                // TODO: Also move the intruder that saw the guard
+            } else {
+                // TIME PHEROMONE - BASIC DEFAULT i.e. to be added (at least) every time! This marker
+                // implies that type 3 markers are to be added too, could be done
+                // in the same method 2 is created.
+                markerTypeIndex = 2;
+            }
+        }
         /*
         PSEUDOCODE:
 
         // TODO: Add specific methods to handle the different types of marker checks
         IF (INTRUDER.VIEWS(GUARD))
-            markerTypeIndex = 0; // WARNING
+            markerTypeIndex = 0;
         ELSE IF (INTRUDER/GUARD.IS_NEXT_TO(WALL))
             markerTypeIndex = 4; // BY-WALL
         ELSE IF (INTRUDER/GUARD.RETURNED_FROM_DEADEND())
             markerTypeIndex = 1; // DEAD END (TO LEAVE AS IT'S EXITING THE DEAD END i.e. it saw the same squares again
                                                 so the marker will be left once it detects it can move into a new one)
         ELSE
-            markerTypeIndex = 2; // TIME PHEROMONE (BASIC DEFAULT i.e. to be added (at least) every time! This marker
-                                                    implicates that type 3 markers are to be added too, could be done
-                                                    in the same method 2 is created)
+            markerTypeIndex = 2;
          */
 
         return markerTypeIndex;
