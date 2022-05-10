@@ -1,5 +1,6 @@
 package nl.maastrichtuniversity.dke.explorer.Logic.Objects;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class Object {
@@ -28,5 +29,7 @@ public class Object {
     public int getMarkerType() { return this.markerType; }
 
     public boolean isInteractable() { return this.interact; }
+
+    public Image getImage() { return this.image; }
 
 }

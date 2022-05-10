@@ -65,7 +65,6 @@ public class GamePanel extends JPanel implements Runnable {
         while (gameThread != null){
 
             update();
-            leaveMarker();
 
             repaint();
 
@@ -89,8 +88,6 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void update() { entityM.update(); }
 
-    public void leaveMarker() { entityM.leaveMarker(); }
-
     public void paintComponent(Graphics g){
         super.paintComponent(g);
 
@@ -103,9 +100,7 @@ public class GamePanel extends JPanel implements Runnable {
         g2.dispose();
     }
 
-    public int getTileSize() {
-        return tileSize;
-    }
+    public int getTileSize() { return this.tileSize; }
 
     public EntityManager getEntityManager(){ return entityM; }
 }

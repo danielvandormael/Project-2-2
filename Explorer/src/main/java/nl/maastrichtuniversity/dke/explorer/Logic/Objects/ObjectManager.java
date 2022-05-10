@@ -6,12 +6,15 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class ObjectManager {
 
     GamePanel gamePanel;
     Object[] objects;
     ArrayList<Object> activeObjects;
+    Graphics2D g2d;
     private int newIndexCounter;
 
 
@@ -65,7 +68,7 @@ public class ObjectManager {
      @param x position on game panel
      @param y position on game panel
      */
-    public void cleanMarker(int x, int y) {
+    public void loopCleanMarker(int x, int y) {
         // Iterates all active marker objects (i.e. already created)
         for(int i = 0; i < activeObjects.size(); i++) {
             // Check if there is a marker in the provided position
@@ -74,6 +77,17 @@ public class ObjectManager {
                 activeObjects.remove(i);
             }
         }
+    }
+
+    /**
+     @param marker Marker object to remove from activeObjects list
+     */
+    private void instaCleanMarker(Object marker) {
+        System.out.println("cleaning marker nr."
+                + marker.getMarkerType() + " at "
+                + marker.getX() + " "
+                + marker.getY());
+        activeObjects.remove(marker);
     }
 
     /**
@@ -86,20 +100,40 @@ public class ObjectManager {
         newMarker.setCoord(x,y);
         newMarker.setMarkerType(typeIndex);
 
-        // TODO: Add visual queue of the newly added marker (1)
+        // TODO: Add visual queue of the newly added marker (1) - maybe draw here, instead of drawing at every update()
         // TODO: Find a way to make markers recognizable what each agent
         //  should do once they see a certain marker, mostly, switch directions (2)
-        // TODO: Add time/step-based to the corresponding markers, some should wear out
-
-
         activeObjects.add(newMarker);
+
+        System.out.println("Adding marker " + activeObjects.size());
+        // TODO: Make time-based marker (2) wear out every 2.5sec
+        if(newMarker.getMarkerType() == 2) {
+            //wearOutMarker(newMarker, 2500);
+        }
     }
 
+    // Schedules a task to remove the time-based marker in question
+    private void wearOutMarker(Object marker, int delay) {
+        new Timer().schedule(
+                new TimerTask() {
+                    @Override
+                    public void run() {
+                        instaCleanMarker(marker);
+                    }
+                },
+                delay
+        );
+    }
+
+
     public void draw(Graphics2D g){
+        System.out.println(activeObjects.size());
         if(activeObjects != null){
             for(int i = 0; i < activeObjects.size(); i++){
-                System.out.println("drawing marker nr." + activeObjects.get(i).getMarkerType());
-                g.drawImage(activeObjects.get(i).image, activeObjects.get(i).x, activeObjects.get(i).y, gamePanel.getTileSize(), gamePanel.getTileSize(), null);
+                //System.out.println("drawing marker nr." + activeObjects.get(i).getMarkerType() + " at " + activeObjects.get(i).getX() + " " + activeObjects.get(i).getY() + " " + activeObjects.get(i));
+                g.drawImage(activeObjects.get(i).getImage(),
+                        activeObjects.get(i).getX(), activeObjects.get(i).getY(),
+                        gamePanel.getTileSize(), gamePanel.getTileSize(), null);
             }
         }
     }

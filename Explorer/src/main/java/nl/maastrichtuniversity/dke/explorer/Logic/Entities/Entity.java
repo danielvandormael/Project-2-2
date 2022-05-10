@@ -130,6 +130,7 @@ public class Entity {
     }
 
     /*
+        Leaving marker at every move.
         Movement equation:
         current position + (relative size of a pixel) * (speed ratio)
      */
@@ -252,10 +253,10 @@ public class Entity {
      */
     public void leaveMarker(boolean isGuard) {
         // Firstly, check if there's a marker in the current tile (if there is, it'll be removed)
-        gamePanel.objectM.cleanMarker((int) x, (int) y);
+        gamePanel.objectM.loopCleanMarker((int) x, (int) y);
 
         int newMarkerIndex = selectMarkerType(isGuard);
-        gamePanel.objectM.addMarker((int) x,(int) y, newMarkerIndex);
+        gamePanel.objectM.addMarker((int) x, (int) y, newMarkerIndex);
 
     }
 
