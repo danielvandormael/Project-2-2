@@ -66,7 +66,7 @@ public class RandomIntruder extends Intruder {
 
 
 //        System.out.println(identifyGuard(currentCell));
-        if (cellFront.getStatus() != 3 && !identifyGuard(currentCell) ) {
+        if (cellFront.getStatus() != 3 && !guardsInView() ) {
             // if cell in front is not wall and do not have guard then go straight
             targetCell = cellFront;
             desiredX = targetCell.getX();
@@ -77,7 +77,7 @@ public class RandomIntruder extends Intruder {
             decision[1] = 0;
         }
 
-        else if (cellFront.getStatus() != 3 && identifyGuard(currentCell)) {
+        else if (cellFront.getStatus() != 3 && guardsInView() ) {
                 //see guard within the viewRange -> rotate
                 // still not working bc the agent takes too long to rotate???
                 // if set to rotate and move decision[0]=2 and decision[1]=1
@@ -103,7 +103,7 @@ public class RandomIntruder extends Intruder {
 
         else
         {
-            if(isTargetReached(currentCell)==true)
+            if(isTargetReached(currentCell))
             {
                 decision[0] = 0;
                 decision[1] = 0;
@@ -113,20 +113,6 @@ public class RandomIntruder extends Intruder {
 
 
         }
-
-
-//        if (identifyGuard(currentCell)) {
-//            decision[1] = 1;
-//            decision[0] = 0;
-//            runaway();
-//        } else {
-//
-//            decision[0] = 1;
-//
-//            decision[1] = 0;
-//
-//        }
-
 
 
     private boolean identifyGuard(Cell currentCell) {
@@ -152,12 +138,7 @@ public class RandomIntruder extends Intruder {
     }
      public boolean isTargetReached(Cell currentCell)
         {
-            if(currentCell==targetCell)
-            {
-                return true;
-            }
-
-            return false;
+            return gamePanel.tileM.mapTile[currentCell.getX()][currentCell.getY()] == 4;
         }
 
 

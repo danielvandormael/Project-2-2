@@ -186,6 +186,24 @@ public class Entity {
         return t1;
     }
 
+    // This should return an array of Tiles in which a guard is located
+    // If there are no guards, return null
+    public boolean guardsInView(){
+        int[][] tiles = tilesInView();
+        boolean guard = false;
+        Entity[] guards = gamePanel.getEntityManager().guards;
+
+        for (int i = 0; i < tiles.length; i++){
+            for (int j = 0; j < guards.length; j++){
+                if((int) guards[j].getX() == tiles[i][1] && (int) guards[j].getY() == tiles[i][2] && ((int) this.getX() != tiles[i][1] && (int)this.getY() != tiles[i][2])) {
+                    System.out.println("guard = true");
+                    guard = true;
+                }
+            }
+        }
+        return guard;
+    }
+
     public int[][] tilesInView(){
         int amount = 0;
         for(int i = 0; i < rayT.length; i++){

@@ -51,8 +51,9 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void endGameThread(){
-        gameThread.interrupt();
         System.out.println("You found the target area");
+        gameThread.stop();
+
     }
 
     @Override
@@ -105,6 +106,9 @@ public class GamePanel extends JPanel implements Runnable {
 
     public int getTileSize() {
         return tileSize;
+    }
+
+    public EntityManager getEntityManager() { return entityM;
     }
 }
 
