@@ -36,10 +36,10 @@ public class DFSAgent extends Guard {
         desiredAngle = viewAngle;
     }
 
-    public void update(){
+    public void update() {
         DFS();
         setAction(decision[0], decision[1]);
-        super.update();
+        super.update(true);
     }
 
     public void DFS() {

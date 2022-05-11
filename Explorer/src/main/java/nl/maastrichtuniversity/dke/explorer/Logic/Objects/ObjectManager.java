@@ -100,12 +100,13 @@ public class ObjectManager {
         newMarker.setCoord(x,y);
         newMarker.setMarkerType(typeIndex);
 
-        // TODO: Add visual queue of the newly added marker (1) - maybe draw here, instead of drawing at every update()
+        // TODO: Add visual queue of the newly added marker (1)
+
         // TODO: Find a way to make markers recognizable what each agent
         //  should do once they see a certain marker, mostly, switch directions (2)
         activeObjects.add(newMarker);
 
-        System.out.println("Adding marker " + activeObjects.size());
+        //System.out.println("Adding marker " + activeObjects.size());
         // TODO: Make time-based marker (2) wear out every 2.5sec
         if(newMarker.getMarkerType() == 2) {
             //wearOutMarker(newMarker, 2500);
@@ -125,14 +126,16 @@ public class ObjectManager {
         );
     }
 
-
     public void draw(Graphics2D g){
-        System.out.println(activeObjects.size());
         if(activeObjects != null){
             for(int i = 0; i < activeObjects.size(); i++){
-                //System.out.println("drawing marker nr." + activeObjects.get(i).getMarkerType() + " at " + activeObjects.get(i).getX() + " " + activeObjects.get(i).getY() + " " + activeObjects.get(i));
-                g.drawImage(activeObjects.get(i).getImage(),
-                        activeObjects.get(i).getX(), activeObjects.get(i).getY(),
+
+                Object markerToDraw = activeObjects.get(i);
+                //System.out.println("drawing marker nr." + markerToDraw.getMarkerType() + " at " + markerToDraw.getX() + " " + markerToDraw.getY() + " " + markerToDraw);
+
+                // Scale each marker to be drawn in the correct position on the panel
+                g.drawImage(markerToDraw.getImage(),
+                        markerToDraw.getX()*gamePanel.getTileSize(), markerToDraw.getY()*gamePanel.getTileSize(),
                         gamePanel.getTileSize(), gamePanel.getTileSize(), null);
             }
         }

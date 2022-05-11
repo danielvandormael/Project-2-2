@@ -35,12 +35,10 @@ public class EntityManager {
 
     public void update() {
         for(int i = 0; i < guards.length; i++) {
-            guards[i].update();
-            guards[i].leaveMarker(true);
+            guards[i].update(true);
         }
         for(int i = 0; i < intruders.length; i++) {
-            intruders[i].update();
-            intruders[i].leaveMarker(false);
+            intruders[i].update(false);
         }
     }
 

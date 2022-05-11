@@ -1,10 +1,12 @@
 package nl.maastrichtuniversity.dke.explorer.Logic.Entities;
 
 import nl.maastrichtuniversity.dke.explorer.GUI.GamePanel;
+import nl.maastrichtuniversity.dke.explorer.Logic.Objects.Object;
 import nl.maastrichtuniversity.dke.explorer.Logic.Objects.ObjectManager;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 public class Entity {
 
@@ -66,7 +68,7 @@ public class Entity {
         this.actionRotate = actionRotate;
     }
 
-    public void update(){
+    public void update(boolean isGuard){
 
         rotate();
 
@@ -74,7 +76,7 @@ public class Entity {
         gamePanel.collisionD.checkTile(this);
 
         if(collision == false){
-            move();
+            move(isGuard);
         }
 
         //System.out.println("actionMove: " + actionMove);
@@ -99,7 +101,6 @@ public class Entity {
         onTopOf();
 
         rayCasting();
-
     }
 
     private void rotate(){
@@ -130,11 +131,13 @@ public class Entity {
     }
 
     /*
-        Leaving marker at every move.
         Movement equation:
         current position + (relative size of a pixel) * (speed ratio)
      */
-    private void move(){
+    private void move(boolean isGuard){
+
+        leaveMarker(isGuard); // Leave a marker before moving
+
         if(actionMove == 1){ //walk
             x += ( (1 / (double) gamePanel.getTileSize()) * (baseSpeed/speedRatio) ) * Math.cos(Math.toRadians(viewAngle));
             y += ( (1 / (double) gamePanel.getTileSize()) * (baseSpeed/speedRatio) ) * Math.sin(Math.toRadians(viewAngle));
@@ -266,19 +269,20 @@ public class Entity {
      * WARNING (O) > BY-WALL (4) > DEAD END (1) > TIME PHEROMONE (2)
      * This means if none of the beforehand listed marker types is applicable, there will always be one to add.
      *
+     * @param isGuard true, if the entity in question is a guard; false, otherwise
+     *
      * @return markerTypeIndex index of the type of the marker to add
      */
     private int selectMarkerType(boolean isGuard) {
 
-        // Starts at 2, since the TIME PHEROMONE is the definite one to add (margin of error)
-        int markerTypeIndex = 2;
+        int markerTypeIndex;
 
         // TODO: Duplicate markers that can be used by both, so they're easier to share/separate between sides (G vs I).
         //  So, instead of 5 markers, we'll have 9 (essentially 5 still):
         //  0 (exclusive for intruders) + 1 to 4 (other markers, for guards) + 5 to 8 (same markers, but for intruders)
         if(isGuard) { // Specific markers for *guards*
 
-
+            markerTypeIndex = 2; // The TIME PHEROMONE is the definite one to add (margin of error)
 
         } else { // Specific markers for *intruders*
             if (guardsInView()) { // This one is exclusive for intruders
@@ -355,6 +359,7 @@ public class Entity {
     public void draw(Graphics2D g){
 
         g.setColor(viewColor);
+
         for(int i = 0; i < rayT.length - 1; i++){
             int arcX1 = (int) (x*gamePanel.getTileSize()) + gamePanel.getTileSize();
             int arcY1 = (int) (y*gamePanel.getTileSize()) + gamePanel.getTileSize();
