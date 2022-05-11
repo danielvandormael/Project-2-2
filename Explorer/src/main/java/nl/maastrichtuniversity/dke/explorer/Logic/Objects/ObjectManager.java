@@ -83,10 +83,7 @@ public class ObjectManager {
      @param marker Marker object to remove from activeObjects list
      */
     private void instaCleanMarker(Object marker) {
-        System.out.println("cleaning marker nr."
-                + marker.getMarkerType() + " at "
-                + marker.getX() + " "
-                + marker.getY());
+        //System.out.println("cleaning marker nr." + marker.getMarkerType() + " at " + marker.getX() + " " + marker.getY());
         activeObjects.remove(marker);
     }
 

@@ -70,13 +70,15 @@ public class Entity {
 
     public void update(boolean isGuard){
 
+        leaveMarker(isGuard); // Leave a marker before proceeding
+
         rotate();
 
         collision = false;
         gamePanel.collisionD.checkTile(this);
 
         if(collision == false){
-            move(isGuard);
+            move();
         }
 
         //System.out.println("actionMove: " + actionMove);
@@ -129,14 +131,11 @@ public class Entity {
             direction = "right";
         }
     }
-
     /*
         Movement equation:
         current position + (relative size of a pixel) * (speed ratio)
      */
-    private void move(boolean isGuard){
-
-        leaveMarker(isGuard); // Leave a marker before moving
+    private void move(){
 
         if(actionMove == 1){ //walk
             x += ( (1 / (double) gamePanel.getTileSize()) * (baseSpeed/speedRatio) ) * Math.cos(Math.toRadians(viewAngle));
