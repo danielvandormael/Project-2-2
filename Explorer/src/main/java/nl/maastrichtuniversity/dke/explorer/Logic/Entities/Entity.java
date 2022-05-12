@@ -67,10 +67,18 @@ public class Entity {
         this.actionMove = actionMove;
         this.actionRotate = actionRotate;
     }
-
+    public int counter = 0;
+    public int counter_2 = 0;
     public void update(boolean isGuard){
 
-        leaveMarker(isGuard); // Leave a marker before proceeding
+        if(counter< 4 && counter_2 == 30){
+            counter_2 = 0;
+            leaveMarker(isGuard); // Leave a marker before proceeding
+            counter++;
+            System.out.println("added marker");
+        } else {
+            counter_2++;
+        }
 
         rotate();
 
@@ -255,10 +263,10 @@ public class Entity {
      */
     public void leaveMarker(boolean isGuard) {
         // Firstly, check if there's a marker in the current tile (if there is, it'll be removed)
-        gamePanel.objectM.loopCleanMarker((int) x, (int) y);
+        //gamePanel.objectM.loopCleanMarker((int) x, (int) y);
 
         int newMarkerIndex = selectMarkerType(isGuard);
-        gamePanel.objectM.addMarker((int) x, (int) y, newMarkerIndex);
+        gamePanel.objectM.addMarker((int)x, (int)y, newMarkerIndex);
 
     }
 

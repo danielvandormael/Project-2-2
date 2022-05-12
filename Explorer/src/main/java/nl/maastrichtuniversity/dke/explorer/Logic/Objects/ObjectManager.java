@@ -14,7 +14,7 @@ public class ObjectManager {
     GamePanel gamePanel;
     Object[] objects;
     ArrayList<Object> activeObjects;
-    Graphics2D g2d;
+
     private int newIndexCounter;
 
 
@@ -102,6 +102,7 @@ public class ObjectManager {
         // TODO: Find a way to make markers recognizable what each agent
         //  should do once they see a certain marker, mostly, switch directions (2)
         activeObjects.add(newMarker);
+        System.out.println("added marker at add()");
 
         //System.out.println("Adding marker " + activeObjects.size());
         // TODO: Make time-based marker (2) wear out every 2.5sec
@@ -128,11 +129,12 @@ public class ObjectManager {
             for(int i = 0; i < activeObjects.size(); i++){
 
                 Object markerToDraw = activeObjects.get(i);
-                //System.out.println("drawing marker nr." + markerToDraw.getMarkerType() + " at " + markerToDraw.getX() + " " + markerToDraw.getY() + " " + markerToDraw);
+                System.out.println("drawing marker nr." + i + "  " + markerToDraw.getMarkerType() + " at " + markerToDraw.getX() + " " + markerToDraw.getY() + " " + markerToDraw);
+                //System.out.println(activeObjects.size());
 
                 // Scale each marker to be drawn in the correct position on the panel
                 g.drawImage(markerToDraw.getImage(),
-                        markerToDraw.getX()*gamePanel.getTileSize(), markerToDraw.getY()*gamePanel.getTileSize(),
+                        (int) markerToDraw.getX()*gamePanel.getTileSize(), (int) markerToDraw.getY()*gamePanel.getTileSize(),
                         gamePanel.getTileSize(), gamePanel.getTileSize(), null);
             }
         }
