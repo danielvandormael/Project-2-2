@@ -4,6 +4,7 @@ import nl.maastrichtuniversity.dke.explorer.GUI.GamePanel;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Timer;
@@ -12,14 +13,13 @@ import java.util.TimerTask;
 public class ObjectManager {
 
     GamePanel gamePanel;
-    Object[] objects;
-    ArrayList<Object> activeObjects;
+    BufferedImage[] objImg;
+    ArrayList<Object> activeObjects = new ArrayList<>();
 
     private int newIndexCounter;
 
 
-    /*
-        Types of Markers:
+    /* Types of Markers:
         (0) WARNING MARKER (for intruders only)
             -> Whenever an intruder sees a guard (since it has a bigger viewing area), it should turn back and
             leave a warning marker at that tile to warn the other intruder(s) that the guard had been checking
@@ -45,8 +45,8 @@ public class ObjectManager {
 
     public ObjectManager(GamePanel gamePanel){
         this.gamePanel = gamePanel;
-        this.objects = new Object[5];
-        this.activeObjects = new ArrayList<>();
+        this.objImg = new BufferedImage[5];
+        //this.activeObjects = new ArrayList<>();
         this.newIndexCounter = 0;
         getObjectImage8bit();
     }
@@ -54,11 +54,11 @@ public class ObjectManager {
     public void getObjectImage8bit(){
         try {
             // Should be interactable
-            objects[0] = new Object(false, ImageIO.read(ObjectManager.class.getResourceAsStream("/bit8/objects/marker0.png")));
-            objects[1] = new Object(false, ImageIO.read(ObjectManager.class.getResourceAsStream("/bit8/objects/marker1.png")));
-            objects[2] = new Object(false, ImageIO.read(ObjectManager.class.getResourceAsStream("/bit8/objects/marker2.png")));
-            objects[3] = new Object(false, ImageIO.read(ObjectManager.class.getResourceAsStream("/bit8/objects/marker3.png")));
-            objects[4] = new Object(false, ImageIO.read(ObjectManager.class.getResourceAsStream("/bit8/objects/marker4.png")));
+            objImg[0] = ImageIO.read(ObjectManager.class.getResourceAsStream("/bit8/objects/marker0.png"));
+            objImg[1] = ImageIO.read(ObjectManager.class.getResourceAsStream("/bit8/objects/marker1.png"));
+            objImg[2] = ImageIO.read(ObjectManager.class.getResourceAsStream("/bit8/objects/marker2.png"));
+            objImg[3] = ImageIO.read(ObjectManager.class.getResourceAsStream("/bit8/objects/marker3.png"));
+            objImg[4] = ImageIO.read(ObjectManager.class.getResourceAsStream("/bit8/objects/marker4.png"));
         }catch (IOException e){
             e.printStackTrace();
         }
@@ -93,22 +93,34 @@ public class ObjectManager {
      @param typeIndex the index of the marker type to add
      */
     public void addMarker(int x, int y, int typeIndex) {
-        Object newMarker = objects[typeIndex];
+
+        Object newMarker = new Object(false, objImg[typeIndex]);
         newMarker.setCoord(x,y);
         newMarker.setMarkerType(typeIndex);
 
-        // TODO: Add visual queue of the newly added marker (1)
-
         // TODO: Find a way to make markers recognizable what each agent
-        //  should do once they see a certain marker, mostly, switch directions (2)
-        activeObjects.add(newMarker);
-        System.out.println("added marker at add()");
+        //  should do once they see a certain marker, mostly, switch directions
+        // Only add an object if it has different coordinates from the already added ones
+        if(activeObjects.size() >= 1) {
+            for (int i = 1; i < (activeObjects.size()+1); i++) {
+                //System.out.println(newMarker.getX() + " " + activeObjects.get(i-1).getX());
+                if (newMarker.getX() != activeObjects.get(i-1).getX()
+                        || newMarker.getY() != activeObjects.get(i-1).getY()) {
+                    activeObjects.add(newMarker);
+                    System.out.println("nr" + i + " - added marker at add()");
+                }
+            }
+        // Initial activeObjects addition (while size is 0)
+        } else {
+            activeObjects.add(newMarker);
+            System.out.println("1st - added marker at add(), x is " + activeObjects.get(0).getX());
+        }
 
         //System.out.println("Adding marker " + activeObjects.size());
         // TODO: Make time-based marker (2) wear out every 2.5sec
-        if(newMarker.getMarkerType() == 2) {
-            //wearOutMarker(newMarker, 2500);
-        }
+//        if(newMarker.getMarkerType() == 2) {
+//            //wearOutMarker(newMarker, 2500);
+//        }
     }
 
     // Schedules a task to remove the time-based marker in question
@@ -125,18 +137,21 @@ public class ObjectManager {
     }
 
     public void draw(Graphics2D g){
-        if(activeObjects != null){
+        if(activeObjects.size() > 0){
             for(int i = 0; i < activeObjects.size(); i++){
 
                 Object markerToDraw = activeObjects.get(i);
-                System.out.println("drawing marker nr." + i + "  " + markerToDraw.getMarkerType() + " at " + markerToDraw.getX() + " " + markerToDraw.getY() + " " + markerToDraw);
+//                System.out.println("drawing marker nr." + i + " type " + markerToDraw.getMarkerType()
+//                        + " at " + markerToDraw.getX() + " " + markerToDraw.getY() + " " + markerToDraw);
                 //System.out.println(activeObjects.size());
 
                 // Scale each marker to be drawn in the correct position on the panel
                 g.drawImage(markerToDraw.getImage(),
-                        (int) markerToDraw.getX()*gamePanel.getTileSize(), (int) markerToDraw.getY()*gamePanel.getTileSize(),
+                        markerToDraw.getX()*gamePanel.getTileSize(), markerToDraw.getY()*gamePanel.getTileSize(),
                         gamePanel.getTileSize(), gamePanel.getTileSize(), null);
             }
         }
     }
+
+    public ArrayList<Object> getActiveObjects() { return this.activeObjects; }
 }

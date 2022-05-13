@@ -27,7 +27,8 @@ public class ExplorerScene extends GUIMain {
         expFrame = new JFrame("EXPLORER SIMULATOR XVIII");
         ImageIcon logo = new ImageIcon("src/main/resources/logo.png");
         expFrame.setIconImage(logo.getImage());
-        expFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        //expFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        expFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         expFrame.setResizable(false);
         //expFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 
