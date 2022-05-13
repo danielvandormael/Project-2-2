@@ -72,9 +72,11 @@ public class ObjectManager {
         // Iterates all active marker objects (i.e. already created)
         for(int i = 0; i < activeObjects.size(); i++) {
             // Check if there is a marker in the provided position
-            if((activeObjects.get(i).getX() == x) && (activeObjects.get(i).getY() == y)) {
-                //System.out.println("FOUND A MARKER AT " + x + " " + y);
-                activeObjects.remove(i);
+            if(activeObjects.get(i) != null) {
+                if ((activeObjects.get(i).getX() == x) && (activeObjects.get(i).getY() == y)) {
+                    //System.out.println("FOUND A MARKER AT " + x + " " + y);
+                    activeObjects.remove(i);
+                }
             }
         }
     }
@@ -105,12 +107,14 @@ public class ObjectManager {
         if(activeObjects.size() >= 1) {
             for (int i = activeObjects.size(); i < (activeObjects.size()+1); i++) {
                 //System.out.println(newMarker.getX() + " " + activeObjects.get(i-1).getX());
-                if (newMarker.getX() != activeObjects.get(i-1).getX()
-                        || newMarker.getY() != activeObjects.get(i-1).getY()) {
-                    activeObjects.add(newMarker);
-                    System.out.println("nr" + i + " - added marker at add()"
-                            + newMarker.getX() + " " + newMarker.getY() + " vs "
-                            + activeObjects.get(i-1).getX() + " " + activeObjects.get(i-1).getY());
+                if(activeObjects.get(i-1) != null) {
+                    if (newMarker.getX() != activeObjects.get(i-1).getX()
+                            || newMarker.getY() != activeObjects.get(i-1).getY()) {
+                        activeObjects.add(newMarker);
+//                        System.out.println("nr" + i + " - added marker at add()"
+//                                + newMarker.getX() + " " + newMarker.getY() + " vs "
+//                                + activeObjects.get(i - 1).getX() + " " + activeObjects.get(i - 1).getY());
+                    }
                 }
             }
         // Initial activeObjects addition (while size is 0)
