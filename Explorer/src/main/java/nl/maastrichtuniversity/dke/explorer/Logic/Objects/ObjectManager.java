@@ -108,9 +108,9 @@ public class ObjectManager {
                 if (newMarker.getX() != activeObjects.get(i-1).getX()
                         || newMarker.getY() != activeObjects.get(i-1).getY()) {
                     activeObjects.add(newMarker);
-//                    System.out.println("nr" + i + " - added marker at add()"
-//                            + newMarker.getX() + " " + newMarker.getY() + " vs "
-//                            + activeObjects.get(i-1).getX() + " " + activeObjects.get(i-1).getY());
+                    System.out.println("nr" + i + " - added marker at add()"
+                            + newMarker.getX() + " " + newMarker.getY() + " vs "
+                            + activeObjects.get(i-1).getX() + " " + activeObjects.get(i-1).getY());
                 }
             }
         // Initial activeObjects addition (while size is 0)
@@ -121,9 +121,9 @@ public class ObjectManager {
 
         //System.out.println("Adding marker " + activeObjects.size());
         // TODO: Make time-based marker (2) wear out every 2.5sec
-//        if(newMarker.getMarkerType() == 2) {
-//            //wearOutMarker(newMarker, 2500);
-//        }
+        if(newMarker.getMarkerType() == 2) {
+            wearOutMarker(newMarker, 2500);
+        }
     }
 
     // Schedules a task to remove the time-based marker in question
@@ -149,9 +149,11 @@ public class ObjectManager {
                 //System.out.println(activeObjects.size());
 
                 // Scale each marker to be drawn in the correct position on the panel
-                g.drawImage(markerToDraw.getImage(),
-                        markerToDraw.getX()*gamePanel.getTileSize(), markerToDraw.getY()*gamePanel.getTileSize(),
-                        gamePanel.getTileSize(), gamePanel.getTileSize(), null);
+                if(markerToDraw != null) {
+                    g.drawImage(markerToDraw.getImage(),
+                            markerToDraw.getX()*gamePanel.getTileSize(), markerToDraw.getY()*gamePanel.getTileSize(),
+                            gamePanel.getTileSize(), gamePanel.getTileSize(), null);
+                }
             }
         }
     }

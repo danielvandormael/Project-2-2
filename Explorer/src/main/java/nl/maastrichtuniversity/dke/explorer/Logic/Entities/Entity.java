@@ -68,13 +68,7 @@ public class Entity {
         this.actionRotate = actionRotate;
     }
 
-    int counter = 0;
     public void update(boolean isGuard){
-
-//        if(counter < 25) {
-//            leaveMarker(isGuard);
-//            counter++;
-//        }
 
         leaveMarker(isGuard);
 
