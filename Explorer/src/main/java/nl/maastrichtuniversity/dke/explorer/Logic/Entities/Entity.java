@@ -68,7 +68,13 @@ public class Entity {
         this.actionRotate = actionRotate;
     }
 
+    int counter = 0;
     public void update(boolean isGuard){
+
+//        if(counter < 25) {
+//            leaveMarker(isGuard);
+//            counter++;
+//        }
 
         leaveMarker(isGuard);
 
@@ -255,7 +261,7 @@ public class Entity {
      */
     public void leaveMarker(boolean isGuard) {
         // Firstly, check if there's a marker in the current tile (if there is, it'll be removed)
-        //gamePanel.objectM.loopCleanMarker((int) x, (int) y);
+        gamePanel.objectM.loopCleanMarker((int) x, (int) y);
 
         int newMarkerIndex = selectMarkerType(isGuard);
         gamePanel.objectM.addMarker((int) x, (int) y, newMarkerIndex);

@@ -14,7 +14,7 @@ public class ObjectManager {
 
     GamePanel gamePanel;
     BufferedImage[] objImg;
-    ArrayList<Object> activeObjects = new ArrayList<>();
+    ArrayList<Object> activeObjects;
 
     private int newIndexCounter;
 
@@ -46,7 +46,7 @@ public class ObjectManager {
     public ObjectManager(GamePanel gamePanel){
         this.gamePanel = gamePanel;
         this.objImg = new BufferedImage[5];
-        //this.activeObjects = new ArrayList<>();
+        this.activeObjects = new ArrayList<>();
         this.newIndexCounter = 0;
         getObjectImage8bit();
     }
@@ -95,6 +95,7 @@ public class ObjectManager {
     public void addMarker(int x, int y, int typeIndex) {
 
         Object newMarker = new Object(false, objImg[typeIndex]);
+        //System.out.println(x + " " + y);
         newMarker.setCoord(x,y);
         newMarker.setMarkerType(typeIndex);
 
@@ -102,18 +103,20 @@ public class ObjectManager {
         //  should do once they see a certain marker, mostly, switch directions
         // Only add an object if it has different coordinates from the already added ones
         if(activeObjects.size() >= 1) {
-            for (int i = 1; i < (activeObjects.size()+1); i++) {
+            for (int i = activeObjects.size(); i < (activeObjects.size()+1); i++) {
                 //System.out.println(newMarker.getX() + " " + activeObjects.get(i-1).getX());
                 if (newMarker.getX() != activeObjects.get(i-1).getX()
                         || newMarker.getY() != activeObjects.get(i-1).getY()) {
                     activeObjects.add(newMarker);
-                    System.out.println("nr" + i + " - added marker at add()");
+//                    System.out.println("nr" + i + " - added marker at add()"
+//                            + newMarker.getX() + " " + newMarker.getY() + " vs "
+//                            + activeObjects.get(i-1).getX() + " " + activeObjects.get(i-1).getY());
                 }
             }
         // Initial activeObjects addition (while size is 0)
         } else {
             activeObjects.add(newMarker);
-            System.out.println("1st - added marker at add(), x is " + activeObjects.get(0).getX());
+            //System.out.println("1st - added marker at add(), x is " + activeObjects.get(0).getX());
         }
 
         //System.out.println("Adding marker " + activeObjects.size());
