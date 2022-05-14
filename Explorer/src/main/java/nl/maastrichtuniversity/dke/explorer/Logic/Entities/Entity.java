@@ -2,6 +2,7 @@ package nl.maastrichtuniversity.dke.explorer.Logic.Entities;
 
 import javafx.geometry.Point2D;
 import nl.maastrichtuniversity.dke.explorer.GUI.GamePanel;
+import nl.maastrichtuniversity.dke.explorer.Logic.Tiles.Cell;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -186,7 +187,7 @@ public class Entity {
         return t1;
     }
 
-    // This should return an array of Tiles in which a guard is located
+    // TODO: This should return an array of Cells in which a guard is located that can be seen by the entity
     // If there are no guards, return null
     public boolean guardsInView(){
         int[][] tiles = tilesInView();
@@ -202,6 +203,14 @@ public class Entity {
             }
         }
         return guard;
+    }
+
+    // TODO: Should return an array of Cells in which the intruders are that can be seen by the entity
+    // This should basically be the same as the guardsInView,
+    // so might be combined into entityInView
+
+    public Cell[] intrudersInView(){
+        return null;
     }
 
     public int[][] tilesInView(){
