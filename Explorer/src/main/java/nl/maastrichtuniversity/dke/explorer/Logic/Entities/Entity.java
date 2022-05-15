@@ -246,12 +246,26 @@ public class Entity {
         }
     }
 
+    /**
+     * Leaves a marker at the current position of the entity in question
+     @return isDeadEnd true, if the entity has detected the existence of a dead end
+     */
+    private boolean isDeadEnd() {
+        boolean isDeadEnd = false;
+
+        return isDeadEnd;
+    }
+
     /*
     This first check will depend on hierarchy of markers, if there's one more important than another,
     we might have to remove one of them. Otherwise, they can both coexist, even if that's not visible in the GUI.
     However, since we're using an ArrayList to keep track of objects, it should be possible to add AL of objects,
     but that would make checking for markers harder.
     This is why removing markers, having only one at a time, can be much easier to handle further down the line.
+     */
+    /**
+     * Leaves a marker at the current position of the entity in question
+     @param isGuard true, if the entity in question is a guard; false, otherwise
      */
     public void leaveMarker(boolean isGuard) {
         // Firstly, check if there's a marker in the current tile (if there is, it'll be removed)
@@ -267,10 +281,8 @@ public class Entity {
      * Hierarchy of markers (i.e. which markers should have priority, since there can only be one at a time per tile)
      * WARNING (O) > BY-WALL (4) > DEAD END (1) > TIME PHEROMONE (2)
      * This means if none of the beforehand listed marker types is applicable, there will always be one to add.
-     *
-     * @param isGuard true, if the entity in question is a guard; false, otherwise
-     *
-     * @return markerTypeIndex index of the type of the marker to add
+     @param isGuard true, if the entity in question is a guard; false, otherwise
+     @return markerTypeIndex index of the type of the marker to add
      */
     private int selectMarkerType(boolean isGuard) {
 
@@ -281,13 +293,19 @@ public class Entity {
         //  0 (exclusive for intruders) + 1 to 4 (other markers, for guards) + 5 to 8 (same markers, but for intruders)
         if(isGuard) { // Specific markers for *guards*
 
-            markerTypeIndex = 2; // The TIME PHEROMONE is the definite one to add (margin of error)
+            if(isDeadEnd()) {
+                markerTypeIndex = 1;
+            } else {
+                markerTypeIndex = 2; // The TIME PHEROMONE is the definite one to add (margin of error)
+            }
 
         } else { // Specific markers for *intruders*
             if (guardsInView()) { // This one is exclusive for intruders
                 //System.out.println("FOUND GUARDS");
                 markerTypeIndex = 0; // WARNING MARKER
                 // TODO: Also move the intruder that saw the guard
+            } else if(isDeadEnd()) {
+                markerTypeIndex = 1;
             } else {
                 // TIME PHEROMONE - BASIC DEFAULT i.e. to be added (at least) every time! This marker
                 // implies that type 3 markers are to be added too, could be done
@@ -313,7 +331,7 @@ public class Entity {
         return markerTypeIndex;
     }
 
-    //sprite of entities
+    // Sprite of entities
     private BufferedImage getImage(){
 
         BufferedImage image = null;

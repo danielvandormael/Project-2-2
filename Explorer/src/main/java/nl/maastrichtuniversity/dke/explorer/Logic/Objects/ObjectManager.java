@@ -16,9 +16,6 @@ public class ObjectManager {
     BufferedImage[] objImg;
     ArrayList<Object> activeObjects;
 
-    private int newIndexCounter;
-
-
     /* Types of Markers:
         (0) WARNING MARKER (for intruders only)
             -> Whenever an intruder sees a guard (since it has a bigger viewing area), it should turn back and
@@ -47,7 +44,6 @@ public class ObjectManager {
         this.gamePanel = gamePanel;
         this.objImg = new BufferedImage[5];
         this.activeObjects = new ArrayList<>();
-        this.newIndexCounter = 0;
         getObjectImage8bit();
     }
 
@@ -65,6 +61,8 @@ public class ObjectManager {
     }
 
     /**
+     * Cleans the activeObjects list to make it not have repeated markers
+     * Uses a loop, since it searches for the coordinates where a marker might be located
      @param x position on game panel
      @param y position on game panel
      */
@@ -82,6 +80,8 @@ public class ObjectManager {
     }
 
     /**
+     * Cleans the activeObjects list to make it not have repeated markers
+     * Can remove a marker instantly, since it knows the marker already
      @param marker Marker object to remove from activeObjects list
      */
     private void instaCleanMarker(Object marker) {
@@ -90,6 +90,7 @@ public class ObjectManager {
     }
 
     /**
+     * Adds a marker to the activeObjects list
      @param x position on game panel
      @param y position on game panel
      @param typeIndex the index of the marker type to add
@@ -103,34 +104,35 @@ public class ObjectManager {
 
         // TODO: Find a way to make markers recognizable what each agent
         //  should do once they see a certain marker, mostly, switch directions
-        // Only add an object if it has different coordinates from the already added ones
-        if(activeObjects.size() >= 1) {
+        if(activeObjects.size() >= 1) { // Only add an object if it has different coordinates from the already added ones
             for (int i = activeObjects.size(); i < (activeObjects.size()+1); i++) {
                 //System.out.println(newMarker.getX() + " " + activeObjects.get(i-1).getX());
                 if(activeObjects.get(i-1) != null) {
                     if (newMarker.getX() != activeObjects.get(i-1).getX()
                             || newMarker.getY() != activeObjects.get(i-1).getY()) {
                         activeObjects.add(newMarker);
-//                        System.out.println("nr" + i + " - added marker at add()"
-//                                + newMarker.getX() + " " + newMarker.getY() + " vs "
-//                                + activeObjects.get(i - 1).getX() + " " + activeObjects.get(i - 1).getY());
+                        System.out.println("nr" + i + " - added marker at add()"
+                                + newMarker.getX() + " " + newMarker.getY() + " vs "
+                                + activeObjects.get(i-1).getX() + " " + activeObjects.get(i-1).getY());
                     }
                 }
             }
-        // Initial activeObjects addition (while size is 0)
-        } else {
+        } else { // Initial activeObjects addition (while size is 0)
             activeObjects.add(newMarker);
             //System.out.println("1st - added marker at add(), x is " + activeObjects.get(0).getX());
         }
 
         //System.out.println("Adding marker " + activeObjects.size());
-        // TODO: Make time-based marker (2) wear out every 2.5sec
         if(newMarker.getMarkerType() == 2) {
             wearOutMarker(newMarker, 2500);
         }
     }
 
-    // Schedules a task to remove the time-based marker in question
+    /**
+     * Schedules a task to remove the time-based marker in question
+     @param marker the marker that will wear out
+     @param delay lifetime of the marker, in milliseconds (before timing out)
+     */
     private void wearOutMarker(Object marker, int delay) {
         new Timer().schedule(
                 new TimerTask() {
