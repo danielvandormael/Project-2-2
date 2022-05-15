@@ -74,7 +74,7 @@ public class TileManager {
             }
         }
 
-        // TO REMOVE - see the tile map
+        // TODO: REMOVE - just to see the tile map
         for(int i = 0; i < mapTile.length; i++) {
             for(int j = 0; j < mapTile[i].length; j++) {
                 System.out.print(mapTile[i][j] + "");

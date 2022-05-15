@@ -52,6 +52,7 @@ public class DFSAgent extends Guard {
         Cell currentCell = map.getCell(getX(), getY());
         targetCell = map.getCell(desiredX, desiredY);
 
+        this.setDeadEnd(false);
         //useless
         if (targetCell != null) {
             if (!currentCell.equals(targetCell)) {
@@ -149,6 +150,10 @@ public class DFSAgent extends Guard {
         }
 
         // if there are no unexplored neighbours
+
+        // Technically, works as a dead-end (at least for the intruder, whose goal is to explore everything)
+        this.setDeadEnd(true);
+
         currentCell.setStatus(2);
         targetCell = currentCell.getParentCell();
 

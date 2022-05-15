@@ -20,6 +20,8 @@ public class Entity {
     private final double speedRatio = 20;
     private boolean collision = false;
 
+    public boolean deadEnd;
+
     final int rayAmount = 15;
     private double [][] rayT = new double[rayAmount][3];
 
@@ -251,8 +253,11 @@ public class Entity {
      @return isDeadEnd true, if the entity has detected the existence of a dead end
      */
     private boolean isDeadEnd() {
-        boolean isDeadEnd = false;
+        boolean isDeadEnd = this.deadEnd;
 
+//        if(isDeadEnd) {
+//            System.out.println("DEAD END METHOD IS TRUE");
+//        }
         return isDeadEnd;
     }
 
@@ -279,7 +284,7 @@ public class Entity {
     /**
      * Defines what type of marker to add later on
      * Hierarchy of markers (i.e. which markers should have priority, since there can only be one at a time per tile)
-     * WARNING (O) > BY-WALL (4) > DEAD END (1) > TIME PHEROMONE (2)
+     * WARNING (3) > BY-WALL (-) > DEAD END (2) > TIME PHEROMONE (1)
      * This means if none of the beforehand listed marker types is applicable, there will always be one to add.
      @param isGuard true, if the entity in question is a guard; false, otherwise
      @return markerTypeIndex index of the type of the marker to add
@@ -294,23 +299,23 @@ public class Entity {
         if(isGuard) { // Specific markers for *guards*
 
             if(isDeadEnd()) {
-                markerTypeIndex = 1;
+                markerTypeIndex = 2; // DEAD END MARKER
             } else {
-                markerTypeIndex = 2; // The TIME PHEROMONE is the definite one to add (margin of error)
+                markerTypeIndex = 1; // The TIME PHEROMONE is the definite one to add (margin of error)
             }
 
         } else { // Specific markers for *intruders*
+
             if (guardsInView()) { // This one is exclusive for intruders
-                //System.out.println("FOUND GUARDS");
-                markerTypeIndex = 0; // WARNING MARKER
+                markerTypeIndex = 3; // WARNING MARKER
                 // TODO: Also move the intruder that saw the guard
             } else if(isDeadEnd()) {
-                markerTypeIndex = 1;
+                markerTypeIndex = 2; // DEAD END MARKER
             } else {
                 // TIME PHEROMONE - BASIC DEFAULT i.e. to be added (at least) every time! This marker
                 // implies that type 3 markers are to be added too, could be done
                 // in the same method 2 is created.
-                markerTypeIndex = 2;
+                markerTypeIndex = 1;
             }
         }
         /*
@@ -318,14 +323,14 @@ public class Entity {
 
         // TODO: Add specific methods to handle the different types of marker checks
         IF (INTRUDER.VIEWS(GUARD))
-            markerTypeIndex = 0;
+            markerTypeIndex = 3;
         ELSE IF (INTRUDER/GUARD.IS_NEXT_TO(WALL))
-            markerTypeIndex = 4; // BY-WALL
+            markerTypeIndex = -; // BY-WALL
         ELSE IF (INTRUDER/GUARD.RETURNED_FROM_DEADEND())
-            markerTypeIndex = 1; // DEAD END (TO LEAVE AS IT'S EXITING THE DEAD END i.e. it saw the same squares again
+            markerTypeIndex = 2; // DEAD END (TO LEAVE AS IT'S EXITING THE DEAD END i.e. it saw the same squares again
                                                 so the marker will be left once it detects it can move into a new one)
         ELSE
-            markerTypeIndex = 2;
+            markerTypeIndex = 1;
          */
 
         return markerTypeIndex;

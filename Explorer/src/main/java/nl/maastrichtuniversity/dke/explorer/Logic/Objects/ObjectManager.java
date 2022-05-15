@@ -17,24 +17,24 @@ public class ObjectManager {
     ArrayList<Object> activeObjects;
 
     /* Types of Markers:
-        (0) WARNING MARKER (for intruders only)
+        (3) WARNING MARKER (for intruders only)
             -> Whenever an intruder sees a guard (since it has a bigger viewing area), it should turn back and
             leave a warning marker at that tile to warn the other intruder(s) that the guard had been checking
             that area recently. Should wear off after a while, since it's understood the guard kept moving.
-        (1) DEAD END MARKER
+        (2) DEAD END MARKER
             -> Whenever a guard/intruder goes into a dead end (and recognizes), on its way back, it marks the
             initial tile of that dead end.
         ? - Unexplored Marker
 
         * NEW POSSIBLE TYPES *
-        (2) TIME / STEP-BASED PHEROMONE
+        (1) TIME / STEP-BASED PHEROMONE
             -> after x sec (or steps) from the tile the guard left the marker on,
             it disappears, as it represents how recently that tile was covered.
-        (3) SMELL VARIATION (FROM TYPE 2)
+        (-) SMELL VARIATION (FROM TYPE 2)
             -> each stepped-on tile is marked w/ 2, as explained. Similarly, each tile covered by the viewing area also
             gets a marker to expand optimization. This will also wear out after x sec (or steps). These view-markers
             can be thought of as the smell of the original pheromone 2.
-        (4) DEFINITE BY-WALL MARKER
+        (-) DEFINITE BY-WALL MARKER
             -> if an agent has tracked a wall, every step on a tile immediately next to it is
             marked. This is because it's an easy way of reducing any irrelevant re-tracks, since guards can more often
             than not view the by-wall tiles from any adjacent tiles.
@@ -84,10 +84,7 @@ public class ObjectManager {
      * Can remove a marker instantly, since it knows the marker already
      @param marker Marker object to remove from activeObjects list
      */
-    private void instaCleanMarker(Object marker) {
-        //System.out.println("cleaning marker nr." + marker.getMarkerType() + " at " + marker.getX() + " " + marker.getY());
-        activeObjects.remove(marker);
-    }
+    private void instaCleanMarker(Object marker) { activeObjects.remove(marker); }
 
     /**
      * Adds a marker to the activeObjects list
@@ -104,27 +101,28 @@ public class ObjectManager {
 
         // TODO: Find a way to make markers recognizable what each agent
         //  should do once they see a certain marker, mostly, switch directions
-        if(activeObjects.size() >= 1) { // Only add an object if it has different coordinates from the already added ones
-            for (int i = activeObjects.size(); i < (activeObjects.size()+1); i++) {
-                //System.out.println(newMarker.getX() + " " + activeObjects.get(i-1).getX());
-                if(activeObjects.get(i-1) != null) {
-                    if (newMarker.getX() != activeObjects.get(i-1).getX()
-                            || newMarker.getY() != activeObjects.get(i-1).getY()) {
-                        activeObjects.add(newMarker);
-                        System.out.println("nr" + i + " - added marker at add()"
-                                + newMarker.getX() + " " + newMarker.getY() + " vs "
-                                + activeObjects.get(i-1).getX() + " " + activeObjects.get(i-1).getY());
+        if(newMarker != null) {
+            if (activeObjects.size() >= 1) { // Only add an object if it has different coordinates from the already added ones
+                for (int i = (activeObjects.size()-1); i < activeObjects.size(); i++) {
+                    //System.out.println(newMarker.getX() + " " + activeObjects.get(i-1).getX());
+                    if (activeObjects.get(i) != null) {
+                        if ((newMarker.getX() != activeObjects.get(i).getX()) || (newMarker.getY() != activeObjects.get(i).getY())) {
+                            activeObjects.add(newMarker);
+//                          System.out.println("nr" + i + " - added marker at add()"
+//                                + newMarker.getX() + " " + newMarker.getY() + " vs "
+//                                + activeObjects.get(i-1).getX() + " " + activeObjects.get(i-1).getY());
+                        }
                     }
                 }
+            } else { // Initial activeObjects addition (while size is 0)
+                activeObjects.add(newMarker);
+                //System.out.println("1st - added marker at add(), x is " + activeObjects.get(0).getX());
             }
-        } else { // Initial activeObjects addition (while size is 0)
-            activeObjects.add(newMarker);
-            //System.out.println("1st - added marker at add(), x is " + activeObjects.get(0).getX());
-        }
 
-        //System.out.println("Adding marker " + activeObjects.size());
-        if(newMarker.getMarkerType() == 2) {
-            wearOutMarker(newMarker, 2500);
+            //System.out.println("Adding marker " + activeObjects.size());
+            if (newMarker.getMarkerType() == 1) {
+                wearOutMarker(newMarker, 2500);
+            }
         }
     }
 
@@ -152,12 +150,12 @@ public class ObjectManager {
                 Object markerToDraw = activeObjects.get(i);
 //                System.out.println("drawing marker nr." + i + " type " + markerToDraw.getMarkerType()
 //                        + " at " + markerToDraw.getX() + " " + markerToDraw.getY() + " " + markerToDraw);
-                //System.out.println(activeObjects.size());
+                System.out.println(activeObjects.size());
 
                 // Scale each marker to be drawn in the correct position on the panel
                 if(markerToDraw != null) {
                     g.drawImage(markerToDraw.getImage(),
-                            markerToDraw.getX()*gamePanel.getTileSize(), markerToDraw.getY()*gamePanel.getTileSize(),
+                            (int) markerToDraw.getX()*gamePanel.getTileSize(), (int) markerToDraw.getY()*gamePanel.getTileSize(),
                             gamePanel.getTileSize(), gamePanel.getTileSize(), null);
                 }
             }

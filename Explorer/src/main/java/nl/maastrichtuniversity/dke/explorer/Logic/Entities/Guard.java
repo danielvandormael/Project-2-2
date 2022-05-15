@@ -8,7 +8,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-public class Guard extends Entity{
+public class Guard extends Entity {
 
     public Guard(double x, double y, double viewAngle, double viewRange, double viewAngleSize, double baseSpeed, double sprintSpeed, GamePanel gamePanel) {
         super(x, y, viewAngle, viewRange, viewAngleSize, baseSpeed, sprintSpeed, new Color(255, 250, 134, 70), gamePanel);
@@ -33,4 +33,6 @@ public class Guard extends Entity{
             e.printStackTrace();
         }
     }
+
+    public void setDeadEnd(boolean dE) { super.deadEnd = dE; }
 }
