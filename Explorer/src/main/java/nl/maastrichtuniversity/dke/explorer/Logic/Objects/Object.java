@@ -5,7 +5,7 @@ import java.awt.image.BufferedImage;
 
 public class Object {
 
-    public double x, y;
+    public int x, y;
     public int markerType;
     public boolean interact;
     public BufferedImage image;
@@ -15,16 +15,16 @@ public class Object {
         this.image = image;
     }
 
-    public void setCoord(double x, double y) {
+    public void setCoord(int x, int y) {
         this.x = x;
         this.y = y;
     }
 
     public void setMarkerType(int mT) { this.markerType = mT; }
 
-    public double getX() { return this.x; }
+    public int getX() { return this.x; }
 
-    public double getY() { return this.y; }
+    public int getY() { return this.y; }
 
     public int getMarkerType() { return this.markerType; }
 

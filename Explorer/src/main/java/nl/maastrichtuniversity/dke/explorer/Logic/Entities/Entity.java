@@ -19,7 +19,6 @@ public class Entity {
     private final  double sprintSpeed;
     private final double speedRatio = 20;
     private boolean collision = false;
-
     public boolean deadEnd;
 
     final int rayAmount = 15;

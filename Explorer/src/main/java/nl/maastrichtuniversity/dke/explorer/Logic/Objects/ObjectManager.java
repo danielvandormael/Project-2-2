@@ -1,6 +1,7 @@
 package nl.maastrichtuniversity.dke.explorer.Logic.Objects;
 
 import nl.maastrichtuniversity.dke.explorer.GUI.GamePanel;
+import nl.maastrichtuniversity.dke.explorer.Logic.Entities.Entity;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -67,10 +68,11 @@ public class ObjectManager {
      @param y position on game panel
      */
     public void loopCleanMarker(int x, int y) {
+
         // Iterates all active marker objects (i.e. already created)
-        for(int i = 0; i < activeObjects.size(); i++) {
+        for (int i = 0; i < activeObjects.size(); i++) {
             // Check if there is a marker in the provided position
-            if(activeObjects.get(i) != null) {
+            if (activeObjects.get(i) != null) {
                 if ((activeObjects.get(i).getX() == x) && (activeObjects.get(i).getY() == y)) {
                     //System.out.println("FOUND A MARKER AT " + x + " " + y);
                     activeObjects.remove(i);
@@ -101,28 +103,13 @@ public class ObjectManager {
 
         // TODO: Find a way to make markers recognizable what each agent
         //  should do once they see a certain marker, mostly, switch directions
-        if(newMarker != null) {
-            if (activeObjects.size() >= 1) { // Only add an object if it has different coordinates from the already added ones
-                for (int i = (activeObjects.size()-1); i < activeObjects.size(); i++) {
-                    //System.out.println(newMarker.getX() + " " + activeObjects.get(i-1).getX());
-                    if (activeObjects.get(i) != null) {
-                        if ((newMarker.getX() != activeObjects.get(i).getX()) || (newMarker.getY() != activeObjects.get(i).getY())) {
-                            activeObjects.add(newMarker);
-//                          System.out.println("nr" + i + " - added marker at add()"
-//                                + newMarker.getX() + " " + newMarker.getY() + " vs "
-//                                + activeObjects.get(i-1).getX() + " " + activeObjects.get(i-1).getY());
-                        }
-                    }
-                }
-            } else { // Initial activeObjects addition (while size is 0)
-                activeObjects.add(newMarker);
-                //System.out.println("1st - added marker at add(), x is " + activeObjects.get(0).getX());
-            }
+        activeObjects.add(newMarker);
 
-            //System.out.println("Adding marker " + activeObjects.size());
-            if (newMarker.getMarkerType() == 1) {
-                wearOutMarker(newMarker, 2500);
-            }
+        // Different markers have different lifespans, others are permanent
+        if (newMarker.getMarkerType() == 1) {
+            wearOutMarker(newMarker, 2500);
+        } else if(newMarker.getMarkerType() == 3) {
+            wearOutMarker(newMarker, 5000);
         }
     }
 
@@ -150,12 +137,12 @@ public class ObjectManager {
                 Object markerToDraw = activeObjects.get(i);
 //                System.out.println("drawing marker nr." + i + " type " + markerToDraw.getMarkerType()
 //                        + " at " + markerToDraw.getX() + " " + markerToDraw.getY() + " " + markerToDraw);
-                System.out.println(activeObjects.size());
+                System.out.println("size " + activeObjects.size());
 
                 // Scale each marker to be drawn in the correct position on the panel
                 if(markerToDraw != null) {
                     g.drawImage(markerToDraw.getImage(),
-                            (int) markerToDraw.getX()*gamePanel.getTileSize(), (int) markerToDraw.getY()*gamePanel.getTileSize(),
+                            markerToDraw.getX()*gamePanel.getTileSize(), markerToDraw.getY()*gamePanel.getTileSize(),
                             gamePanel.getTileSize(), gamePanel.getTileSize(), null);
                 }
             }
