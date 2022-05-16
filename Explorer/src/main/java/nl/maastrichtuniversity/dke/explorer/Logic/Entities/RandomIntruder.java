@@ -4,7 +4,6 @@ import nl.maastrichtuniversity.dke.explorer.GUI.GamePanel;
 import nl.maastrichtuniversity.dke.explorer.Logic.Tiles.Cell;
 import nl.maastrichtuniversity.dke.explorer.Logic.Tiles.Map;
 
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -15,7 +14,6 @@ public class RandomIntruder extends Intruder {
     private double desiredAngle;
     private int desiredX;
     private int desiredY;
-    Cell previousCell;
     Cell targetCell;
     Cell currentCell;
     ArrayList<Cell> viewingArea = new ArrayList<>();
@@ -65,8 +63,7 @@ public class RandomIntruder extends Intruder {
         Collections.shuffle(candidateCells);
 
 
-//        System.out.println(identifyGuard(currentCell));
-        if (cellFront.getStatus() != 3 && !guardsInView() ) {
+        if (cellFront.getStatus() != 3  ) {
             // if cell in front is not wall and do not have guard then go straight
             targetCell = cellFront;
             desiredX = targetCell.getX();
@@ -77,23 +74,21 @@ public class RandomIntruder extends Intruder {
             decision[1] = 0;
         }
 
-        else if (cellFront.getStatus() != 3 && guardsInView() ) {
-                //see guard within the viewRange -> rotate
-                // still not working bc the agent takes too long to rotate???
-                // if set to rotate and move decision[0]=2 and decision[1]=1
-                // agent run in a loop (circle)
-                decision[0] = 0;
-                decision[1] = 1;
-                desiredAngle = map.getDirection(currentCell, candidateCells.get(0));
-                desiredX = (int) getX();
-                desiredY = (int) getY();
-        }
+//        else if (cellFront.getStatus() != 3 && guardsInView() ) {
+//                //see guard within the viewRange -> rotate
+//                // still not working bc the agent takes too long to rotate???
+//                decision[0] = 0;
+//                decision[1] = 1;
+//                desiredAngle = map.getDirection(currentCell, candidateCells.get(0));
+//                desiredX = (int) getX();
+//                desiredY = (int) getY();
+//        }
 
             //if cell in front is wall then check left and right cell and turn randomly to one of them
             else if (candidateCells.size() > 0) {
                 Collections.shuffle(candidateCells);
                 Cell choice = candidateCells.get(0);
-                // turn and then check again how far you can go in that direction
+
                 decision[0] = 0;
                 decision[1] = 1;
                 desiredAngle = map.getDirection(currentCell, choice);
@@ -101,17 +96,15 @@ public class RandomIntruder extends Intruder {
                 desiredY = (int) getY();
                 }
 
-        else
-        {
-            if(isTargetReached(currentCell))
+            else
             {
-                decision[0] = 0;
-                decision[1] = 0;
-                System.out.println("The target has reached");
+                if(isTargetReached(currentCell))
+                {
+                    decision[0] = 0;
+                    decision[1] = 0;
+                    System.out.println("The target has reached");
+                }
             }
-        }
-
-
         }
 
 
@@ -136,6 +129,7 @@ public class RandomIntruder extends Intruder {
         return guard;
 
     }
+
      public boolean isTargetReached(Cell currentCell)
         {
             return gamePanel.tileM.mapTile[currentCell.getX()][currentCell.getY()] == 4;
