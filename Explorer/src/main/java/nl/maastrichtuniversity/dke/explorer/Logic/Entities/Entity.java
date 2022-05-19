@@ -19,7 +19,7 @@ public class Entity {
     private final  double sprintSpeed;
     private final double speedRatio = 20;
     private boolean collision = false;
-    public boolean deadEnd;
+    public boolean deadEnd, foundMarker;
 
     final int rayAmount = 15;
     private double [][] rayT = new double[rayAmount][3];
@@ -275,16 +275,24 @@ public class Entity {
 
         // Firstly, detect if there's a marker in the current tile
         // Guards only detect guard markers, and intruders only detect intruder markers
-//        boolean foundMarker = gamePanel.objectM.detectMarker((int) x, (int) y, isGuard);
-//
-//        // Act accordingly
-//        if(foundMarker) {
-//            setAction(0,1);
-//            //rotate90();
-//            //rotate90();
-//        }
+        if(direction == "up") {
+            foundMarker = gamePanel.objectM.detectMarker((int) x, ((int) y)-1, isGuard);
+        } else if(direction == "down") {
+            foundMarker = gamePanel.objectM.detectMarker((int) x, ((int) y)+1, isGuard);
+        } else if(direction == "left") {
+            foundMarker = gamePanel.objectM.detectMarker(((int) x)-1, (int) y, isGuard);
+        } else {
+            foundMarker = gamePanel.objectM.detectMarker(((int) x)+1, (int) y, isGuard);
+        }
+
+        // Act accordingly
+        if(foundMarker) {
+            rotate90();
+            rotate90();
+            foundMarker = false;
+        }
         // Clean any markers placed previously on the current coordinates
-        gamePanel.objectM.loopCleanMarker((int) x, (int) y);
+        gamePanel.objectM.loopCleanMarker((int) x, (int) y, isGuard);
 
         int newMarkerIndex = selectMarkerType(isGuard);
         gamePanel.objectM.addMarker((int) x, (int) y, newMarkerIndex);
@@ -292,7 +300,7 @@ public class Entity {
 
     private void rotate90() {
 
-        setAction(0,2);
+        setAction(0,1);
 
         rotate();
 
@@ -344,7 +352,7 @@ public class Entity {
 
         if(isGuard) { // Specific markers for *guards*
 
-            if(this.isDeadEnd()) {
+            if(isDeadEnd()) {
                 markerTypeIndex = 1; // DEAD END MARKER
             } else {
                 markerTypeIndex = 0; // The TIME PHEROMONE is the definite one to add (margin of error)
@@ -352,10 +360,10 @@ public class Entity {
 
         } else { // Specific markers for *intruders*
 
-            if (this.guardsInView()) { // This one is exclusive for intruders
+            if (guardsInView()) { // This one is exclusive for intruders
                 markerTypeIndex = 4; // WARNING MARKER
                 // TODO: Also move the intruder that saw the guard
-            } else if(this.isDeadEnd()) {
+            } else if(isDeadEnd()) {
                 markerTypeIndex = 3; // DEAD END MARKER
             } else {
                 // TIME PHEROMONE - BASIC DEFAULT i.e. to be added (at least) every time! This marker

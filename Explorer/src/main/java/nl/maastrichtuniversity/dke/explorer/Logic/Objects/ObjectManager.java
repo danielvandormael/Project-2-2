@@ -110,14 +110,33 @@ public class ObjectManager {
      @param x position on game panel
      @param y position on game panel
      */
-    public void loopCleanMarker(int x, int y) {
+    public void loopCleanMarker(int x, int y, boolean isGuard) {
 
-        // Iterates all active marker objects (i.e. already created)
-        for (int i = 0; i < activeObjects.size(); i++) {
-            // Check if there is a marker in the provided position
-            if (activeObjects.get(i) != null) {
-                if ((activeObjects.get(i).getX() == x) && (activeObjects.get(i).getY() == y)) {
-                    activeObjects.remove(i); // Removes it
+        if(isGuard) {
+            // Iterates all active marker objects (i.e. already created)
+            for (int i = 0; i < activeObjects.size(); i++) {
+                // Check if there is a marker in the provided position
+                if (activeObjects.get(i) != null) {
+                    if ((activeObjects.get(i).getX() == x) && (activeObjects.get(i).getY() == y) &&
+                            ((activeObjects.get(i).getMarkerType() == 1) ||
+                                    (activeObjects.get(i).getMarkerType() == 0))) {
+                        activeObjects.remove(i);
+
+                    }
+                }
+            }
+        } else {
+            // Iterates all active marker objects (i.e. already created)
+            for (int i = 0; i < activeObjects.size(); i++) {
+                // Check if there is a marker in the provided position
+                if (activeObjects.get(i) != null) {
+                    if ((activeObjects.get(i).getX() == x) && (activeObjects.get(i).getY() == y) &&
+                            ((activeObjects.get(i).getMarkerType() == 4) ||
+                                    (activeObjects.get(i).getMarkerType() == 3) ||
+                                    (activeObjects.get(i).getMarkerType() == 2))) {
+                        activeObjects.remove(i);
+
+                    }
                 }
             }
         }
