@@ -50,15 +50,58 @@ public class ObjectManager {
 
     public void getObjectImage8bit(){
         try {
-            // Should be interactable
-            objImg[0] = ImageIO.read(ObjectManager.class.getResourceAsStream("/bit8/objects/marker0.png"));
-            objImg[1] = ImageIO.read(ObjectManager.class.getResourceAsStream("/bit8/objects/marker1.png"));
-            objImg[2] = ImageIO.read(ObjectManager.class.getResourceAsStream("/bit8/objects/marker2.png"));
-            objImg[3] = ImageIO.read(ObjectManager.class.getResourceAsStream("/bit8/objects/marker3.png"));
-            objImg[4] = ImageIO.read(ObjectManager.class.getResourceAsStream("/bit8/objects/marker4.png"));
+            // Guard specific, 0 TIME | 1 DEAD END
+            objImg[0] = ImageIO.read(ObjectManager.class.getResourceAsStream("/bit8/objects/marker1.png"));
+            objImg[1] = ImageIO.read(ObjectManager.class.getResourceAsStream("/bit8/objects/marker2.png"));
+            // Intruder specific, 2 TIME | 3 DEAD END | 4 WARNING
+            objImg[2] = ImageIO.read(ObjectManager.class.getResourceAsStream("/bit8/objects/marker1.png"));
+            objImg[3] = ImageIO.read(ObjectManager.class.getResourceAsStream("/bit8/objects/marker2.png"));
+            objImg[4] = ImageIO.read(ObjectManager.class.getResourceAsStream("/bit8/objects/marker3.png"));
         }catch (IOException e){
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Detects if there is a marker at the provided coordinates
+     @param x position on game panel
+     @param y position on game panel
+     */
+    public boolean detectMarker(int x, int y, boolean isGuard) {
+
+        boolean foundMarker = false;
+
+        if(isGuard) {
+            // Iterates all active marker objects (i.e. already created)
+            for (int i = 0; i < activeObjects.size(); i++) {
+                // Check if there is a marker in the provided position
+                if (activeObjects.get(i) != null) {
+                    if ((activeObjects.get(i).getX() == x) && (activeObjects.get(i).getY() == y) &&
+                            ((activeObjects.get(i).getMarkerType() == 1) ||
+                                    (activeObjects.get(i).getMarkerType() == 0))) {
+                        //System.out.println("FOUND A MARKER AT " + x + " " + y);
+                        foundMarker = true;
+
+                    }
+                }
+            }
+        } else {
+            // Iterates all active marker objects (i.e. already created)
+            for (int i = 0; i < activeObjects.size(); i++) {
+                // Check if there is a marker in the provided position
+                if (activeObjects.get(i) != null) {
+                    if ((activeObjects.get(i).getX() == x) && (activeObjects.get(i).getY() == y) &&
+                            ((activeObjects.get(i).getMarkerType() == 4) ||
+                                    (activeObjects.get(i).getMarkerType() == 3) ||
+                                    (activeObjects.get(i).getMarkerType() == 2))) {
+                        //System.out.println("FOUND A MARKER AT " + x + " " + y);
+                        foundMarker = true;
+
+                    }
+                }
+            }
+        }
+        return foundMarker;
     }
 
     /**
@@ -67,23 +110,17 @@ public class ObjectManager {
      @param x position on game panel
      @param y position on game panel
      */
-    public boolean loopCleanMarker(int x, int y) {
-
-        boolean foundMarker = false;
+    public void loopCleanMarker(int x, int y) {
 
         // Iterates all active marker objects (i.e. already created)
         for (int i = 0; i < activeObjects.size(); i++) {
             // Check if there is a marker in the provided position
             if (activeObjects.get(i) != null) {
                 if ((activeObjects.get(i).getX() == x) && (activeObjects.get(i).getY() == y)) {
-                    //System.out.println("FOUND A MARKER AT " + x + " " + y);
-                    foundMarker = true;
-                    activeObjects.remove(i);
+                    activeObjects.remove(i); // Removes it
                 }
             }
         }
-
-        return foundMarker;
     }
 
     /**
@@ -111,9 +148,9 @@ public class ObjectManager {
         activeObjects.add(newMarker);
 
         // Different markers have different lifespans, others are permanent
-        if (newMarker.getMarkerType() == 1) {
+        if ((newMarker.getMarkerType() == 0) || (newMarker.getMarkerType() == 2)) { // TIME
             wearOutMarker(newMarker, 2500);
-        } else if(newMarker.getMarkerType() == 3) {
+        } else if(newMarker.getMarkerType() == 4) { // WARNING
             wearOutMarker(newMarker, 5000);
         }
     }

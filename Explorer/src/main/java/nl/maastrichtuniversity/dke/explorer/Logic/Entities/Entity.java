@@ -68,7 +68,7 @@ public class Entity {
         this.actionMove = actionMove;
         this.actionRotate = actionRotate;
     }
-
+    
     public void update(boolean isGuard){
 
         leaveMarker(isGuard);
@@ -252,7 +252,7 @@ public class Entity {
      @return isDeadEnd true, if the entity has detected the existence of a dead end
      */
     private boolean isDeadEnd() {
-        boolean isDeadEnd = this.deadEnd;
+        boolean isDeadEnd = deadEnd;
 
 //        if(isDeadEnd) {
 //            System.out.println("DEAD END METHOD IS TRUE");
@@ -272,22 +272,68 @@ public class Entity {
      @param isGuard true, if the entity in question is a guard; false, otherwise
      */
     public void leaveMarker(boolean isGuard) {
-        // Firstly, check if there's a marker in the current tile (if there is, it'll be removed)
-        boolean foundMarker = gamePanel.objectM.loopCleanMarker((int) x, (int) y);
 
-        if(foundMarker) {
-            //move(); // TODO: Turn entity around if the loop found a marker
-        }
+        // Firstly, detect if there's a marker in the current tile
+        // Guards only detect guard markers, and intruders only detect intruder markers
+//        boolean foundMarker = gamePanel.objectM.detectMarker((int) x, (int) y, isGuard);
+//
+//        // Act accordingly
+//        if(foundMarker) {
+//            setAction(0,1);
+//            //rotate90();
+//            //rotate90();
+//        }
+        // Clean any markers placed previously on the current coordinates
+        gamePanel.objectM.loopCleanMarker((int) x, (int) y);
 
         int newMarkerIndex = selectMarkerType(isGuard);
         gamePanel.objectM.addMarker((int) x, (int) y, newMarkerIndex);
+    }
 
+    private void rotate90() {
+
+        setAction(0,2);
+
+        rotate();
+
+        collision = false;
+        gamePanel.collisionD.checkTile(this);
+
+        if(collision == false){
+            move();
+        }
+
+        //System.out.println("actionMove: " + actionMove);
+        //update sprite
+        if(actionMove > 0){
+            if(picSprite == 0){
+                picSpriteCounter = 2;
+            }
+            picSpriteCounter++;
+            if(picSpriteCounter > 12){
+                if(picSprite == 1){
+                    picSprite = 2;
+                }else if(picSprite == 2){
+                    picSprite = 1;
+                }
+                picSpriteCounter = 0;
+            }
+        }else{
+            picSprite = 0;
+        }
+
+        onTopOf();
+
+        rayCasting();
     }
 
     /**
      * Defines what type of marker to add later on
      * Hierarchy of markers (i.e. which markers should have priority, since there can only be one at a time per tile)
-     * WARNING (3) > BY-WALL (-) > DEAD END (2) > TIME PHEROMONE (1)
+     * FOR GUARD:
+     * BY-WALL (-) > DEAD END (1) > TIME PHEROMONE (0)
+     * FOR INTRUDERS:
+     * WARNING (4) > BY-WALL (-) > DEAD END (3) > TIME PHEROMONE (2)
      * This means if none of the beforehand listed marker types is applicable, there will always be one to add.
      @param isGuard true, if the entity in question is a guard; false, otherwise
      @return markerTypeIndex index of the type of the marker to add
@@ -296,29 +342,26 @@ public class Entity {
 
         int markerTypeIndex;
 
-        // TODO: Duplicate markers that can be used by both, so they're easier to share/separate between sides (G vs I).
-        //  So, instead of 5 markers, we'll have 9 (essentially 5 still):
-        //  0 (exclusive for intruders) + 1 to 4 (other markers, for guards) + 5 to 8 (same markers, but for intruders)
         if(isGuard) { // Specific markers for *guards*
 
-            if(isDeadEnd()) {
-                markerTypeIndex = 2; // DEAD END MARKER
+            if(this.isDeadEnd()) {
+                markerTypeIndex = 1; // DEAD END MARKER
             } else {
-                markerTypeIndex = 1; // The TIME PHEROMONE is the definite one to add (margin of error)
+                markerTypeIndex = 0; // The TIME PHEROMONE is the definite one to add (margin of error)
             }
 
         } else { // Specific markers for *intruders*
 
-            if (guardsInView()) { // This one is exclusive for intruders
-                markerTypeIndex = 3; // WARNING MARKER
+            if (this.guardsInView()) { // This one is exclusive for intruders
+                markerTypeIndex = 4; // WARNING MARKER
                 // TODO: Also move the intruder that saw the guard
-            } else if(isDeadEnd()) {
-                markerTypeIndex = 2; // DEAD END MARKER
+            } else if(this.isDeadEnd()) {
+                markerTypeIndex = 3; // DEAD END MARKER
             } else {
                 // TIME PHEROMONE - BASIC DEFAULT i.e. to be added (at least) every time! This marker
                 // implies that type 3 markers are to be added too, could be done
                 // in the same method 2 is created.
-                markerTypeIndex = 1;
+                markerTypeIndex = 2;
             }
         }
         /*
