@@ -273,7 +273,11 @@ public class Entity {
      */
     public void leaveMarker(boolean isGuard) {
         // Firstly, check if there's a marker in the current tile (if there is, it'll be removed)
-        gamePanel.objectM.loopCleanMarker((int) x, (int) y);
+        boolean foundMarker = gamePanel.objectM.loopCleanMarker((int) x, (int) y);
+
+        if(foundMarker) {
+            //move(); // TODO: Turn entity around if the loop found a marker
+        }
 
         int newMarkerIndex = selectMarkerType(isGuard);
         gamePanel.objectM.addMarker((int) x, (int) y, newMarkerIndex);

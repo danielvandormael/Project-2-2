@@ -67,7 +67,9 @@ public class ObjectManager {
      @param x position on game panel
      @param y position on game panel
      */
-    public void loopCleanMarker(int x, int y) {
+    public boolean loopCleanMarker(int x, int y) {
+
+        boolean foundMarker = false;
 
         // Iterates all active marker objects (i.e. already created)
         for (int i = 0; i < activeObjects.size(); i++) {
@@ -75,10 +77,13 @@ public class ObjectManager {
             if (activeObjects.get(i) != null) {
                 if ((activeObjects.get(i).getX() == x) && (activeObjects.get(i).getY() == y)) {
                     //System.out.println("FOUND A MARKER AT " + x + " " + y);
+                    foundMarker = true;
                     activeObjects.remove(i);
                 }
             }
         }
+
+        return foundMarker;
     }
 
     /**
