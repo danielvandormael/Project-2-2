@@ -32,14 +32,14 @@ public class BFSIntruder extends Intruder {
     }
 
     public void update() {
-        bfs();
+        Cell currentCell = map.getCell(getX(), getY());
+        bfs(currentCell);
 //        setAction(decision[0], decision[1]);
 //        super.update();
     }
 
-    public void bfs() {
+    public void bfs(Cell startingCell) {
 
-        Cell currentCell = map.getCell(getX(), getY());
 
         Queue<List<Cell>> queue = new LinkedList<>();
         //Create a queue of path used to reach the cell instead of only the node itself
@@ -47,7 +47,7 @@ public class BFSIntruder extends Intruder {
         //A Set to store visited cell
 
         List<Cell> pathToCell = new ArrayList<>();
-        pathToCell.add(currentCell);
+        pathToCell.add(startingCell);
 
         queue.add(pathToCell);
         while (!queue.isEmpty()) {
@@ -56,9 +56,73 @@ public class BFSIntruder extends Intruder {
             pathToCell = queue.poll();
 
             //get the next node
-            currentCell = pathToCell.get(pathToCell.size()-1);
+            startingCell = pathToCell.get(pathToCell.size()-1);
 
-            if(isTargetReached(currentCell)) {
+            if(isTargetReached(startingCell)) {
+                //print path
+                System.out.println(pathToCell);
+                for (Cell a: pathToCell){
+                    System.out.println("x coord: " + a.getX() + ", " + "y coord: " +a.getY());
+                }
+                System.out.println("Takes " + pathToCell.size() +"steps");
+                break;
+
+            }
+
+            if (startingCell.getX()== 20 && startingCell.getY()==14){
+
+                //move to the nearestCell
+                System.out.println("FInd the nearest cell");
+                for (Cell a: pathToCell){
+                    System.out.println("x coord: " + a.getX() + ", " + "y coord: " +a.getY());
+                }
+                System.out.println("Takes " + pathToCell.size() +"steps to reached nearest cell");
+
+                Cell nextNeighbor = map.getCell(startingCell.getX(),startingCell.getY());
+
+                bfs2(nextNeighbor);
+                //bfs again
+
+            }
+            else {
+
+                //loop over neighbors WITHIN VIEW RANGE
+                for (Cell neighbor : getNeighbors(startingCell)) {
+
+                    if (!isVisited(visitedList, neighbor)) {
+                        //create a new path to nextNode
+                        List<Cell> pathToNextNode = new ArrayList<>(pathToCell);
+                        if (pathToNextNode.size() > getViewRange()) {
+                            break;
+                        }
+                        pathToNextNode.add(neighbor);
+                        queue.add(pathToNextNode); //then add collection to the queue
+                    }
+                }
+            }
+        }
+
+    }
+
+    private void bfs2(Cell startingCell) {
+        Queue<List<Cell>> queue = new LinkedList<>();
+        //Create a queue of path used to reach the cell instead of only the node itself
+        Set<Cell> visitedList = new HashSet<>();
+        //A Set to store visited cell
+
+        List<Cell> pathToCell = new ArrayList<>();
+        pathToCell.add(startingCell);
+
+        queue.add(pathToCell);
+        while (!queue.isEmpty()) {
+
+            //remove top element in the queue
+            pathToCell = queue.poll();
+
+            //get the next node
+            startingCell = pathToCell.get(pathToCell.size()-1);
+
+            if(isTargetReached(startingCell)) {
                 //print path
                 System.out.println(pathToCell);
                 for (Cell a: pathToCell){
@@ -68,19 +132,85 @@ public class BFSIntruder extends Intruder {
                 gamePanel.endGameThread();
             }
 
-            //loop over neighbors
-            for(Cell neighbor : getNeighbors(currentCell)){
+            if (startingCell.getX()== 20 && startingCell.getY()==27){
 
-                if(!isVisited(visitedList,neighbor)) {
-                    //create a new path to nextNode
-                    List<Cell> pathToNextNode = new ArrayList<>(pathToCell);
-                    pathToNextNode.add(neighbor);
-                    queue.add(pathToNextNode); //then add collection to the queue
+                //move to the nearestCell
+                System.out.println("FInd the nearest cell");
+                for (Cell a: pathToCell){
+                    System.out.println("x coord: " + a.getX() + ", " + "y coord: " +a.getY());
+                }
+                System.out.println("Takes " + pathToCell.size() +"steps to reached nearest cell");
+
+                Cell nextNeighbor = map.getCell(startingCell.getX(),startingCell.getY());
+
+                bfs3(nextNeighbor);
+                //bfs again
+
+            }
+
+            else {
+
+                //loop over neighbors WITHIN VIEW RANGE
+                for (Cell neighbor : getNeighbors(startingCell)) {
+
+                    if (!isVisited(visitedList, neighbor)) {
+                        //create a new path to nextNode
+                        List<Cell> pathToNextNode = new ArrayList<>(pathToCell);
+                        pathToNextNode.add(neighbor);
+                        queue.add(pathToNextNode); //then add collection to the queue
+                    }
                 }
             }
         }
-
     }
+
+    private void bfs3(Cell startingCell) {
+        Queue<List<Cell>> queue = new LinkedList<>();
+        //Create a queue of path used to reach the cell instead of only the node itself
+        Set<Cell> visitedList = new HashSet<>();
+        //A Set to store visited cell
+
+        List<Cell> pathToCell = new ArrayList<>();
+        pathToCell.add(startingCell);
+
+        queue.add(pathToCell);
+        while (!queue.isEmpty()) {
+
+            //remove top element in the queue
+            pathToCell = queue.poll();
+
+            //get the next node
+            startingCell = pathToCell.get(pathToCell.size()-1);
+
+            if(isTargetReached(startingCell)) {
+                //print path
+                System.out.println(pathToCell);
+                for (Cell a: pathToCell){
+                    System.out.println("x coord: " + a.getX() + ", " + "y coord: " +a.getY());
+                }
+                System.out.println("Takes " + pathToCell.size() +"steps");
+                gamePanel.endGameThread();
+            }
+
+
+
+            else {
+
+                //loop over neighbors WITHIN VIEW RANGE
+                for (Cell neighbor : getNeighbors(startingCell)) {
+
+                    if (!isVisited(visitedList, neighbor)) {
+                        //create a new path to nextNode
+                        List<Cell> pathToNextNode = new ArrayList<>(pathToCell);
+                        pathToNextNode.add(neighbor);
+                        queue.add(pathToNextNode); //then add collection to the queue
+                    }
+                }
+            }
+        }
+    }
+
+
 
     public boolean isTargetReached(Cell currentCell) {
         return gamePanel.tileM.mapTile[currentCell.getX()][currentCell.getY()] == 4;
