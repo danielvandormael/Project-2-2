@@ -1,6 +1,7 @@
 package nl.maastrichtuniversity.dke.explorer.Logic.Entities;
 
 import nl.maastrichtuniversity.dke.explorer.GUI.GamePanel;
+import nl.maastrichtuniversity.dke.explorer.Logic.Tiles.Cell;
 import nl.maastrichtuniversity.dke.explorer.Logic.Objects.Object;
 import nl.maastrichtuniversity.dke.explorer.Logic.Objects.ObjectManager;
 
@@ -110,13 +111,13 @@ public class Entity {
         if(actionRotate == 1){ //rotate left
             if(viewAngle + 0.5 >= 360){
                 viewAngle = 0;
-            }else {
+            } else {
                 viewAngle += 0.5;
             }
         }else if (actionRotate == 2){ //rotate right
             if(viewAngle - 0.5 <= 0){
                 viewAngle = 360;
-            }else {
+            } else {
                 viewAngle -= 0.5;
             }
         }
@@ -186,7 +187,8 @@ public class Entity {
         return t1;
     }
 
-    // This should return an array of Tiles in which a guard is located
+    // This should return an array of in which a guard is located
+    // TODO: This should return an array of Cells in which a guard is located that can be seen by the entity
     // If there are no guards, return null
     public boolean guardsInView(){
         int[][] tiles = tilesInView();
@@ -202,6 +204,13 @@ public class Entity {
             }
         }
         return guard;
+    }
+
+    // TODO: Should return an array of Cells in which the intruders are that can be seen by the entity
+    // This should basically be the same as the guardsInView,
+    // so might be combined into entityInView
+    public Cell[] intrudersInView(){
+        return null;
     }
 
     public int[][] tilesInView(){
@@ -273,6 +282,9 @@ public class Entity {
      */
     public void leaveMarker(boolean isGuard) {
 
+        // Clean any markers placed previously on the current coordinates
+        gamePanel.objectM.loopCleanMarker((int) x, (int) y, isGuard);
+
         // Firstly, detect if there's a marker in the current tile
         // Guards only detect guard markers, and intruders only detect intruder markers
         if(direction == "up") {
@@ -287,12 +299,11 @@ public class Entity {
 
         // Act accordingly
         if(foundMarker) {
+            // TODO: This + avoid stranding
             rotate90();
             rotate90();
             foundMarker = false;
         }
-        // Clean any markers placed previously on the current coordinates
-        gamePanel.objectM.loopCleanMarker((int) x, (int) y, isGuard);
 
         int newMarkerIndex = selectMarkerType(isGuard);
         gamePanel.objectM.addMarker((int) x, (int) y, newMarkerIndex);
@@ -311,24 +322,7 @@ public class Entity {
             move();
         }
 
-        //System.out.println("actionMove: " + actionMove);
-        //update sprite
-        if(actionMove > 0){
-            if(picSprite == 0){
-                picSpriteCounter = 2;
-            }
-            picSpriteCounter++;
-            if(picSpriteCounter > 12){
-                if(picSprite == 1){
-                    picSprite = 2;
-                }else if(picSprite == 2){
-                    picSprite = 1;
-                }
-                picSpriteCounter = 0;
-            }
-        }else{
-            picSprite = 0;
-        }
+        picSprite = 0;
 
         onTopOf();
 

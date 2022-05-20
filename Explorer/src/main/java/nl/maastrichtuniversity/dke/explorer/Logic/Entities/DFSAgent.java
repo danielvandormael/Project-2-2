@@ -3,8 +3,9 @@ package nl.maastrichtuniversity.dke.explorer.Logic.Entities;
 import nl.maastrichtuniversity.dke.explorer.GUI.GamePanel;
 import nl.maastrichtuniversity.dke.explorer.Logic.Tiles.Cell;
 import nl.maastrichtuniversity.dke.explorer.Logic.Tiles.Map;
-//import nl.maastrichtuniversity.dke.explorer.TestDFSAgent;
+import nl.maastrichtuniversity.dke.explorer.Logic.Tiles.Tile;
 
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -27,13 +28,15 @@ public class DFSAgent extends Guard {
 
     Map map;
 
+    int type; // 0 favors turning left, 1 favors turning right
 
-    public DFSAgent(double x, double y, double viewAngle, double viewRange, double viewAngleSize, double baseSpeed, double sprintSpeed, GamePanel gamePanel) {
+    public DFSAgent(double x, double y, double viewAngle, double viewRange, double viewAngleSize, double baseSpeed, double sprintSpeed, GamePanel gamePanel, int type) {
         super(x, y, viewAngle, viewRange, viewAngleSize, baseSpeed, sprintSpeed, gamePanel);
         map = new Map(gamePanel.scenario.getMapWidth(), gamePanel.scenario.getMapHeight());
         desiredX= (int) x;
         desiredY= (int) y;
         desiredAngle = viewAngle;
+        this.type = type;
     }
 
     public void update(boolean isGuard) {
@@ -100,6 +103,58 @@ public class DFSAgent extends Guard {
             cellRight.setStatus(3);
         }
 
+        // Check if there are intruders in the view
+        Cell[] intruders = intrudersInView();
+        Cell closest = null;
+        if(intruders != null){
+            boolean move = false;
+            // If there is more than 1 intruder in view, go to the closest one
+            if (intruders.length > 1){
+                closest = getClosestIntruder(intruders);
+            }
+            else closest = intruders[0];
+            // If intruder is in front of the guard, sprint forwards
+            if (map.isInDirection(currentCell, targetCell, getViewAngle())) {
+                targetCell = closest;
+                move = true;
+                // If intruder is not right in front, targetCell is a cell that has the same x or y coordinate as intruder
+            } else if (map.isInDirection(currentCell, map.getCell(getX(), closest.getY()), getViewAngle())){
+                targetCell = map.getCell(getX(), closest.getY());
+                move = true;
+            }
+            else if (map.isInDirection(currentCell, map.getCell(closest.getX(), getY()), getViewAngle())){
+                targetCell = map.getCell(closest.getX(), getY());
+                move = true;
+            }
+
+            if (move) {
+                // move towards target
+                decision[0] = 2;
+                decision[1] = 0;
+                desiredX= targetCell.getX();
+                desiredY= targetCell.getY();
+                return false;
+            }
+            else {
+                double distanceX = Math.abs(getX() - closest.getX());
+                double distanceY = Math.abs(getY() - closest.getY());
+                if (distanceX > distanceY){
+                    targetCell = map.getCell(closest.getX(), getY());
+                }
+                else {
+                    targetCell = map.getCell(getX(), closest.getY());
+                }
+
+                // turn towards target
+                decision[0] = 0;
+                decision[1] = 1;
+                desiredX= (int) getX();
+                desiredY= (int) getY();
+                desiredAngle = map.getDirection(currentCell, targetCell);
+                return false;
+            }
+        }
+
         if(guardsInView()){
             Random rn = new Random();
             double random = Math.random();
@@ -108,6 +163,16 @@ public class DFSAgent extends Guard {
                 List<Cell> candidateCells = new ArrayList();
                 if (cellLeft.getStatus() == 0) candidateCells.add(cellLeft);
                 if (cellRight.getStatus() == 0) candidateCells.add(cellRight);
+                if (candidateCells.size() > 1){
+                    Cell choice = candidateCells.get(type);
+                    // turn and then check again how far you can go in that direction
+                    decision[0] = 0;
+                    decision[1] = 1;
+                    desiredAngle = map.getDirection(currentCell, choice);
+                    desiredX= (int) getX();
+                    desiredY= (int) getY();
+                    return false;
+                }
                 if (candidateCells.size() > 0) {
                     Cell choice = candidateCells.get(0);
                     // turn and then check again how far you can go in that direction
@@ -138,6 +203,16 @@ public class DFSAgent extends Guard {
         List<Cell> candidateCells = new ArrayList();
         if (cellLeft.getStatus() == 0) candidateCells.add(cellLeft);
         if (cellRight.getStatus() == 0) candidateCells.add(cellRight);
+        if (candidateCells.size() > 1){
+            Cell choice = candidateCells.get(type);
+            // turn and then check again how far you can go in that direction
+            decision[0] = 0;
+            decision[1] = 1;
+            desiredAngle = map.getDirection(currentCell, choice);
+            desiredX= (int) getX();
+            desiredY= (int) getY();
+            return false;
+        }
         if (candidateCells.size() > 0) {
             Cell choice = candidateCells.get(0);
             // turn and then check again how far you can go in that direction
@@ -178,5 +253,18 @@ public class DFSAgent extends Guard {
 
     public Map getMap() {
         return map;
+    }
+
+    public Cell getClosestIntruder(Cell[] intruders){
+        double distance = 100;
+        Cell closestCellWithIndruder = null;
+        for (int i = 0; i < intruders.length; i++){
+            double newDistance = Point2D.distance(getX(), getY(), intruders[i].getX(), intruders[i].getX());
+            if(newDistance < distance){
+                distance = newDistance;
+                closestCellWithIndruder = intruders[i];
+            }
+        }
+        return closestCellWithIndruder;
     }
 }
