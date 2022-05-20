@@ -27,7 +27,7 @@ public class GamePanel extends JPanel implements Runnable {
     Thread gameThread;
 
     public TileManager tileM;
-    EntityManager entityM;
+    public EntityManager entityM;
     ObjectManager objectM;
     public CollisionDetection collisionD;
 
@@ -58,6 +58,8 @@ public class GamePanel extends JPanel implements Runnable {
     @Override
     public void run() {
 
+        int targetAreaTime = 0; // consecutive iterations intruder has been in target area
+
         double interval = 1000000000/FPS;
         double nextLoop = System.nanoTime() + interval;
 
@@ -81,6 +83,7 @@ public class GamePanel extends JPanel implements Runnable {
                 e.printStackTrace();
             }
 
+            
         }
 
     }
@@ -105,6 +108,12 @@ public class GamePanel extends JPanel implements Runnable {
 
     public int getTileSize() {
         return tileSize;
+    }
+
+    public boolean checkIntruderInTarget(){
+        boolean intruderInTarget = false;
+        
+        return intruderInTarget;
     }
 }
 

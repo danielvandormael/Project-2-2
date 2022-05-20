@@ -1,5 +1,7 @@
 package nl.maastrichtuniversity.dke.explorer.Logic;
 
+import java.util.ArrayList;
+
 import nl.maastrichtuniversity.dke.explorer.GUI.GamePanel;
 import nl.maastrichtuniversity.dke.explorer.Logic.Entities.Entity;
 
@@ -35,6 +37,9 @@ public class CollisionDetection {
             nextTile1 = gamePanel.tileM.mapTile[entityMoveToX1][entityMoveToY1];
             nextTile2 = gamePanel.tileM.mapTile[entityMoveToX2][entityMoveToY1];
             nextTile3 = gamePanel.tileM.mapTile[entityMoveToX2][entityMoveToY2];
+            checkIntruderCaught(entity, entityMoveToX1, entityMoveToY1);
+            checkIntruderCaught(entity, entityMoveToX2, entityMoveToY1);
+            checkIntruderCaught(entity, entityMoveToX2, entityMoveToY2);
             if(gamePanel.tileM.tile[nextTile1].collision == true || gamePanel.tileM.tile[nextTile2].collision == true || gamePanel.tileM.tile[nextTile3].collision == true){
                 entity.setCollision(true);
             }
@@ -42,6 +47,9 @@ public class CollisionDetection {
             nextTile1 = gamePanel.tileM.mapTile[entityMoveToX1][entityMoveToY1];
             nextTile2 = gamePanel.tileM.mapTile[entityMoveToX1][entityMoveToY2];
             nextTile3 = gamePanel.tileM.mapTile[entityMoveToX2][entityMoveToY1];
+            checkIntruderCaught(entity, entityMoveToX1, entityMoveToY1);
+            checkIntruderCaught(entity, entityMoveToX1, entityMoveToY2);
+            checkIntruderCaught(entity, entityMoveToX2, entityMoveToY1);
             if(gamePanel.tileM.tile[nextTile1].collision == true || gamePanel.tileM.tile[nextTile2].collision == true || gamePanel.tileM.tile[nextTile3].collision == true){
                 entity.setCollision(true);
             }
@@ -49,6 +57,9 @@ public class CollisionDetection {
             nextTile1 = gamePanel.tileM.mapTile[entityMoveToX1][entityMoveToY1];
             nextTile2 = gamePanel.tileM.mapTile[entityMoveToX1][entityMoveToY2];
             nextTile3 = gamePanel.tileM.mapTile[entityMoveToX2][entityMoveToY2];
+            checkIntruderCaught(entity, entityMoveToX1, entityMoveToY1);
+            checkIntruderCaught(entity, entityMoveToX1, entityMoveToY2);
+            checkIntruderCaught(entity, entityMoveToX2, entityMoveToY2);
             if(gamePanel.tileM.tile[nextTile1].collision == true || gamePanel.tileM.tile[nextTile2].collision == true || gamePanel.tileM.tile[nextTile3].collision == true){
                 entity.setCollision(true);
             }
@@ -56,8 +67,42 @@ public class CollisionDetection {
             nextTile1 = gamePanel.tileM.mapTile[entityMoveToX1][entityMoveToY2];
             nextTile2 = gamePanel.tileM.mapTile[entityMoveToX2][entityMoveToY1];
             nextTile3 = gamePanel.tileM.mapTile[entityMoveToX2][entityMoveToY2];
+            checkIntruderCaught(entity, entityMoveToX1, entityMoveToY2);
+            checkIntruderCaught(entity, entityMoveToX2, entityMoveToY1);
+            checkIntruderCaught(entity, entityMoveToX2, entityMoveToY2);
             if(gamePanel.tileM.tile[nextTile1].collision == true || gamePanel.tileM.tile[nextTile2].collision == true || gamePanel.tileM.tile[nextTile3].collision == true){
                 entity.setCollision(true);
+            }
+        }
+
+
+    }
+
+    // Checks if any guards will collide with intruders after moving
+    public void checkIntruderCaught(Entity entity, int nextTileX, int nextTileY){
+        boolean intruderCaught = false;
+        //get positions of all guards and intruders
+        ArrayList<Double> guardXPositions = new ArrayList<Double>();
+        ArrayList<Double> guardYPositions = new ArrayList<Double>();
+        for (int i = 0; i < gamePanel.entityM.guards.length; i++){
+            guardXPositions.add(gamePanel.entityM.guards[i].getX());
+            guardYPositions.add(gamePanel.entityM.guards[i].getY());
+        }
+        ArrayList<Double> intruderXPositions = new ArrayList<Double>();
+        ArrayList<Double> intruderYPositions = new ArrayList<Double>();
+        for (int i = 0; i < gamePanel.entityM.intruders.length; i++){
+            intruderXPositions.add(gamePanel.entityM.intruders[i].getX());
+            intruderYPositions.add(gamePanel.entityM.intruders[i].getY());
+        }
+        // If entity is a guard then check for collisions with intruders and vice versa
+        if (guardXPositions.contains(entity.getX()) && guardYPositions.contains(entity.getY())){
+            if (intruderXPositions.contains(nextTileX) && intruderYPositions.contains(nextTileY)){
+                intruderCaught = true;
+            }
+        }
+        else if (intruderXPositions.contains(entity.getX()) && intruderYPositions.contains(entity.getY())){
+            if (guardXPositions.contains(nextTileX) && guardYPositions.contains(nextTileY)){
+                intruderCaught = true;
             }
         }
     }

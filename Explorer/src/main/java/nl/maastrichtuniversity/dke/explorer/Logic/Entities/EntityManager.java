@@ -6,8 +6,8 @@ import java.awt.*;
 
 public class EntityManager {
 
-    Entity[] guards;
-    Entity[] intruders;
+    public Entity[] guards;
+    public Entity[] intruders;
     GamePanel gamePanel;
 
     public EntityManager(GamePanel gamePanel){
