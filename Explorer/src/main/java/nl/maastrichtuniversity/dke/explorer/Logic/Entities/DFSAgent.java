@@ -155,7 +155,8 @@ public class DFSAgent extends Guard {
             }
         }
 
-        if(guardsInView()){
+        // Will wait and turn randomly if it sees another guard searching nearby or a marker
+        if(guardsInView() || foundMarker){
             Random rn = new Random();
             double random = Math.random();
             if (random < 0.33) {
@@ -184,7 +185,6 @@ public class DFSAgent extends Guard {
                     return false;
                 }
             }
-
         }
 
         if (cellFront.getStatus() == 0) {

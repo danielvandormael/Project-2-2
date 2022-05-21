@@ -8,6 +8,10 @@ import nl.maastrichtuniversity.dke.explorer.Logic.Objects.ObjectManager;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Entity {
 
@@ -64,7 +68,6 @@ public class Entity {
         this.viewHinder = 1;
     }
 
-
     public void setAction(int actionMove, int actionRotate){
         this.actionMove = actionMove;
         this.actionRotate = actionRotate;
@@ -83,8 +86,7 @@ public class Entity {
             move();
         }
 
-        //System.out.println("actionMove: " + actionMove);
-        //update sprite
+        // Update sprite
         if(actionMove > 0){
             if(picSprite == 0){
                 picSpriteCounter = 2;
@@ -282,51 +284,29 @@ public class Entity {
      */
     public void leaveMarker(boolean isGuard) {
 
+        foundMarker = false;
+
         // Clean any markers placed previously on the current coordinates
         gamePanel.objectM.loopCleanMarker((int) x, (int) y, isGuard);
 
-        // Firstly, detect if there's a marker in the current tile
-        // Guards only detect guard markers, and intruders only detect intruder markers
+        // Firstly, detect if there's a marker in the upcoming tile
+        // Guards only detect guard markers, and intruders only detect intruder markers (isGuard defines that)
         if(direction == "up") {
             foundMarker = gamePanel.objectM.detectMarker((int) x, ((int) y)-1, isGuard);
+            //gamePanel.objectM.loopCleanMarker((int) x, ((int) y)-1, isGuard);
         } else if(direction == "down") {
             foundMarker = gamePanel.objectM.detectMarker((int) x, ((int) y)+1, isGuard);
+            //gamePanel.objectM.loopCleanMarker((int) x, ((int) y)+1, isGuard);
         } else if(direction == "left") {
             foundMarker = gamePanel.objectM.detectMarker(((int) x)-1, (int) y, isGuard);
+            //gamePanel.objectM.loopCleanMarker(((int) x)-1, (int) y, isGuard);
         } else {
             foundMarker = gamePanel.objectM.detectMarker(((int) x)+1, (int) y, isGuard);
-        }
-
-        // Act accordingly
-        if(foundMarker) {
-            // TODO: This + avoid stranding
-            rotate90();
-            rotate90();
-            foundMarker = false;
+            //gamePanel.objectM.loopCleanMarker(((int) x)+1, (int) y, isGuard);
         }
 
         int newMarkerIndex = selectMarkerType(isGuard);
         gamePanel.objectM.addMarker((int) x, (int) y, newMarkerIndex);
-    }
-
-    private void rotate90() {
-
-        setAction(0,1);
-
-        rotate();
-
-        collision = false;
-        gamePanel.collisionD.checkTile(this);
-
-        if(collision == false){
-            move();
-        }
-
-        picSprite = 0;
-
-        onTopOf();
-
-        rayCasting();
     }
 
     /**
