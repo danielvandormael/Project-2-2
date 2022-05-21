@@ -96,6 +96,11 @@ public class BFSIntruder extends Intruder {
         if (count != pathToTarget.size() - 1){
             count++;
         }
+
+        if ((int) getX() == 20 && (int) getY() == 40){
+            decision[0] = 0;
+            decision[1] = 0;
+        }
     }
 
 //    public void bfs(Cell startingCell) {
@@ -307,7 +312,6 @@ public class BFSIntruder extends Intruder {
                 System.out.println("Takes " + pathToCell.size() +"steps");
                 pathToTarget = pathToCell;
                 break;
-
             }
 
             else {
@@ -324,7 +328,6 @@ public class BFSIntruder extends Intruder {
                 }
             }
         }
-
     }
 
     public boolean isTargetReached(Cell currentCell) {
