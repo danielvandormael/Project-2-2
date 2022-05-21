@@ -248,6 +248,69 @@ public class BFSIntruder extends Intruder {
         return false;
     }
 
+    private void moveNextCell(Cell cell){
+        // if the next cell is to the right of current intruder cell
+        if (getX() < cell.getX()){
+            // If intruder is facing to the right
+            if (getViewAngle() == 0){
+                setAction(1, 0);
+                super.update();
+            }
+            // If intruder is facing downwards
+            else if (getViewAngle() == 270){
+                setAction(0, 1);
+                super.update();
+                setAction(1, 0);
+                super.update();
+            }
+            // If intruder is facing to the left
+            else if (getViewAngle() == 180){
+                setAction(0, 1);
+                super.update();
+                setAction(0, 1);
+                super.update();
+                setAction(1, 0);
+                super.update();
+            }
+            // If intruder is facing upwards
+            else if (getViewAngle() == 90){
+                setAction(0, 2);
+                super.update();
+                setAction(1, 0);
+                super.update();
+            }
+        }
+        // if the next cell is below the current intruder cell
+        else if (getY() < cell.getY()){
+            // If intruder is facing to the right
+            if (getViewAngle() == 0){
+                setAction(0, 2);
+                super.update();
+                setAction(1, 0);
+                super.update();
+            }
+            // If intruder is facing downwards
+            else if (getViewAngle() == 270){
+                setAction(1, 0);
+                super.update();
+            }
+            // If intruder is facing to the left
+            else if (getViewAngle() == 180){
+                setAction(0, 1);
+                super.update();
+                setAction(1, 0);
+                super.update();
+            }
+            // If intruder is facing upwards
+            else if (getViewAngle() == 90){
+                setAction(0, 2);
+                super.update();
+                setAction(0, 2);
+                super.update();
+                setAction(1, 0);
+                super.update();
+            }
+        }
 
 
 
