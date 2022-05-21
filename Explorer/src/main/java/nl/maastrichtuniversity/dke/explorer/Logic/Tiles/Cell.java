@@ -7,17 +7,6 @@ public class Cell {
     private int x;
     private int y;
 
-    public boolean isGuardThere() {
-        return isGuardThere;
-    }
-
-    public void setGuardThere(boolean guardThere) {
-        isGuardThere = guardThere;
-    }
-
-    private boolean isGuardThere;
-
-
 
     public Cell(int x, int y){
         this.x = x;

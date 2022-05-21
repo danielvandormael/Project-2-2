@@ -64,7 +64,7 @@ public class DFSAgent extends Guard {
 
         //labeling parent cell
         if(currentCell.getStatus() == 0){
-            currentCell.setGuardThere(true);
+
             currentCell.setStatus(1);
             if(currentCell.getParentCell() == null){
                 Cell fromCell = currentCell;
@@ -105,9 +105,7 @@ public class DFSAgent extends Guard {
             desiredY = targetCell.getY();
 
             decision[0] = 1;
-            currentCell.setGuardThere(false);
             decision[1] = 0;
-            cellFront.setGuardThere(true);
             return false;
         }
 
@@ -123,7 +121,7 @@ public class DFSAgent extends Guard {
             // turn and then check again how far you can go in that direction
             decision[0] = 0;
             decision[1] = 1;
-            currentCell.setGuardThere(true);
+
             desiredAngle = map.getDirection(currentCell, choice);
             desiredX= (int) getX();
             desiredY= (int) getY();
@@ -139,8 +137,6 @@ public class DFSAgent extends Guard {
 
             decision[0] = 1;
             decision[1] = 0;
-            currentCell.setGuardThere(false);
-            targetCell.setGuardThere(true);
             desiredX= targetCell.getX();
             desiredY= targetCell.getY();
             return false;
@@ -148,7 +144,6 @@ public class DFSAgent extends Guard {
             // turn towards target
             decision[0] = 0;
             decision[1] = 1;
-            currentCell.setGuardThere(true);
             desiredX= (int) getX();
             desiredY= (int) getY();
             desiredAngle = map.getDirection(currentCell, targetCell);

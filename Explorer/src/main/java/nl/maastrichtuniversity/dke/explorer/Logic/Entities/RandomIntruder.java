@@ -112,20 +112,20 @@ public class RandomIntruder extends Intruder {
 
         boolean guard = false;
 
-        for (int i = 1; i <= getViewRange(); i++) {
-            // For all cells in front within the viewRange
-            // if the cells in front is not wall then continue to add to viewing Area
-            //Only take straight cell infront into account
-            while (gamePanel.tileM.mapTile[currentCell.getX()][currentCell.getY()] != 1) {
-                currentCell = map.getCellInFront(currentCell, getViewAngle());
-                viewingArea.add(currentCell);
-            }
-        }
-
-        for (Cell cell : viewingArea) {
-            guard = cell.isGuardThere();
-        }
-        System.out.println(guard);
+//        for (int i = 1; i <= getViewRange(); i++) {
+//            // For all cells in front within the viewRange
+//            // if the cells in front is not wall then continue to add to viewing Area
+//            //Only take straight cell infront into account
+//            while (gamePanel.tileM.mapTile[currentCell.getX()][currentCell.getY()] != 1) {
+//                currentCell = map.getCellInFront(currentCell, getViewAngle());
+//                viewingArea.add(currentCell);
+//            }
+//        }
+//
+//        for (Cell cell : viewingArea) {
+//            guard = cell.isGuardThere();
+//        }
+//        System.out.println(guard);
         return guard;
 
     }
