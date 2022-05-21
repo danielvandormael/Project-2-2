@@ -16,6 +16,7 @@ public class BFSIntruder extends Intruder {
     private int desiredY;
     Cell targetCell;
     private List<Cell> pathToTarget;
+    private int count = 1;
 
 
     int[] decision = new int[2]; // 1- movement  2- rotation
@@ -32,18 +33,69 @@ public class BFSIntruder extends Intruder {
     }
 
     public void update() {
-
-//        walk();
-//        setAction(decision[0],decision[1]);
-//        super.update();
+        walk();
+        setAction(decision[0],decision[1]);
+        super.update();
     }
 
     private void walk() {
         //if next cell is infront and facing in the right dir -> walk
         //if next cell is down then rotate
-            decision[0] = 1;
-            decision[1] = 0;
 
+        // if the next cell is to the right of current intruder cell
+        if (getX() < pathToTarget.get(count).getX()) {
+            // If intruder is facing to the right
+            if (getViewAngle() == 0) {
+                System.out.println("facing right");
+                decision[0] = 1;
+                decision[1] = 0;
+            }
+            // If intruder is facing downwards
+            else if (getViewAngle() == 90) {
+                System.out.println("face down");
+                decision[0] = 0;
+                decision[1] = 1;
+            }
+            // If intruder is facing to the left
+            else if (getViewAngle() == 180) {
+                System.out.println("face left");
+                decision[0] = 0;
+                decision[1] = 1;
+            }
+            // If intruder is facing upwards
+            else if (getViewAngle() == 270) {
+                System.out.println("face up");
+                decision[0] = 0;
+                decision[1] = 2;
+            }
+        }
+        // if the next cell is below the current intruder cell
+        else if (getY() < pathToTarget.get(count).getY()) {
+            // If intruder is facing to the right
+            System.out.println(getViewAngle());
+            if (getViewAngle() == 0) {
+                decision[0] = 0;
+                decision[1] = 1;
+            }
+            // If intruder is facing downwards
+            else if (getViewAngle() == 90) {
+                decision[0] = 1;
+                decision[1] = 0;
+            }
+            // If intruder is facing to the left
+            else if (getViewAngle() == 180) {
+                decision[0] = 0;
+                decision[1] = 1;
+            }
+            // If intruder is facing upwards
+            else if (getViewAngle() == 270) {
+                decision[0] = 0;
+                decision[1] = 2;
+            }
+        }
+        if (count != pathToTarget.size() - 1){
+            count++;
+        }
     }
 
 //    public void bfs(Cell startingCell) {
@@ -311,76 +363,6 @@ public class BFSIntruder extends Intruder {
         return false;
     }
 
-    private void moveNextCell(Cell fromCell, Cell toCell) {
-        // if the next cell is to the right of current intruder cell
-        int x = fromCell.getX();
-        int y = fromCell.getY();
-        if (x < toCell.getX()) {
-            // If intruder is facing to the right
-            if (getViewAngle() == 0) {
-                System.out.println("facing right");
-                setAction(1, 0);
-                super.update();
-            }
-            // If intruder is facing downwards
-            else if (getViewAngle() == 270) {
-                System.out.println("face down");
-                setAction(0, 1);
-                super.update();
-                setAction(1, 0);
-                super.update();
-            }
-            // If intruder is facing to the left
-            else if (getViewAngle() == 180) {
-                System.out.println("face left");
-                setAction(0, 1);
-                super.update();
-                setAction(0, 1);
-                super.update();
-                setAction(1, 0);
-                super.update();
-            }
-            // If intruder is facing upwards
-            else if (getViewAngle() == 90) {
-                System.out.println("face up");
-                setAction(0, 2);
-                super.update();
-                setAction(1, 0);
-                super.update();
-            }
-        }
-        // if the next cell is below the current intruder cell
-        else if (y < toCell.getY()) {
-            // If intruder is facing to the right
-            if (getViewAngle() == 0) {
-                setAction(0, 2);
-                super.update();
-                setAction(1, 0);
-                super.update();
-            }
-            // If intruder is facing downwards
-            else if (getViewAngle() == 270) {
-                setAction(1, 0);
-                super.update();
-            }
-            // If intruder is facing to the left
-            else if (getViewAngle() == 180) {
-                setAction(0, 1);
-                super.update();
-                setAction(1, 0);
-                super.update();
-            }
-            // If intruder is facing upwards
-            else if (getViewAngle() == 90) {
-                setAction(0, 2);
-                super.update();
-                setAction(0, 2);
-                super.update();
-                setAction(1, 0);
-                super.update();
-            }
-        }
-    }
 
 
 
