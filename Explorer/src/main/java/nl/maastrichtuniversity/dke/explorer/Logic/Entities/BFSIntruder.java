@@ -96,6 +96,13 @@ public class BFSIntruder extends Intruder {
         if (count != pathToTarget.size() - 1){
             count++;
         }
+
+        // intruder stops moving when it reaches target
+        if ((int) getX() == gamePanel.scenario.getTargetArea().getLeftBoundary() && (int) getY() == gamePanel.scenario.getTargetArea().getBottomBoundary()){
+            System.out.println("done");
+            decision[0] = 0;
+            decision[1] = 0;
+        }
     }
 
 //    public void bfs(Cell startingCell) {
