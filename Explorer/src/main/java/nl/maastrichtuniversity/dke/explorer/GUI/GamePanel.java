@@ -21,15 +21,18 @@ public class GamePanel extends JPanel implements Runnable {
     final int expMenuHeight = 22;
     final int screenWidth = tileSize * maxScreenCol;
     final int screenHeight = (tileSize * maxScreenRow) + expMenuHeight;
-    final int FPS = 1000;
+
+    final int FPS = 200;
+
     public Scenario scenario;
 
     Thread gameThread;
 
     public TileManager tileM;
-    EntityManager entityM;
-    ObjectManager objectM;
+    public EntityManager entityM;
+    public ObjectManager objectM;
     public CollisionDetection collisionD;
+
 
     public GamePanel(Scenario scenario){
         this.scenario = scenario;
@@ -85,17 +88,13 @@ public class GamePanel extends JPanel implements Runnable {
 
     }
 
-    public void update(){
-
-        entityM.update();
-
-    }
+    public void update() { entityM.update(); }
 
     public void paintComponent(Graphics g){
         super.paintComponent(g);
 
         Graphics2D g2 = (Graphics2D)g;
-
+        
         tileM.draw(g2);
         entityM.draw(g2);
         objectM.draw(g2);
@@ -103,9 +102,8 @@ public class GamePanel extends JPanel implements Runnable {
         g2.dispose();
     }
 
-    public int getTileSize() {
-        return tileSize;
-    }
+    public int getTileSize() { return this.tileSize; }
+
 
     public EntityManager getEntityManager(){ return entityM; }
 }

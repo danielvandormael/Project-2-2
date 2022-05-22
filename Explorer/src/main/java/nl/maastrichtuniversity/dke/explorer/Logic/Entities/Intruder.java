@@ -32,4 +32,6 @@ public class Intruder extends Entity {
             e.printStackTrace();
         }
     }
+
+    public void setDeadEnd(boolean dE) { super.deadEnd = dE; }
 }

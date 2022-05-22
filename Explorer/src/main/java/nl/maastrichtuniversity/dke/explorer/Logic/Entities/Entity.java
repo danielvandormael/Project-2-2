@@ -1,13 +1,20 @@
 package nl.maastrichtuniversity.dke.explorer.Logic.Entities;
 
-import javafx.geometry.Point2D;
 import nl.maastrichtuniversity.dke.explorer.GUI.GamePanel;
 import nl.maastrichtuniversity.dke.explorer.Logic.Tiles.Cell;
+import nl.maastrichtuniversity.dke.explorer.Logic.Objects.Object;
+import nl.maastrichtuniversity.dke.explorer.Logic.Objects.ObjectManager;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Entity {
+
     private double x, y;
     private double viewAngle;
     private final double viewRange;
@@ -17,19 +24,20 @@ public class Entity {
     private final  double sprintSpeed;
     private final double speedRatio = 20;
     private boolean collision = false;
+    public boolean deadEnd, foundMarker;
 
     final int rayAmount = 15;
     private double [][] rayT = new double[rayAmount][3];
 
     /*
-           Action Move:
-           0 - stand still
-           1 - walk
-           2 - run
-           Action Rotate:
-           0 - stand still
-           1 - rotate left
-           2 - rotate right
+       Action Move:
+       0 - stand still
+       1 - walk
+       2 - run
+       Action Rotate:
+       0 - stand still
+       1 - rotate left
+       2 - rotate right
      */
     private int actionMove;
     private int actionRotate;
@@ -41,9 +49,7 @@ public class Entity {
     int picSpriteCounter;
     Color viewColor;
 
-
     GamePanel gamePanel;
-
 
     public Entity(double x, double y, double viewAngle, double viewRange, double viewAngleSize, double baseSpeed, double sprintSpeed, Color viewColor, GamePanel gamePanel) {
         this.gamePanel = gamePanel;
@@ -62,13 +68,14 @@ public class Entity {
         this.viewHinder = 1;
     }
 
-
     public void setAction(int actionMove, int actionRotate){
         this.actionMove = actionMove;
         this.actionRotate = actionRotate;
     }
+    
+    public void update(boolean isGuard){
 
-    public void update(){
+        leaveMarker(isGuard);
 
         rotate();
 
@@ -79,8 +86,7 @@ public class Entity {
             move();
         }
 
-        System.out.println("actionMove: " + actionMove);
-        //update sprite
+        // Update sprite
         if(actionMove > 0){
             if(picSprite == 0){
                 picSpriteCounter = 2;
@@ -101,20 +107,19 @@ public class Entity {
         onTopOf();
 
         rayCasting();
-
     }
 
     private void rotate(){
         if(actionRotate == 1){ //rotate left
             if(viewAngle + 0.5 >= 360){
                 viewAngle = 0;
-            }else {
+            } else {
                 viewAngle += 0.5;
             }
         }else if (actionRotate == 2){ //rotate right
             if(viewAngle - 0.5 <= 0){
                 viewAngle = 360;
-            }else {
+            } else {
                 viewAngle -= 0.5;
             }
         }
@@ -130,14 +135,12 @@ public class Entity {
             direction = "right";
         }
     }
-
     /*
         Movement equation:
         current position + (relative size of a pixel) * (speed ratio)
      */
-
-
     private void move(){
+
         if(actionMove == 1){ //walk
             x += ( (1 / (double) gamePanel.getTileSize()) * (baseSpeed/speedRatio) ) * Math.cos(Math.toRadians(viewAngle));
             y += ( (1 / (double) gamePanel.getTileSize()) * (baseSpeed/speedRatio) ) * Math.sin(Math.toRadians(viewAngle));
@@ -167,7 +170,6 @@ public class Entity {
      T2 = (r_dx*(s_py-r_py) + r_dy*(r_px-s_px))/(s_dx*r_dy - s_dy*r_dx)
      T1 = (s_px+s_dx*T2-r_px)/r_dx
      */
-
     private double rayIntersectionSegment(double r_px, double r_py, double r_dx, double r_dy){
         double t1 = viewRange/viewHinder;
         double t2;
@@ -187,6 +189,7 @@ public class Entity {
         return t1;
     }
 
+
     // TODO: This should return an array of Cells in which a guard is located that can be seen by the entity
     // If there are no guards, return null
     public boolean guardsInView(){
@@ -197,7 +200,7 @@ public class Entity {
         for (int i = 0; i < tiles.length; i++){
             for (int j = 0; j < guards.length; j++){
                 if((int) guards[j].getX() == tiles[i][1] && (int) guards[j].getY() == tiles[i][2] && ((int) this.getX() != tiles[i][1] && (int)this.getY() != tiles[i][2])) {
-                    System.out.println("guard = true");
+                    //System.out.println("guard = true");
                     guard = true;
                 }
             }
@@ -208,7 +211,6 @@ public class Entity {
     // TODO: Should return an array of Cells in which the intruders are that can be seen by the entity
     // This should basically be the same as the guardsInView,
     // so might be combined into entityInView
-
     public Cell[] intrudersInView(){
         return null;
     }
@@ -256,7 +258,113 @@ public class Entity {
         }
     }
 
-    //sprite of entities
+    /**
+     * Leaves a marker at the current position of the entity in question
+     @return isDeadEnd true, if the entity has detected the existence of a dead end
+     */
+    private boolean isDeadEnd() {
+        boolean isDeadEnd = deadEnd;
+
+//        if(isDeadEnd) {
+//            System.out.println("DEAD END METHOD IS TRUE");
+//        }
+        return isDeadEnd;
+    }
+
+    /*
+    This first check will depend on hierarchy of markers, if there's one more important than another,
+    we might have to remove one of them. Otherwise, they can both coexist, even if that's not visible in the GUI.
+    However, since we're using an ArrayList to keep track of objects, it should be possible to add AL of objects,
+    but that would make checking for markers harder.
+    This is why removing markers, having only one at a time, can be much easier to handle further down the line.
+     */
+    /**
+     * Leaves a marker at the current position of the entity in question
+     @param isGuard true, if the entity in question is a guard; false, otherwise
+     */
+    public void leaveMarker(boolean isGuard) {
+
+        foundMarker = false;
+
+        // Clean any markers placed previously on the current coordinates
+        gamePanel.objectM.loopCleanMarker((int) x, (int) y, isGuard);
+
+        // Firstly, detect if there's a marker in the upcoming tile
+        // Guards only detect guard markers, and intruders only detect intruder markers (isGuard defines that)
+        if(direction == "up") {
+            foundMarker = gamePanel.objectM.detectMarker((int) x, ((int) y)-1, isGuard);
+            //gamePanel.objectM.loopCleanMarker((int) x, ((int) y)-1, isGuard);
+        } else if(direction == "down") {
+            foundMarker = gamePanel.objectM.detectMarker((int) x, ((int) y)+1, isGuard);
+            //gamePanel.objectM.loopCleanMarker((int) x, ((int) y)+1, isGuard);
+        } else if(direction == "left") {
+            foundMarker = gamePanel.objectM.detectMarker(((int) x)-1, (int) y, isGuard);
+            //gamePanel.objectM.loopCleanMarker(((int) x)-1, (int) y, isGuard);
+        } else {
+            foundMarker = gamePanel.objectM.detectMarker(((int) x)+1, (int) y, isGuard);
+            //gamePanel.objectM.loopCleanMarker(((int) x)+1, (int) y, isGuard);
+        }
+
+        int newMarkerIndex = selectMarkerType(isGuard);
+        gamePanel.objectM.addMarker((int) x, (int) y, newMarkerIndex);
+    }
+
+    /**
+     * Defines what type of marker to add later on
+     * Hierarchy of markers (i.e. which markers should have priority, since there can only be one at a time per tile)
+     * FOR GUARD:
+     * BY-WALL (-) > DEAD END (1) > TIME PHEROMONE (0)
+     * FOR INTRUDERS:
+     * WARNING (4) > BY-WALL (-) > DEAD END (3) > TIME PHEROMONE (2)
+     * This means if none of the beforehand listed marker types is applicable, there will always be one to add.
+     @param isGuard true, if the entity in question is a guard; false, otherwise
+     @return markerTypeIndex index of the type of the marker to add
+     */
+    private int selectMarkerType(boolean isGuard) {
+
+        int markerTypeIndex;
+
+        if(isGuard) { // Specific markers for *guards*
+
+            if(isDeadEnd()) {
+                markerTypeIndex = 1; // DEAD END MARKER
+            } else {
+                markerTypeIndex = 0; // The TIME PHEROMONE is the definite one to add (margin of error)
+            }
+
+        } else { // Specific markers for *intruders*
+
+            if (guardsInView()) { // This one is exclusive for intruders
+                markerTypeIndex = 4; // WARNING MARKER
+                // TODO: Also move the intruder that saw the guard
+            } else if(isDeadEnd()) {
+                markerTypeIndex = 3; // DEAD END MARKER
+            } else {
+                // TIME PHEROMONE - BASIC DEFAULT i.e. to be added (at least) every time! This marker
+                // implies that type 3 markers are to be added too, could be done
+                // in the same method 2 is created.
+                markerTypeIndex = 2;
+            }
+        }
+        /*
+        PSEUDOCODE:
+
+        // TODO: Add specific methods to handle the different types of marker checks
+        IF (INTRUDER.VIEWS(GUARD))
+            markerTypeIndex = 3;
+        ELSE IF (INTRUDER/GUARD.IS_NEXT_TO(WALL))
+            markerTypeIndex = -; // BY-WALL
+        ELSE IF (INTRUDER/GUARD.RETURNED_FROM_DEADEND())
+            markerTypeIndex = 2; // DEAD END (TO LEAVE AS IT'S EXITING THE DEAD END i.e. it saw the same squares again
+                                                so the marker will be left once it detects it can move into a new one)
+        ELSE
+            markerTypeIndex = 1;
+         */
+
+        return markerTypeIndex;
+    }
+
+    // Sprite of entities
     private BufferedImage getImage(){
 
         BufferedImage image = null;
@@ -301,6 +409,7 @@ public class Entity {
     public void draw(Graphics2D g){
 
         g.setColor(viewColor);
+
         for(int i = 0; i < rayT.length - 1; i++){
             int arcX1 = (int) (x*gamePanel.getTileSize()) + gamePanel.getTileSize();
             int arcY1 = (int) (y*gamePanel.getTileSize()) + gamePanel.getTileSize();
@@ -317,41 +426,22 @@ public class Entity {
         g.drawImage(getImage(), (int) x*gamePanel.getTileSize() - gamePanel.getTileSize()/2, (int) y*gamePanel.getTileSize() - gamePanel.getTileSize()/2, gamePanel.getTileSize()*2,  gamePanel.getTileSize()*2, null);
     }
 
-    public double getX() {
-        return x;
-    }
+    public double getX() { return x; }
 
-    public double getY() {
-        return y;
-    }
+    public double getY() { return y; }
 
-    public double getViewAngle() {
-        return viewAngle;
-    }
+    public double getViewAngle() { return viewAngle; }
 
-    public double getViewRange() {
-        return viewRange;
-    }
+    public double getViewRange() { return viewRange; }
 
-    public double getBaseSpeed() {
-        return baseSpeed;
-    }
+    public double getBaseSpeed() { return baseSpeed; }
 
-    public double getSprintSpeed() {
-        return sprintSpeed;
-    }
+    public double getSprintSpeed() { return sprintSpeed; }
 
-    public double getSpeedRatio() {
-        return speedRatio;
-    }
+    public double getSpeedRatio() { return speedRatio; }
 
-    public int getActionMove() {
-        return actionMove;
-    }
+    public int getActionMove() { return actionMove; }
 
-    public void setCollision(boolean collision) {
-        this.collision = collision;
-    }
-
+    public void setCollision(boolean collision) { this.collision = collision; }
 
 }

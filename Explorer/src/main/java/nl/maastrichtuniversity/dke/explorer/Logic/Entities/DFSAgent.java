@@ -30,7 +30,6 @@ public class DFSAgent extends Guard {
 
     int type; // 0 favors turning left, 1 favors turning right
 
-
     public DFSAgent(double x, double y, double viewAngle, double viewRange, double viewAngleSize, double baseSpeed, double sprintSpeed, GamePanel gamePanel, int type) {
         super(x, y, viewAngle, viewRange, viewAngleSize, baseSpeed, sprintSpeed, gamePanel);
         map = new Map(gamePanel.scenario.getMapWidth(), gamePanel.scenario.getMapHeight());
@@ -40,10 +39,10 @@ public class DFSAgent extends Guard {
         this.type = type;
     }
 
-    public void update(){
+    public void update(boolean isGuard) {
         DFS();
         setAction(decision[0], decision[1]);
-        super.update();
+        super.update(isGuard);
     }
 
     public void DFS() {
@@ -56,6 +55,7 @@ public class DFSAgent extends Guard {
         Cell currentCell = map.getCell(getX(), getY());
         targetCell = map.getCell(desiredX, desiredY);
 
+        this.setDeadEnd(false);
         //useless
         if (targetCell != null) {
             if (!currentCell.equals(targetCell)) {
@@ -117,6 +117,7 @@ public class DFSAgent extends Guard {
             if (map.isInDirection(currentCell, targetCell, getViewAngle())) {
                 targetCell = closest;
                 move = true;
+
             // If intruder is not right in front, targetCell is a cell that has the same x or y coordinate as intruder
             } else if (map.isInDirection(currentCell, map.getCell(getX(), closest.getY()), getViewAngle())){
                 targetCell = map.getCell(getX(), closest.getY());
@@ -145,7 +146,7 @@ public class DFSAgent extends Guard {
                     targetCell = map.getCell(getX(), closest.getY());
                 }
 
-            // turn towards target
+                // turn towards target
                 decision[0] = 0;
                 decision[1] = 1;
                 desiredX= (int) getX();
@@ -155,7 +156,9 @@ public class DFSAgent extends Guard {
             }
         }
 
-        if(guardsInView()){
+
+        // Will wait and turn randomly if it sees another guard searching nearby or a marker
+        if(guardsInView() || foundMarker){
             Random rn = new Random();
             double random = Math.random();
             if (random < 0.33) {
@@ -225,6 +228,10 @@ public class DFSAgent extends Guard {
         }
 
         // if there are no unexplored neighbours
+
+        // Technically, works as a dead-end (at least for the intruder, whose goal is to explore everything)
+        this.setDeadEnd(true);
+
         currentCell.setStatus(2);
         targetCell = currentCell.getParentCell();
 
