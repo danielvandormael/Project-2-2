@@ -56,7 +56,7 @@ public class ExplorerScene extends GUIMain {
 
         expMenuBar = new JMenuBar();
         keyMenu = new JMenu();
-        keyItems = new JMenuItem[7];
+        keyItems = new JMenuItem[13];
         for(int i = 0; i < keyItems.length; i++) {
             keyItems[i] = new JMenuItem();
         }
@@ -84,6 +84,24 @@ public class ExplorerScene extends GUIMain {
 
         keyItems[6].setIcon(new ImageIcon("src/main/resources/bit16/prisoner/front_standing.png"));
         keyItems[6].setText("Intruder");
+
+        keyItems[7].setIcon(new ImageIcon("src/main/resources/bit8/objects/marker1.png"));
+        keyItems[7].setText("Time Pheromone");
+
+        keyItems[8].setIcon(new ImageIcon("src/main/resources/bit8/objects/marker2.png"));
+        keyItems[8].setText("Dead End Marker");
+
+        keyItems[9].setIcon(new ImageIcon("src/main/resources/bit8/objects/marker3.png"));
+        keyItems[9].setText("Warning Marker");
+
+        keyItems[10].setIcon(new ImageIcon("src/main/resources/bit8/sense/arrow.png"));
+        keyItems[10].setText("Arrow");
+
+        keyItems[11].setIcon(new ImageIcon("src/main/resources/bit8/sense/hear.png"));
+        keyItems[11].setText("Hear Notice");
+
+        keyItems[12].setIcon(new ImageIcon("src/main/resources/bit8/sense/shout.png"));
+        keyItems[12].setText("Shout Icon");
 
         for(int i = 0; i < keyItems.length; i++) {
             keyMenu.add(keyItems[i]);
