@@ -104,7 +104,6 @@ public class GamePanel extends JPanel implements Runnable {
 
     public int getTileSize() { return this.tileSize; }
 
-
     public EntityManager getEntityManager(){ return entityM; }
 }
 

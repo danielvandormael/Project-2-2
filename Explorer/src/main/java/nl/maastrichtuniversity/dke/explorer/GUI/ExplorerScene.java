@@ -33,7 +33,7 @@ public class ExplorerScene extends GUIMain {
         //expFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 
         // Decentralize absolute pathing
-        File file = new File("src/main/resources/maps/testmap.txt");
+        File file = new File("src/main/resources/maps/demomap.txt");
         String absPath = file.getAbsolutePath();
         //System.out.println(absPath);
 

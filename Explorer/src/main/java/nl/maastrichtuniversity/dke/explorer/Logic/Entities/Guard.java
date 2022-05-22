@@ -10,8 +10,10 @@ import java.io.IOException;
 
 public class Guard extends Entity {
 
-    public Guard(double x, double y, double viewAngle, double viewRange, double viewAngleSize, double baseSpeed, double sprintSpeed, GamePanel gamePanel) {
-        super(x, y, viewAngle, viewRange, viewAngleSize, baseSpeed, sprintSpeed, new Color(255, 250, 134, 70), gamePanel);
+    private boolean shoutSound;
+
+    public Guard(int id, double x, double y, double viewAngle, double viewRange, double viewAngleSize, double baseSpeed, double sprintSpeed, GamePanel gamePanel) {
+        super(id, x, y, viewAngle, viewRange, viewAngleSize, baseSpeed, sprintSpeed, new Color(255, 250, 134, 70), gamePanel);
         getPlayerImage();
     }
 
@@ -35,4 +37,8 @@ public class Guard extends Entity {
     }
 
     public void setDeadEnd(boolean dE) { super.deadEnd = dE; }
+
+    public void setShout(boolean choice){
+        this.shoutSound = choice;
+    }
 }

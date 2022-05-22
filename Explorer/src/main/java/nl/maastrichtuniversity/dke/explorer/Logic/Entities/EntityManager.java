@@ -9,12 +9,15 @@ public class EntityManager {
     Entity[] guards;
     Entity[] intruders;
     GamePanel gamePanel;
+    private int id;
 
     public EntityManager(GamePanel gamePanel) {
         this.gamePanel = gamePanel;
 
         guards = new Entity[gamePanel.scenario.getNumGuards()];
         intruders = new Entity[gamePanel.scenario.getNumIntruders()];
+
+        id = 0;
         generateGuards();
         generateIntruder();
     }
@@ -22,14 +25,17 @@ public class EntityManager {
     public void generateGuards() {
         double [][] tmp = gamePanel.scenario.spawnGuards();
         for(int i = 0; i< gamePanel.scenario.getNumGuards(); i++) {
-            guards[i]= new DFSAgent(tmp[i][0], tmp[i][1], 0, 8, 180, gamePanel.scenario.getBaseSpeedGuard(), gamePanel.scenario.getBaseSpeedGuard(), gamePanel, (i+2)%2);
+            guards[i]= new DFSAgent(id, tmp[i][0], tmp[i][1], 0, 8, 180, gamePanel.scenario.getBaseSpeedGuard(), gamePanel.scenario.getBaseSpeedGuard(), gamePanel, (i+2)%2);
+            id++;
         }
     }
 
     public void generateIntruder() {
         double [][] tmp = gamePanel.scenario.spawnIntruders();
         for(int i = 0; i< gamePanel.scenario.getNumIntruders(); i++) {
-            intruders[i]= new Intruder(tmp[i][0], tmp[i][1], 0, 12, 180, gamePanel.scenario.getBaseSpeedIntruder(), gamePanel.scenario.getSprintSpeedIntruder(), gamePanel);
+            // TODO: Change if we go for ASAgent
+            intruders[i]= new Intruder(id, tmp[i][0], tmp[i][1], 0, 12, 180, gamePanel.scenario.getBaseSpeedIntruder(), gamePanel.scenario.getSprintSpeedIntruder(), gamePanel);
+            id++;
         }
     }
 

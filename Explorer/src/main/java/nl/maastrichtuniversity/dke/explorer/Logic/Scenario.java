@@ -174,24 +174,24 @@ public class Scenario {
 
     public double[][] spawnGuards(){
         double[][] tmp = new double[numGuards][4];
-        double dx=spawnAreaGuards.rightBoundary-spawnAreaGuards.leftBoundary;
-        double dy=spawnAreaGuards.topBoundary-spawnAreaGuards.bottomBoundary;
+        double dx = spawnAreaGuards.rightBoundary-spawnAreaGuards.leftBoundary;
+        double dy = spawnAreaGuards.topBoundary-spawnAreaGuards.bottomBoundary;
         for(int i=0; i<numGuards; i++){
-            tmp[i][0]=spawnAreaGuards.leftBoundary+ Math.random()*dx;
-            tmp[i][1]=spawnAreaGuards.bottomBoundary+ Math.random()*dy;
-            tmp[i][2]= Math.random()*2* Math.PI;
+            tmp[i][0] = spawnAreaGuards.leftBoundary+ Math.random()*dx;
+            tmp[i][1] = spawnAreaGuards.bottomBoundary+ Math.random()*dy;
+            tmp[i][2] = Math.random()*2* Math.PI;
         }
         return tmp;
     }
 
     public double[][] spawnIntruders(){
         double[][] tmp = new double[numIntruders][4];
-        double dx=spawnAreaIntruders.rightBoundary-spawnAreaIntruders.leftBoundary;
-        double dy=spawnAreaIntruders.topBoundary-spawnAreaIntruders.bottomBoundary;
+        double dx = spawnAreaIntruders.rightBoundary-spawnAreaIntruders.leftBoundary;
+        double dy = spawnAreaIntruders.topBoundary-spawnAreaIntruders.bottomBoundary;
         for(int i=0; i<numIntruders; i++){
-            tmp[i][0]=spawnAreaIntruders.leftBoundary+ Math.random()*dx;
-            tmp[i][1]=spawnAreaIntruders.bottomBoundary+ Math.random()*dy;
-            tmp[i][2]= Math.random()*2* Math.PI;
+            tmp[i][0] = spawnAreaIntruders.leftBoundary+ Math.random()*dx;
+            tmp[i][1] = spawnAreaIntruders.bottomBoundary+ Math.random()*dy;
+            tmp[i][2] = Math.random()*2* Math.PI;
         }
         return tmp;
     }

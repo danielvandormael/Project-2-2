@@ -5,8 +5,11 @@ import nl.maastrichtuniversity.dke.explorer.Logic.Tiles.Cell;
 import nl.maastrichtuniversity.dke.explorer.Logic.Objects.Object;
 import nl.maastrichtuniversity.dke.explorer.Logic.Objects.ObjectManager;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -15,6 +18,7 @@ import java.util.TimerTask;
 
 public class Entity {
 
+    private final int id;
     private double x, y;
     private double viewAngle;
     private final double viewRange;
@@ -24,7 +28,15 @@ public class Entity {
     private final  double sprintSpeed;
     private final double speedRatio = 20;
     private boolean collision = false;
+
+    // Marker specific
     public boolean deadEnd, foundMarker;
+
+    // Sound specific
+    private final int hearRadius;
+    private boolean walkSound;
+    protected boolean shoutSound;
+    private ArrayList<Sound> sounds;
 
     final int rayAmount = 15;
     private double [][] rayT = new double[rayAmount][3];
@@ -38,12 +50,16 @@ public class Entity {
        0 - stand still
        1 - rotate left
        2 - rotate right
+       Action Shout
+       false - not shouting
+       true - shouting
      */
     private int actionMove;
     private int actionRotate;
 
     //variables for graphics
     public BufferedImage left_stand, left_walk, right_stand, right_walk, down_stand, down_walk1, down_walk2, up_stand, up_walk1, up_walk2;
+    public BufferedImage hearImg, shoutImg, arrowImg;
     String direction;
     int picSprite;
     int picSpriteCounter;
@@ -51,8 +67,10 @@ public class Entity {
 
     GamePanel gamePanel;
 
-    public Entity(double x, double y, double viewAngle, double viewRange, double viewAngleSize, double baseSpeed, double sprintSpeed, Color viewColor, GamePanel gamePanel) {
+    public Entity(int id, double x, double y, double viewAngle, double viewRange, double viewAngleSize,
+                  double baseSpeed, double sprintSpeed, Color viewColor, GamePanel gamePanel) {
         this.gamePanel = gamePanel;
+        this.id = id;
         this.x = x;
         this.y = y;
         this.viewAngle = viewAngle;
@@ -66,6 +84,12 @@ public class Entity {
         this.picSprite = 1;
         this.picSpriteCounter = 0;
         this.viewHinder = 1;
+        this.hearRadius = 15;
+        this.shoutSound = false;
+
+        sounds = new ArrayList<Sound>();
+
+        getSenseImage();
     }
 
     public void setAction(int actionMove, int actionRotate){
@@ -78,6 +102,8 @@ public class Entity {
         leaveMarker(isGuard);
 
         rotate();
+
+        canHear(gamePanel.entityM.guards, gamePanel.entityM.intruders);
 
         collision = false;
         gamePanel.collisionD.checkTile(this);
@@ -135,18 +161,48 @@ public class Entity {
             direction = "right";
         }
     }
+
+    private void canHear(Entity[] guards, Entity[] intruders){
+        sounds.clear();
+
+        for(int i = 0; i<guards.length; i++){
+            if(this.id != guards[i].getId()){
+                if(guards[i].isWalkSound() == true && distanceBetween(guards[i].getX(), guards[i].getY()) <= hearRadius){
+                    double[] dirVector = directionToCoords(guards[i].getX(), guards[i].getY());
+                    sounds.add(new Sound(dirVector[0], dirVector[1], false));
+                }
+                if( guards[i].isShoutSound() == true && distanceBetween(guards[i].getX(), guards[i].getY()) <= hearRadius){
+                    double[] dirVector = directionToCoords(guards[i].getX(), guards[i].getY());
+                    sounds.add(new Sound(dirVector[0], dirVector[1], true));
+                }
+            }
+        }
+        for(int i = 0; i<intruders.length; i++){
+            if(this.id != intruders[i].getId()){
+                if(intruders[i].isWalkSound() == true && distanceBetween(intruders[i].getX(), intruders[i].getY()) <= hearRadius){
+                    double[] dirVector = directionToCoords(intruders[i].getX(), intruders[i].getY());
+                    sounds.add(new Sound(dirVector[0], dirVector[1], false));
+                }
+            }
+        }
+    }
+
     /*
         Movement equation:
         current position + (relative size of a pixel) * (speed ratio)
      */
     private void move(){
 
-        if(actionMove == 1){ //walk
+        if(actionMove == 1) { // walk
             x += ( (1 / (double) gamePanel.getTileSize()) * (baseSpeed/speedRatio) ) * Math.cos(Math.toRadians(viewAngle));
             y += ( (1 / (double) gamePanel.getTileSize()) * (baseSpeed/speedRatio) ) * Math.sin(Math.toRadians(viewAngle));
-        }else if (actionMove == 2){ //sprint
+            walkSound = true;
+        } else if (actionMove == 2) { //sprint
             x += ( (1 / (double) gamePanel.getTileSize()) * (sprintSpeed/speedRatio) ) * Math.cos(Math.toRadians(viewAngle));
             y += ( (1 / (double) gamePanel.getTileSize()) * (sprintSpeed/speedRatio) ) * Math.sin(Math.toRadians(viewAngle));
+            walkSound = true;
+        } else {
+            walkSound = false;
         }
     }
 
@@ -406,6 +462,18 @@ public class Entity {
         return image;
     }
 
+    private void getSenseImage(){
+        try{
+            hearImg = ImageIO.read(Entity.class.getResourceAsStream("/bit8/sense/hear.png"));
+            shoutImg = ImageIO.read(Entity.class.getResourceAsStream("/bit8/sense/shout.png"));
+            arrowImg = ImageIO.read(Entity.class.getResourceAsStream("/bit8/sense/arrow.png"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void draw(Graphics2D g){
 
         g.setColor(viewColor);
@@ -424,6 +492,17 @@ public class Entity {
             g.fillPolygon(p);
         }
         g.drawImage(getImage(), (int) x*gamePanel.getTileSize() - gamePanel.getTileSize()/2, (int) y*gamePanel.getTileSize() - gamePanel.getTileSize()/2, gamePanel.getTileSize()*2,  gamePanel.getTileSize()*2, null);
+        if(walkSound == true || shoutSound == true){
+            g.drawImage(shoutImg, (int) (x*gamePanel.getTileSize() - gamePanel.getTileSize()), (int) (y*gamePanel.getTileSize() - gamePanel.getTileSize()*2), gamePanel.getTileSize(),  gamePanel.getTileSize(), null);
+        }
+
+        if(sounds.size() > 0){
+            g.drawImage(hearImg, (int) (x*gamePanel.getTileSize()), (int) (y*gamePanel.getTileSize() - gamePanel.getTileSize()*2), gamePanel.getTileSize(),  gamePanel.getTileSize(), null);
+        }
+    }
+
+    public int getId() {
+        return id;
     }
 
     public double getX() { return x; }
@@ -444,4 +523,23 @@ public class Entity {
 
     public void setCollision(boolean collision) { this.collision = collision; }
 
+    public boolean isWalkSound() {
+        return walkSound;
+    }
+
+    public boolean isShoutSound() {
+        return shoutSound;
+    }
+
+    private double distanceBetween(double x2, double y2){
+        return Math.sqrt(Math.pow(this.x - x2, 2) + Math.pow(this.y - y2, 2));
+    }
+
+    public double[] directionToCoords(double x2 , double y2){
+        double[] temp = new double[2];
+
+        temp[0] = x2 - this.getX();
+        temp[1] = y2 - this.getY();
+        return  temp;
+    }
 }

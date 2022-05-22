@@ -24,14 +24,17 @@ public class DFSAgent extends Guard {
     Cell previousCell;
     Cell targetCell;
 
+    private boolean shouting;
+    private boolean footsteps;
+
     int [] decision = new int[2]; // 1- movement  2- rotation
 
     Map map;
 
     int type; // 0 favors turning left, 1 favors turning right
 
-    public DFSAgent(double x, double y, double viewAngle, double viewRange, double viewAngleSize, double baseSpeed, double sprintSpeed, GamePanel gamePanel, int type) {
-        super(x, y, viewAngle, viewRange, viewAngleSize, baseSpeed, sprintSpeed, gamePanel);
+    public DFSAgent(int id, double x, double y, double viewAngle, double viewRange, double viewAngleSize, double baseSpeed, double sprintSpeed, GamePanel gamePanel, int type) {
+        super(id, x, y, viewAngle, viewRange, viewAngleSize, baseSpeed, sprintSpeed, gamePanel);
         map = new Map(gamePanel.scenario.getMapWidth(), gamePanel.scenario.getMapHeight());
         desiredX= (int) x;
         desiredY= (int) y;
@@ -42,6 +45,7 @@ public class DFSAgent extends Guard {
     public void update(boolean isGuard) {
         DFS();
         setAction(decision[0], decision[1]);
+        setShout(true);
         super.update(isGuard);
     }
 

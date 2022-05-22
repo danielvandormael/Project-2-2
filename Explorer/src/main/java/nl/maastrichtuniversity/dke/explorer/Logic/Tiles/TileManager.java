@@ -74,14 +74,12 @@ public class TileManager {
             }
         }
 
-        // TODO: REMOVE - just to see the tile map
-        for(int i = 0; i < mapTile.length; i++) {
-            for(int j = 0; j < mapTile[i].length; j++) {
-                System.out.print(mapTile[i][j] + "");
-            }
-            System.out.println();
-        }
-
+//        for(int i = 0; i < mapTile.length; i++) {
+//            for(int j = 0; j < mapTile[i].length; j++) {
+//                System.out.print(mapTile[i][j] + "");
+//            }
+//            System.out.println();
+//        }
     }
 
     public void getTileImage16bit(){

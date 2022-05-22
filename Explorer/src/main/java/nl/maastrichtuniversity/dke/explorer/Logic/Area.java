@@ -93,4 +93,10 @@ public class Area {
     public int getBottomBoundary() {
         return bottomBoundary;
     }
+    public int[] getCenterAreaCoord(){
+        int[] temp = new int[2];
+        temp[0] = 2*this.getRightBoundary()-this.getLeftBoundary(); //x coord
+        temp[1] = 2*this.getTopBoundary()-this.getBottomBoundary(); //y coord
+        return  temp;
+    }
 }
