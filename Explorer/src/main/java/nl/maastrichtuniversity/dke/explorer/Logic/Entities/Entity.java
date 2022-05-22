@@ -189,7 +189,7 @@ public class Entity {
         return t1;
     }
 
-    // This should return an array of in which a guard is located
+
     // TODO: This should return an array of Cells in which a guard is located that can be seen by the entity
     // If there are no guards, return null
     public boolean guardsInView(){

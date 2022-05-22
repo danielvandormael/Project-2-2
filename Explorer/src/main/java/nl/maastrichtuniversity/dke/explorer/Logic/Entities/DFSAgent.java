@@ -117,7 +117,8 @@ public class DFSAgent extends Guard {
             if (map.isInDirection(currentCell, targetCell, getViewAngle())) {
                 targetCell = closest;
                 move = true;
-                // If intruder is not right in front, targetCell is a cell that has the same x or y coordinate as intruder
+
+            // If intruder is not right in front, targetCell is a cell that has the same x or y coordinate as intruder
             } else if (map.isInDirection(currentCell, map.getCell(getX(), closest.getY()), getViewAngle())){
                 targetCell = map.getCell(getX(), closest.getY());
                 move = true;
@@ -155,6 +156,7 @@ public class DFSAgent extends Guard {
             }
         }
 
+
         // Will wait and turn randomly if it sees another guard searching nearby or a marker
         if(guardsInView() || foundMarker){
             Random rn = new Random();
@@ -185,6 +187,7 @@ public class DFSAgent extends Guard {
                     return false;
                 }
             }
+
         }
 
         if (cellFront.getStatus() == 0) {
