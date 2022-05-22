@@ -138,8 +138,10 @@ public class Entity {
 
     private void move(){
         if(actionMove == 1){ //walk
-            x += ( (1 / (double) gamePanel.getTileSize()) * (baseSpeed/speedRatio) ) * Math.cos(Math.toRadians(viewAngle));
-            y += ( (1 / (double) gamePanel.getTileSize()) * (baseSpeed/speedRatio) ) * Math.sin(Math.toRadians(viewAngle));
+            x += 1 * Math.cos(Math.toRadians(viewAngle));
+            y += 1 * Math.sin(Math.toRadians(viewAngle));
+            double xchange = Math.cos(Math.toRadians(viewAngle));
+            System.out.println("xchange: " + xchange + " new x: " + x);
         }else if (actionMove == 2){ //sprint
             x += ( (1 / (double) gamePanel.getTileSize()) * (sprintSpeed/speedRatio) ) * Math.cos(Math.toRadians(viewAngle));
             y += ( (1 / (double) gamePanel.getTileSize()) * (sprintSpeed/speedRatio) ) * Math.sin(Math.toRadians(viewAngle));

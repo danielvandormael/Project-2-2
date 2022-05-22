@@ -18,8 +18,8 @@ public class CollisionDetection {
         int entityMoveToY2;
 
         if(entity.getActionMove() == 1){ //walk
-            entityMoveToX1 = (int) (entity.getX() + ( (1/ (double) gamePanel.getTileSize()) * (entity.getBaseSpeed()/entity.getSpeedRatio()) ) * Math.cos(Math.toRadians(entity.getViewAngle())));
-            entityMoveToY1 = (int) (entity.getY() + ( (1/ (double) gamePanel.getTileSize()) * (entity.getBaseSpeed()/entity.getSpeedRatio()) ) * Math.sin(Math.toRadians(entity.getViewAngle())));
+            entityMoveToX1 = (int) (entity.getX() + 1 * Math.cos(Math.toRadians(entity.getViewAngle())));
+            entityMoveToY1 = (int) (entity.getY() + 1 * Math.sin(Math.toRadians(entity.getViewAngle())));
             entityMoveToX2 = entityMoveToX1;
             entityMoveToY2 = entityMoveToY1;
         }else{ //sprint
