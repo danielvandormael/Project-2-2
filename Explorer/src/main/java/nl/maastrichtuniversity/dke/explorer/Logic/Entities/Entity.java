@@ -1,11 +1,13 @@
 package nl.maastrichtuniversity.dke.explorer.Logic.Entities;
 
+import nl.maastrichtuniversity.dke.explorer.GUI.ExplorerScene;
 import nl.maastrichtuniversity.dke.explorer.GUI.GamePanel;
 import nl.maastrichtuniversity.dke.explorer.Logic.Tiles.Cell;
 import nl.maastrichtuniversity.dke.explorer.Logic.Objects.Object;
 import nl.maastrichtuniversity.dke.explorer.Logic.Objects.ObjectManager;
 
 import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.FileNotFoundException;
@@ -18,6 +20,7 @@ import java.util.TimerTask;
 
 public class Entity {
 
+    public ExplorerScene explorerScene;
     private final int id;
     private double x, y;
     private double viewAngle;
@@ -69,6 +72,7 @@ public class Entity {
 
     public Entity(int id, double x, double y, double viewAngle, double viewRange, double viewAngleSize,
                   double baseSpeed, double sprintSpeed, Color viewColor, GamePanel gamePanel) {
+        this.explorerScene = new ExplorerScene();
         this.gamePanel = gamePanel;
         this.id = id;
         this.x = x;

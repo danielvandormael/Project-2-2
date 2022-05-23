@@ -114,14 +114,6 @@ public class ExplorerScene extends GUIMain {
         expFrame.getContentPane().setLayout(expLayout);
     }
 
-//    public Scene getExplorerScene() { return this.expScene; }
-//
-//    public JFrame getExplorerFrame() { return this.expFrame; }
-
-//    public void renderScene(){
-//        String mapD="src/main/resources/maps/testmap.txt";
-//        scene = new Scenario(mapD);
-//
-//    }
+    public JFrame getExpFrame() { return expFrame; }
 
 }

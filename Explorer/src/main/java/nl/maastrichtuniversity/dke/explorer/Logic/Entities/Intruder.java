@@ -3,15 +3,23 @@ package nl.maastrichtuniversity.dke.explorer.Logic.Entities;
 import nl.maastrichtuniversity.dke.explorer.GUI.GamePanel;
 
 import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.*;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class Intruder extends Entity {
 
+    private int timeOnTarget;
+
     public Intruder(int id, double x, double y, double viewAngle, double viewRange, double viewAngleSize, double baseSpeed, double sprintSpeed, GamePanel gamePanel) {
         super(id, x, y, viewAngle, viewRange, viewAngleSize, baseSpeed, sprintSpeed,new Color(255, 255, 255, 70), gamePanel);
         getPlayerImage();
+    }
+
+    public void update(boolean isGuard){
+        super.update(isGuard);
+        onTarget();
     }
 
     public void getPlayerImage(){
@@ -30,6 +38,19 @@ public class Intruder extends Entity {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void onTarget(){
+        if(gamePanel.tileM.mapTile[(int) getX()][(int) getY()] == 4){
+            if(timeOnTarget >= 3 * gamePanel.getFPS()){
+                JOptionPane.showMessageDialog(explorerScene.getExpFrame(), "The intruders have won!");
+                System.exit(0);
+            }else{
+                timeOnTarget++;
+            }
+        }else{
+            timeOnTarget =  0;
         }
     }
 
