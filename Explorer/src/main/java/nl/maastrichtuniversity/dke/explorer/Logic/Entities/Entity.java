@@ -106,10 +106,14 @@ public class Entity {
         canHear(gamePanel.entityM.guards, gamePanel.entityM.intruders);
 
         collision = false;
-        gamePanel.collisionD.checkTile(this);
+        if(isGuard) {
+            gamePanel.collisionD.checkTile(this);
+        } else {
+            gamePanel.collisionD.checkTileIntruder(this);
+        }
 
         if(collision == false){
-            move();
+            move(isGuard);
         }
 
         // Update sprite
@@ -191,11 +195,17 @@ public class Entity {
         Movement equation:
         current position + (relative size of a pixel) * (speed ratio)
      */
-    private void move(){
+    private void move(boolean isGuard){
 
         if(actionMove == 1) { // walk
-            x += ( (1 / (double) gamePanel.getTileSize()) * (baseSpeed/speedRatio) ) * Math.cos(Math.toRadians(viewAngle));
-            y += ( (1 / (double) gamePanel.getTileSize()) * (baseSpeed/speedRatio) ) * Math.sin(Math.toRadians(viewAngle));
+            if(isGuard) {
+                x += ( (1 / (double) gamePanel.getTileSize()) * (baseSpeed/speedRatio) ) * Math.cos(Math.toRadians(viewAngle));
+                y += ( (1 / (double) gamePanel.getTileSize()) * (baseSpeed/speedRatio) ) * Math.sin(Math.toRadians(viewAngle));
+            } else {
+                x += 1 * Math.cos(Math.toRadians(viewAngle));
+                y += 1 * Math.sin(Math.toRadians(viewAngle));
+            }
+            double xchange = Math.cos(Math.toRadians(viewAngle));
             walkSound = true;
         } else if (actionMove == 2) { //sprint
             x += ( (1 / (double) gamePanel.getTileSize()) * (sprintSpeed/speedRatio) ) * Math.cos(Math.toRadians(viewAngle));
@@ -321,9 +331,6 @@ public class Entity {
     private boolean isDeadEnd() {
         boolean isDeadEnd = deadEnd;
 
-//        if(isDeadEnd) {
-//            System.out.println("DEAD END METHOD IS TRUE");
-//        }
         return isDeadEnd;
     }
 

@@ -3,6 +3,7 @@ package nl.maastrichtuniversity.dke.explorer.Logic.Entities;
 import nl.maastrichtuniversity.dke.explorer.GUI.GamePanel;
 
 import java.awt.*;
+import java.util.Random;
 
 public class EntityManager {
 
@@ -33,8 +34,8 @@ public class EntityManager {
     public void generateIntruder() {
         double [][] tmp = gamePanel.scenario.spawnIntruders();
         for(int i = 0; i< gamePanel.scenario.getNumIntruders(); i++) {
-            // TODO: Change if we go for ASAgent
-            intruders[i]= new Intruder(id, tmp[i][0], tmp[i][1], 0, 12, 180, gamePanel.scenario.getBaseSpeedIntruder(), gamePanel.scenario.getSprintSpeedIntruder(), gamePanel);
+            //intruders[i]= new BFSIntruder(id, tmp[i][0], tmp[i][1], 0, 12, 180, gamePanel.scenario.getBaseSpeedIntruder(), gamePanel.scenario.getSprintSpeedIntruder(), gamePanel);            id++;
+            intruders[i]= new RandomIntruder(id, tmp[i][0], tmp[i][1], 0, 12, 180, gamePanel.scenario.getBaseSpeedIntruder(), gamePanel.scenario.getSprintSpeedIntruder(), gamePanel);            id++;
             id++;
         }
     }
