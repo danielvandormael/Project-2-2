@@ -198,7 +198,7 @@ public class ObjectManager {
                 Object markerToDraw = activeObjects.get(i);
 //                System.out.println("drawing marker nr." + i + " type " + markerToDraw.getMarkerType()
 //                        + " at " + markerToDraw.getX() + " " + markerToDraw.getY() + " " + markerToDraw);
-                System.out.println("size " + activeObjects.size());
+                // System.out.println("size " + activeObjects.size());
 
                 // Scale each marker to be drawn in the correct position on the panel
                 if(markerToDraw != null) {

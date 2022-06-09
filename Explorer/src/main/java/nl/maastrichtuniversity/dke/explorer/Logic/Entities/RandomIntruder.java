@@ -30,7 +30,7 @@ public class RandomIntruder extends Intruder {
     }
 
     public void update(boolean isGuard) {
-        if ((int) getX() == desiredX && (int) getY() == desiredY && getViewAngle() == desiredAngle) randomlyMove();
+        if ((int) getX() == desiredX && (int) getY() == desiredY && getViewAngle() == desiredAngle){ randomlyMove();}
         setAction(decision[0], decision[1]);
         super.update(isGuard);
     }
