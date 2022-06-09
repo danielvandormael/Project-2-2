@@ -1,7 +1,8 @@
 package nl.maastrichtuniversity.dke.explorer.Logic.Entities;
 
 import nl.maastrichtuniversity.dke.explorer.GUI.GamePanel;
-import nl.maastrichtuniversity.dke.explorer.Logic.Tiles.Cell;
+import nl.maastrichtuniversity.dke.explorer.Logic.Tiles.Cell.Node;
+import nl.maastrichtuniversity.dke.explorer.Logic.Tiles.Cell.NodeDFS;
 import nl.maastrichtuniversity.dke.explorer.Logic.Tiles.Map;
 
 import java.util.*;
@@ -11,7 +12,7 @@ import java.util.List;
 
 public class BFSIntruder extends Intruder {
 
-    private List<Cell> pathToTarget;
+    private List<Node> pathToTarget;
     private int count = 1;
 
     int[] decision = new int[2]; // 1- movement  2- rotation
@@ -35,110 +36,110 @@ public class BFSIntruder extends Intruder {
         //if next cell is down then rotate
         boolean moved = false;
         // if the next cell is to the right of current intruder cell
-        if ((int) getX() < pathToTarget.get(count).getX()) {
+        if ((int) movement.getX() < pathToTarget.get(count).getX()) {
             // If intruder is facing to the right
-            if (getViewAngle() == 0) {
+            if (vision.getViewAngle() == 0) {
                 decision[0] = 1;
                 decision[1] = 0;
                 moved = true;
             }
             // If intruder is facing downwards
-            else if (getViewAngle() == 90) {
+            else if (vision.getViewAngle() == 90) {
                 decision[0] = 0;
                 decision[1] = 2;
             }
             // If intruder is facing to the left
-            else if (getViewAngle() == 180) {
+            else if (vision.getViewAngle() == 180) {
                 decision[0] = 0;
                 decision[1] = 1;
             }
             // If intruder is facing upwards
-            else if (getViewAngle() == 270) {
+            else if (vision.getViewAngle() == 270) {
                 decision[0] = 0;
                 decision[1] = 1;
             }
         }
         // if the next cell is to the left of current intruder cell
-        else if ((int) getX() > pathToTarget.get(count).getX()) {
+        else if ((int) movement.getX() > pathToTarget.get(count).getX()) {
             // If intruder is facing to the right
-            if (getViewAngle() == 0) {
+            if (vision.getViewAngle() == 0) {
                 decision[0] = 0;
                 decision[1] = 1;
             }
             // If intruder is facing downwards
-            else if (getViewAngle() == 90) {
+            else if (vision.getViewAngle() == 90) {
                 decision[0] = 0;
                 decision[1] = 1;
             }
             // If intruder is facing to the left
-            else if (getViewAngle() == 180) {
+            else if (vision.getViewAngle() == 180) {
                 decision[0] = 1;
                 decision[1] = 0;
                 moved = true;
             }
             // If intruder is facing upwards
-            else if (getViewAngle() == 270) {
+            else if (vision.getViewAngle() == 270) {
                 decision[0] = 0;
                 decision[1] = 1;
             }
         }
         // if the next cell is below the current intruder cell
-        else if ((int) getY() < pathToTarget.get(count).getY()) {
+        else if ((int) movement.getY() < pathToTarget.get(count).getY()) {
             // If intruder is facing to the right
-            if (getViewAngle() == 0) {
+            if (vision.getViewAngle() == 0) {
                 decision[0] = 0;
                 decision[1] = 1;
             }
             // If intruder is facing downwards
-            else if (getViewAngle() == 90) {
+            else if (vision.getViewAngle() == 90) {
                 decision[0] = 1;
                 decision[1] = 0;
                 moved = true;
             }
             // If intruder is facing to the left
-            else if (getViewAngle() == 180) {
+            else if (vision.getViewAngle() == 180) {
                 decision[0] = 0;
                 decision[1] = 1;
             }
             // If intruder is facing upwards
-            else if (getViewAngle() == 270) {
+            else if (vision.getViewAngle() == 270) {
                 decision[0] = 0;
                 decision[1] = 2;
             }
         }
         // if the next cell is above the current intruder cell
-        else if ((int) getY() > pathToTarget.get(count).getY()) {
+        else if ((int) movement.getY() > pathToTarget.get(count).getY()) {
             // If intruder is facing to the right
-            if (getViewAngle() == 0) {
+            if (vision.getViewAngle() == 0) {
                 decision[0] = 0;
                 decision[1] = 1;
             }
             // If intruder is facing downwards
-            else if (getViewAngle() == 90) {
+            else if (vision.getViewAngle() == 90) {
                 decision[0] = 0;
                 decision[1] = 1;
             }
             // If intruder is facing to the left
-            else if (getViewAngle() == 180) {
+            else if (vision.getViewAngle() == 180) {
                 decision[0] = 0;
                 decision[1] = 1;
             }
             // If intruder is facing upwards
-            else if (getViewAngle() == 270) {
+            else if (vision.getViewAngle() == 270) {
                 decision[0] = 1;
                 decision[1] = 0;
                 moved = true;
             }
         }
         // if it the intruder is on the next cell don't move
-        else if ((int) getX() == pathToTarget.get(count).getX() && (int) getY() == pathToTarget.get(count).getY()){
+        else if ((int) movement.getX() == pathToTarget.get(count).getX() && (int) movement.getY() == pathToTarget.get(count).getY()){
             decision[0] = 0;
             decision[1] = 0;
             moved = true;
         }
 
-        System.out.println("view angle: " + getViewAngle());
-        System.out.println("current x: " + (int) getX() + " current y: " + (int) getY());
+        System.out.println("view angle: " + vision.getViewAngle());
+        System.out.println("current x: " + (int) movement.getX() + " current y: " + (int) movement.getY());
         System.out.println("target x: " + pathToTarget.get(count).getX() + " target y: " + pathToTarget.get(count).getY());
         System.out.println("walk: " + decision[0] + " rotate: " + decision[1]);
 
@@ -147,7 +148,7 @@ public class BFSIntruder extends Intruder {
         }
 
         // intruder stops moving when it reaches target
-        if ((int) getX() == gamePanel.scenario.getTargetArea().getLeftBoundary() && (int) getY() == gamePanel.scenario.getTargetArea().getBottomBoundary()){
+        if ((int) movement.getX() == gamePanel.scenario.getTargetArea().getLeftBoundary() && (int) movement.getY() == gamePanel.scenario.getTargetArea().getBottomBoundary()){
             System.out.println("done");
             decision[0] = 0;
             decision[1] = 0;
@@ -158,14 +159,14 @@ public class BFSIntruder extends Intruder {
 
     public void OneSearchbfs() {
 
-        Cell currenctCell = map.getCell(getX(),getY()) ;
-        Queue<List<Cell>> queue = new LinkedList<>();
+        Node currentNode = map.getNode(movement.getX(), movement.getY());
+        Queue<List<Node>> queue = new LinkedList<>();
         //Create a queue of path used to reach the cell instead of only the node itself
-        Set<Cell> visitedList = new HashSet<>();
+        Set<Node> visitedList = new HashSet<>();
         //A Set to store visited cell
 
-        List<Cell> pathToCell = new ArrayList<>();
-        pathToCell.add(currenctCell);
+        List<Node> pathToCell = new ArrayList<>();
+        pathToCell.add(currentNode);
 
         queue.add(pathToCell);
         while (!queue.isEmpty()) {
@@ -174,11 +175,11 @@ public class BFSIntruder extends Intruder {
             pathToCell = queue.poll();
 
             //get the next node
-            currenctCell = pathToCell.get(pathToCell.size()-1);
+            currentNode = pathToCell.get(pathToCell.size()-1);
 
-            if(isTargetReached(currenctCell)) {
+            if(isTargetReached(currentNode)) {
                 //print path
-                for (Cell a: pathToCell){
+                for (Node a: pathToCell){
                     System.out.println("x coord: " + a.getX() + ", " + "y coord: " +a.getY());
                 }
                 System.out.println("Takes " + pathToCell.size() +"steps");
@@ -190,11 +191,11 @@ public class BFSIntruder extends Intruder {
             else {
 
                 //loop over neighbors
-                for (Cell neighbor : getNeighbors(currenctCell)) {
+                for (Node neighbor : getNeighbors(currentNode)) {
 
                     if (!isVisited(visitedList, neighbor)) {
                         //create a new path to nextNode
-                        List<Cell> pathToNextNode = new ArrayList<>(pathToCell);
+                        List<Node> pathToNextNode = new ArrayList<>(pathToCell);
                         pathToNextNode.add(neighbor);
                         queue.add(pathToNextNode); //then add collection to the queue
                     }
@@ -204,39 +205,39 @@ public class BFSIntruder extends Intruder {
 
     }
 
-    public boolean isTargetReached(Cell currentCell) {
-        return gamePanel.tileM.mapTile[currentCell.getX()][currentCell.getY()] == 4;
+    public boolean isTargetReached(Node currentNode) {
+        return gamePanel.tileM.mapTile[currentNode.getX()][currentNode.getY()] == 4;
     }
 
-    private List<Cell> getNeighbors(Cell currentCell) {
-        Cell cellFront = map.getCellInFront(currentCell, getViewAngle());
+    private List<Node> getNeighbors(Node currentCell) {
+        NodeDFS cellFront = map.getNodeInFront(currentCell, vision.getViewAngle());
         if (gamePanel.tileM.mapTile[cellFront.getX()][cellFront.getY()] == 1) {
             cellFront.setStatus(3);
         }
 
-        Cell cellLeft = map.getLeftCell(currentCell, getViewAngle());
+        NodeDFS cellLeft = map.getLeftNode(currentCell, vision.getViewAngle());
         if (gamePanel.tileM.mapTile[cellLeft.getX()][cellLeft.getY()] == 1) {
             cellLeft.setStatus(3);
         }
 
-        Cell cellRight = map.getRightCell(currentCell, getViewAngle());
+        NodeDFS cellRight = map.getRightNode(currentCell, vision.getViewAngle());
         if (gamePanel.tileM.mapTile[cellRight.getX()][cellRight.getY()] == 1) {
             cellRight.setStatus(3);
         }
-        List<Cell> neighbourCell = new ArrayList<>();
-        if (cellFront.getStatus()!=3) neighbourCell.add(cellFront);
-        if (cellRight.getStatus()!=3) neighbourCell.add(cellRight);
-        if (cellLeft.getStatus()!=3) neighbourCell.add(cellLeft);
+        List<Node> neighbourCell = new ArrayList<>();
+        if (cellFront.getStatus()!=3) neighbourCell.add((Node) cellFront);
+        if (cellRight.getStatus()!=3) neighbourCell.add((Node)cellRight);
+        if (cellLeft.getStatus()!=3) neighbourCell.add((Node)cellLeft);
         return neighbourCell;
 
     }
 
-    private boolean isVisited(Set<Cell> visitedList,Cell cell) {
+    private boolean isVisited(Set<Node> visitedList,Node node) {
 
-        if(visitedList.contains(cell))
+        if(visitedList.contains(node))
         { return true;}
 
-        visitedList.add(cell);
+        visitedList.add(node);
         return false;
     }
 

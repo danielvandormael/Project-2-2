@@ -1,6 +1,5 @@
 package nl.maastrichtuniversity.dke.explorer.GUI;
 
-import nl.maastrichtuniversity.dke.explorer.Logic.CollisionDetection;
 import nl.maastrichtuniversity.dke.explorer.Logic.Objects.ObjectManager;
 import nl.maastrichtuniversity.dke.explorer.Logic.Scenario;
 import nl.maastrichtuniversity.dke.explorer.Logic.Entities.EntityManager;
@@ -31,7 +30,6 @@ public class GamePanel extends JPanel implements Runnable {
     public TileManager tileM;
     public EntityManager entityM;
     public ObjectManager objectM;
-    public CollisionDetection collisionD;
 
 
     public GamePanel(Scenario scenario){
@@ -40,7 +38,6 @@ public class GamePanel extends JPanel implements Runnable {
         this.tileM = new TileManager(this);
         this.entityM = new EntityManager(this);
         this.objectM = new ObjectManager(this);
-        this.collisionD = new CollisionDetection(this);
 
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
         this.setBackground(Color.GRAY);

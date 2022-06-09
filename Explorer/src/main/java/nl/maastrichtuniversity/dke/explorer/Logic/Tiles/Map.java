@@ -1,62 +1,65 @@
 package nl.maastrichtuniversity.dke.explorer.Logic.Tiles;
 
+import nl.maastrichtuniversity.dke.explorer.Logic.Tiles.Cell.Node;
+import nl.maastrichtuniversity.dke.explorer.Logic.Tiles.Cell.NodeDFS;
+
 public class Map {
 
     private int width;
     private int height;
-    private Cell[][] map;
+    private NodeDFS[][] map;
 
     public Map(int width, int height){
         this.width = width;
         this.height = height;
-        map = new Cell[width][height];
+        map = new NodeDFS[width][height];
         for (int y = 0; y< height; y++) {
             for (int x=0; x < width; x++) {
-                map[x][y] = new Cell(x,y);
+                map[x][y] = new NodeDFS(x,y);
             }
         }
     }
 
-    public Cell getCell(double x, double y){
+    public NodeDFS getNode(double x, double y){
         return map[(int) x][(int) y];
     }
 
-    public Cell getCellInFront(Cell currentCell, double viewAngle){
+    public NodeDFS getNodeInFront(Node current, double viewAngle){
         if( viewAngle == 0){
-            return getCell(currentCell.getX() + 1, currentCell.getY());
+            return getNode(current.getX() + 1, current.getY());
         }else if(viewAngle == 90){
-            return getCell(currentCell.getX(), currentCell.getY() + 1);
+            return getNode(current.getX(), current.getY() + 1);
         }else if(viewAngle == 180){
-            return getCell(currentCell.getX() - 1, currentCell.getY());
+            return getNode(current.getX() - 1, current.getY());
         }else if(viewAngle == 270){
-            return getCell(currentCell.getX(), currentCell.getY()  - 1);
+            return getNode(current.getX(), current.getY()  - 1);
         }
         return null;
     }
 
-    public Cell getLeftCell(Cell currentCell, double viewAngle){
+    public NodeDFS getLeftNode(Node current, double viewAngle){
         if(viewAngle >= 270){
-            return getCellInFront(currentCell, (0 + (viewAngle-270)));
+            return getNodeInFront(current, (0 + (viewAngle-270)));
         }else {
-            return getCellInFront(currentCell, (viewAngle+90));
+            return getNodeInFront(current, (viewAngle+90));
         }
     }
 
-    public Cell getRightCell(Cell currentCell, double viewAngle){
+    public NodeDFS getRightNode(Node current, double viewAngle){
         if(viewAngle < 90){
-            return getCellInFront(currentCell, (360 - (90-viewAngle)));
+            return getNodeInFront(current, (360 - (90-viewAngle)));
         }else{
-            return getCellInFront(currentCell, (viewAngle-90));
+            return getNodeInFront(current, (viewAngle-90));
         }
     }
 
-    public int getDistance(Cell currentCell, Cell targetCell) {
-        return Math.abs(currentCell.getX() - targetCell.getX()) + Math.abs(currentCell.getY() - targetCell.getY());
+    public int getDistance(Node current, Node target) {
+        return Math.abs(current.getX() - target.getX()) + Math.abs(current.getY() - target.getY());
     }
 
-    public boolean isInDirection(Cell currentCell, Cell targetCell, double viewAngle) {
-        int dx = targetCell.getX() - currentCell.getX();
-        int dy = targetCell.getY() - currentCell.getY();
+    public boolean isInDirection(Node current, Node target, double viewAngle) {
+        int dx = target.getX() - current.getX();
+        int dy = target.getY() - current.getY();
         if( viewAngle == 0){
             return dx > 0 && dy == 0;
         }else if(viewAngle == 90){
@@ -69,9 +72,9 @@ public class Map {
         return false;
     }
 
-    public int getDirection(Cell currentCell, Cell targetCell) {
-        int dx = targetCell.getX()- currentCell.getX();
-        int dy = targetCell.getY() -currentCell.getY();
+    public int getDirection(Node current, Node target) {
+        int dx = target.getX()- current.getX();
+        int dy = target.getY() -current.getY();
         int desiredViewAngle = 0;
         if (dx > 0) desiredViewAngle = 0;
         if (dy > 0) desiredViewAngle = 90;
@@ -84,7 +87,7 @@ public class Map {
         StringBuilder s = new StringBuilder();
         for (int y = 0; y< height; y++) {
             for (int x=0; x< width; x++) {
-                s.append(getCell(x,y).getStatus());
+                s.append(getNode(x,y).getStatus());
             }
             s.append('\n');
         }
@@ -94,7 +97,7 @@ public class Map {
     public boolean isExplored(){
         for (int y = 0; y< height; y++) {
             for (int x=0; x<width; x++) {
-                if (getCell(x,y).getStatus() == 0){
+                if (getNode(x,y).getStatus() == 0){
                     return false;
                 }
             }

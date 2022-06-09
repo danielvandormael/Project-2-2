@@ -1,17 +1,16 @@
 package nl.maastrichtuniversity.dke.explorer.Logic.Entities;
 
 import nl.maastrichtuniversity.dke.explorer.GUI.GamePanel;
-import nl.maastrichtuniversity.dke.explorer.Logic.Tiles.Cell;
+import nl.maastrichtuniversity.dke.explorer.Logic.Tiles.Cell.Node;
+import nl.maastrichtuniversity.dke.explorer.Logic.Tiles.Cell.NodeDFS;
 import nl.maastrichtuniversity.dke.explorer.Logic.Tiles.Map;
-import nl.maastrichtuniversity.dke.explorer.Logic.Tiles.Tile;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class DFSAgent extends Guard {
-
+public class DFSAgent extends Guard{
     private static final int OPEN = 0;
     private static final int TRIED = 1;
     private static final int WALL = 2;
@@ -21,11 +20,9 @@ public class DFSAgent extends Guard {
     private double desiredAngle;
     private int desiredX;
     private int desiredY;
-    Cell previousCell;
-    Cell targetCell;
+    Node previousNode;
+    Node targetNode;
 
-    private boolean shouting;
-    private boolean footsteps;
 
     int [] decision = new int[2]; // 1- movement  2- rotation
 
@@ -50,85 +47,85 @@ public class DFSAgent extends Guard {
     }
 
     public void DFS() {
-        if ((int) getX() == desiredX && (int) getY() == desiredY && getViewAngle() == desiredAngle) {
+        if ((int) this.movement.getX() == desiredX && (int) this.movement.getY() == desiredY && this.vision.getViewAngle() == desiredAngle) {
             nextStep();
         }
     }
 
     public boolean nextStep() {
-        Cell currentCell = map.getCell(getX(), getY());
-        targetCell = map.getCell(desiredX, desiredY);
+        NodeDFS currentNode = map.getNode(this.movement.getX(), this.movement.getY());
+        targetNode = map.getNode(desiredX, desiredY);
 
-        this.setDeadEnd(false);
+        //this.setDeadEnd(false);
         //useless
-        if (targetCell != null) {
-            if (!currentCell.equals(targetCell)) {
-                if (map.isInDirection(currentCell, targetCell, getViewAngle())) { //only need to change the desired position
+        if (targetNode != null) {
+            if (!currentNode.equals(targetNode)) {
+                if (map.isInDirection(currentNode, targetNode, this.vision.getViewAngle())) { //only need to change the desired position
 
-                    desiredX = targetCell.getX();
-                    desiredY = targetCell.getY();
+                    desiredX = targetNode.getX();
+                    desiredY = targetNode.getY();
                     return false;
                 }
             }
         }
 
-        //labeling parent cell
-        if(currentCell.getStatus() == 0){
-            currentCell.setStatus(1);
-            if(currentCell.getParentCell() == null){
-                Cell fromCell = currentCell;
-                Cell previousCell;
-                if(getViewAngle() < 180){
-                    previousCell = map.getCellInFront(fromCell, getViewAngle()+180);
-                }else if(getViewAngle() == 180){
-                    previousCell = map.getCellInFront(fromCell, 0);
+        //labeling parent Node
+        if(currentNode.getStatus() == 0){
+            currentNode.setStatus(1);
+            if(currentNode.getParent() == null){
+                NodeDFS fromNode = currentNode;
+                Node previousNode;
+                if(this.vision.getViewAngle() < 180){
+                    previousNode = map.getNodeInFront(fromNode, this.vision.getViewAngle()+180);
+                }else if(this.vision.getViewAngle() == 180){
+                    previousNode = map.getNodeInFront(fromNode, 0);
                 }else{
-                    previousCell = map.getCellInFront(fromCell, getViewAngle()-180);
+                    previousNode = map.getNodeInFront(fromNode, this.vision.getViewAngle()-180);
                 }
-                fromCell.setParentCell(previousCell);
-                fromCell.setStatus(1);
+                fromNode.setParent(previousNode);
+                fromNode.setStatus(1);
             }
         }
 
 
-        //check to see if neighbor cells are walls
-        Cell cellFront = map.getCellInFront(currentCell, getViewAngle());
-        if (gamePanel.tileM.mapTile[cellFront.getX()][cellFront.getY()] == 1) {
-            cellFront.setStatus(3);
+        //check to see if neighbor Nodes are walls
+        NodeDFS NodeFront = map.getNodeInFront(currentNode, this.vision.getViewAngle());
+        if (gamePanel.tileM.mapTile[NodeFront.getX()][NodeFront.getY()] == 1) {
+            NodeFront.setStatus(3);
         }
 
-        Cell cellLeft = map.getLeftCell(currentCell, getViewAngle());
-        if (gamePanel.tileM.mapTile[cellLeft.getX()][cellLeft.getY()] == 1) {
-            cellLeft.setStatus(3);
+        NodeDFS NodeLeft = map.getLeftNode(currentNode, this.vision.getViewAngle());
+        if (gamePanel.tileM.mapTile[NodeLeft.getX()][NodeLeft.getY()] == 1) {
+            NodeLeft.setStatus(3);
         }
 
-        Cell cellRight = map.getRightCell(currentCell, getViewAngle());
-        if (gamePanel.tileM.mapTile[cellRight.getX()][cellRight.getY()] == 1) {
-            cellRight.setStatus(3);
+        NodeDFS NodeRight = map.getRightNode(currentNode, this.vision.getViewAngle());
+        if (gamePanel.tileM.mapTile[NodeRight.getX()][NodeRight.getY()] == 1) {
+            NodeRight.setStatus(3);
         }
 
         // Check if there are intruders in the view
-        Cell[] intruders = intrudersInView();
-        Cell closest = null;
-        if(intruders != null){
+        ArrayList<Node> intruders = this.vision.intrudersInView();
+        Node closest = null;
+        if(intruders.size() != 0){
             boolean move = false;
             // If there is more than 1 intruder in view, go to the closest one
-            if (intruders.length > 1){
+            if (intruders.size() > 1){
                 closest = getClosestIntruder(intruders);
             }
-            else closest = intruders[0];
+            else closest = intruders.get(0);
             // If intruder is in front of the guard, sprint forwards
-            if (map.isInDirection(currentCell, targetCell, getViewAngle())) {
-                targetCell = closest;
+            if (map.isInDirection(currentNode, targetNode, this.vision.getViewAngle())) {
+                targetNode = closest;
                 move = true;
 
-            // If intruder is not right in front, targetCell is a cell that has the same x or y coordinate as intruder
-            } else if (map.isInDirection(currentCell, map.getCell(getX(), closest.getY()), getViewAngle())){
-                targetCell = map.getCell(getX(), closest.getY());
+                // If intruder is not right in front, targetNode is a Node that has the same x or y coordinate as intruder
+            } else if (map.isInDirection(currentNode, map.getNode(this.movement.getX(), closest.getY()), this.vision.getViewAngle())){
+                targetNode = map.getNode(this.movement.getX(), closest.getY());
                 move = true;
             }
-            else if (map.isInDirection(currentCell, map.getCell(closest.getX(), getY()), getViewAngle())){
-                targetCell = map.getCell(closest.getX(), getY());
+            else if (map.isInDirection(currentNode, map.getNode(closest.getX(), this.movement.getY()), this.vision.getViewAngle())){
+                targetNode = map.getNode(closest.getX(), this.movement.getY());
                 move = true;
             }
 
@@ -136,69 +133,68 @@ public class DFSAgent extends Guard {
                 // move towards target
                 decision[0] = 2;
                 decision[1] = 0;
-                desiredX= targetCell.getX();
-                desiredY= targetCell.getY();
+                desiredX= targetNode.getX();
+                desiredY= targetNode.getY();
                 return false;
             }
             else {
-                double distanceX = Math.abs(getX() - closest.getX());
-                double distanceY = Math.abs(getY() - closest.getY());
+                double distanceX = Math.abs(this.movement.getX() - closest.getX());
+                double distanceY = Math.abs(this.movement.getY() - closest.getY());
                 if (distanceX > distanceY){
-                    targetCell = map.getCell(closest.getX(), getY());
+                    targetNode = map.getNode(closest.getX(), this.movement.getY());
                 }
                 else {
-                    targetCell = map.getCell(getX(), closest.getY());
+                    targetNode = map.getNode(this.movement.getX(), closest.getY());
                 }
 
                 // turn towards target
                 decision[0] = 0;
                 decision[1] = 1;
-                desiredX= (int) getX();
-                desiredY= (int) getY();
-                desiredAngle = map.getDirection(currentCell, targetCell);
+                desiredX= (int) this.movement.getX();
+                desiredY= (int) this.movement.getY();
+                desiredAngle = map.getDirection(currentNode, targetNode);
                 return false;
             }
         }
 
 
         // Will wait and turn randomly if it sees another guard searching nearby or a marker
-        if(guardsInView() || foundMarker){
+        if(vision.areGuardsInView() || foundMarker) {
             Random rn = new Random();
             double random = Math.random();
             if (random < 0.33) {
-                System.out.println("Turn randomly");
-                List<Cell> candidateCells = new ArrayList();
-                if (cellLeft.getStatus() == 0) candidateCells.add(cellLeft);
-                if (cellRight.getStatus() == 0) candidateCells.add(cellRight);
-                if (candidateCells.size() > 1){
-                    Cell choice = candidateCells.get(type);
+                List<Node> candidateNodes = new ArrayList();
+                if (NodeLeft.getStatus() == 0) candidateNodes.add(NodeLeft);
+                if (NodeRight.getStatus() == 0) candidateNodes.add(NodeRight);
+                if (candidateNodes.size() > 1){
+                    Node choice = candidateNodes.get(type);
                     // turn and then check again how far you can go in that direction
                     decision[0] = 0;
                     decision[1] = 1;
-                    desiredAngle = map.getDirection(currentCell, choice);
-                    desiredX= (int) getX();
-                    desiredY= (int) getY();
+                    desiredAngle = map.getDirection(currentNode, choice);
+                    desiredX= (int) this.movement.getX();
+                    desiredY= (int) this.movement.getY();
                     return false;
                 }
-                if (candidateCells.size() > 0) {
-                    Cell choice = candidateCells.get(0);
+                if (candidateNodes.size() > 0) {
+                    Node choice = candidateNodes.get(0);
                     // turn and then check again how far you can go in that direction
                     decision[0] = 0;
                     decision[1] = 1;
-                    desiredAngle = map.getDirection(currentCell, choice);
-                    desiredX = (int) getX();
-                    desiredY = (int) getY();
+                    desiredAngle = map.getDirection(currentNode, choice);
+                    desiredX = (int) this.movement.getX();
+                    desiredY = (int) this.movement.getY();
                     return false;
                 }
             }
 
         }
 
-        if (cellFront.getStatus() == 0) {
+        if (NodeFront.getStatus() == 0) {
             // we can continue in same direction
-            targetCell = cellFront;
-            desiredX = targetCell.getX();
-            desiredY = targetCell.getY();
+            targetNode = NodeFront;
+            desiredX = targetNode.getX();
+            desiredY = targetNode.getY();
             decision[0] = 1;
             decision[1] = 0;
             return false;
@@ -207,27 +203,27 @@ public class DFSAgent extends Guard {
 
         // check if left or right is still unexplored, if yes turn to one of them (favor left),
         // if not proceed with next part
-        List<Cell> candidateCells = new ArrayList();
-        if (cellLeft.getStatus() == 0) candidateCells.add(cellLeft);
-        if (cellRight.getStatus() == 0) candidateCells.add(cellRight);
-        if (candidateCells.size() > 1){
-            Cell choice = candidateCells.get(type);
+        List<Node> candidateNodes = new ArrayList();
+        if (NodeLeft.getStatus() == 0) candidateNodes.add(NodeLeft);
+        if (NodeRight.getStatus() == 0) candidateNodes.add(NodeRight);
+        if (candidateNodes.size() > 1){
+            Node choice = candidateNodes.get(type);
             // turn and then check again how far you can go in that direction
             decision[0] = 0;
             decision[1] = 1;
-            desiredAngle = map.getDirection(currentCell, choice);
-            desiredX= (int) getX();
-            desiredY= (int) getY();
+            desiredAngle = map.getDirection(currentNode, choice);
+            desiredX= (int) this.movement.getX();
+            desiredY= (int) this.movement.getY();
             return false;
         }
-        if (candidateCells.size() > 0) {
-            Cell choice = candidateCells.get(0);
+        if (candidateNodes.size() > 0) {
+            Node choice = candidateNodes.get(0);
             // turn and then check again how far you can go in that direction
             decision[0] = 0;
             decision[1] = 1;
-            desiredAngle = map.getDirection(currentCell, choice);
-            desiredX= (int) getX();
-            desiredY= (int) getY();
+            desiredAngle = map.getDirection(currentNode, choice);
+            desiredX= (int) this.movement.getX();
+            desiredY= (int) this.movement.getY();
             return false;
         }
 
@@ -236,23 +232,23 @@ public class DFSAgent extends Guard {
         // Technically, works as a dead-end (at least for the intruder, whose goal is to explore everything)
         this.setDeadEnd(true);
 
-        currentCell.setStatus(2);
-        targetCell = currentCell.getParentCell();
+        currentNode.setStatus(2);
+        targetNode = currentNode.getParent();
 
-        if(map.isInDirection(currentCell, targetCell, getViewAngle())) {
+        if(map.isInDirection(currentNode, targetNode, this.vision.getViewAngle())) {
             // move towards target
             decision[0] = 1;
             decision[1] = 0;
-            desiredX= targetCell.getX();
-            desiredY= targetCell.getY();
+            desiredX= targetNode.getX();
+            desiredY= targetNode.getY();
             return false;
         } else {
             // turn towards target
             decision[0] = 0;
             decision[1] = 1;
-            desiredX= (int) getX();
-            desiredY= (int) getY();
-            desiredAngle = map.getDirection(currentCell, targetCell);
+            desiredX= (int) this.movement.getX();
+            desiredY= (int) this.movement.getY();
+            desiredAngle = map.getDirection(currentNode, targetNode);
             return false;
         }
 
@@ -262,16 +258,16 @@ public class DFSAgent extends Guard {
         return map;
     }
 
-    public Cell getClosestIntruder(Cell[] intruders){
+    public Node getClosestIntruder(ArrayList<Node> intruders){
         double distance = 100;
-        Cell closestCellWithIndruder = null;
-        for (int i = 0; i < intruders.length; i++){
-            double newDistance = Point2D.distance(getX(), getY(), intruders[i].getX(), intruders[i].getX());
+        Node closestNodeWithIntruder = null;
+        for (int i = 0; i < intruders.size(); i++){
+            double newDistance = Point2D.distance(this.movement.getX(), this.movement.getY(), intruders.get(i).getX(), intruders.get(i).getY());
             if(newDistance < distance){
                 distance = newDistance;
-                closestCellWithIndruder = intruders[i];
+                closestNodeWithIntruder = intruders.get(i);
             }
         }
-        return closestCellWithIndruder;
+        return closestNodeWithIntruder;
     }
 }

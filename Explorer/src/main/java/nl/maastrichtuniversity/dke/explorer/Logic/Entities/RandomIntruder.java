@@ -1,131 +1,103 @@
 package nl.maastrichtuniversity.dke.explorer.Logic.Entities;
 
 import nl.maastrichtuniversity.dke.explorer.GUI.GamePanel;
-import nl.maastrichtuniversity.dke.explorer.Logic.Tiles.Cell;
-import nl.maastrichtuniversity.dke.explorer.Logic.Tiles.Map;
+import nl.maastrichtuniversity.dke.explorer.Logic.Tiles.Cell.Node;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
-public class RandomIntruder extends Intruder {
 
-    private double desiredAngle;
+public class RandomIntruder extends Intruder{
+
     private int desiredX;
     private int desiredY;
-    Cell targetCell;
-    Cell currentCell;
-    ArrayList<Cell> viewingArea = new ArrayList<>();
+    private double desiredAngle;
 
-    int[] decision = new int[2]; // 1- movement  2- rotation
+    //rotate after reaching a cell
+    private boolean rotate;
 
-    Map map;
+    private int[] decisions;
 
     public RandomIntruder(int id, double x, double y, double viewAngle, double viewRange, double viewAngleSize, double baseSpeed, double sprintSpeed, GamePanel gamePanel) {
         super(id, x, y, viewAngle, viewRange, viewAngleSize, baseSpeed, sprintSpeed, gamePanel);
-        map = new Map(gamePanel.scenario.getMapWidth(), gamePanel.scenario.getMapHeight());
-        desiredX = (int) x;
-        desiredY = (int) y;
-        desiredAngle = viewAngle;
+        this.desiredX = (int) this.movement.getX();
+        this.desiredY = (int) this.movement.getY();
+        decisions = new int[2];
+        rotate = false;
     }
 
-    public void update(boolean isGuard) {
-        if ((int) getX() == desiredX && (int) getY() == desiredY && getViewAngle() == desiredAngle) randomlyMove();
-        setAction(decision[0], decision[1]);
+    public void update(boolean isGuard){
+        randomDecision();
+        setAction(decisions[0], decisions[1]);
         super.update(isGuard);
     }
 
-    private void randomlyMove() {
-        currentCell = map.getCell(getX(), getY());
-        targetCell = map.getCell(desiredX, desiredY);
+    public boolean randomDecision(){
+        if(this.movement.isThroughTeleport()){
+            desiredX = (int) this.movement.getX();
+            desiredY = (int) this.movement.getY();
+            desiredAngle = this.vision.getViewAngle();
+        }else if(gamePanel.tileM.mapTile[(int) this.movement.getX()][(int) this.movement.getY()] == 4){
+            decisions = new int[]{0, 0};
+        }else if((int) this.movement.getX() == desiredX && (int) this.movement.getY() == desiredY && desiredAngle == this.vision.getViewAngle()){
+            if(rotate == true){
+                desiredAngle = Math.round(Math.random()*180);
+                rotate = false;
+            }else{
+                ArrayList<Node> inView = this.vision.tilesInView();
 
-        //check to see if neighbor cells are walls
-
-        Cell cellFront = map.getCellInFront(currentCell, getViewAngle());
-        if (gamePanel.tileM.mapTile[cellFront.getX()][cellFront.getY()] == 1) {
-            cellFront.setStatus(3);
-        }
-
-        Cell cellLeft = map.getLeftCell(currentCell, getViewAngle());
-        if (gamePanel.tileM.mapTile[cellLeft.getX()][cellLeft.getY()] == 1) {
-            cellLeft.setStatus(3);
-        }
-
-        Cell cellRight = map.getRightCell(currentCell, getViewAngle());
-        if (gamePanel.tileM.mapTile[cellRight.getX()][cellRight.getY()] == 1) {
-            cellRight.setStatus(3);
-        }
-
-        List<Cell> candidateCells = new ArrayList<>();
-        if (cellLeft.getStatus() != 3) candidateCells.add(cellLeft);
-        if (cellRight.getStatus() != 3) candidateCells.add(cellRight);
-        Collections.shuffle(candidateCells);
-
-
-        if (cellFront.getStatus() != 3) {
-            // if cell in front is not wall and do not have guard then go straight
-            targetCell = cellFront;
-            desiredX = targetCell.getX();
-            desiredY = targetCell.getY();
-
-            System.out.println("NO GUARD");
-            decision[0] = 1;
-            decision[1] = 0;
-        }
-
-//        else if (cellFront.getStatus() != 3 && guardsInView() ) {
-//                //see guard within the viewRange -> rotate
-//                // still not working bc the agent takes too long to rotate???
-//                decision[0] = 0;
-//                decision[1] = 1;
-//                desiredAngle = map.getDirection(currentCell, candidateCells.get(0));
-//                desiredX = (int) getX();
-//                desiredY = (int) getY();
-//        }
-
-        //if cell in front is wall then check left and right cell and turn randomly to one of them
-        else if (candidateCells.size() > 0) {
-            Collections.shuffle(candidateCells);
-            Cell choice = candidateCells.get(0);
-
-            decision[0] = 0;
-            decision[1] = 1;
-            desiredAngle = map.getDirection(currentCell, choice);
-            desiredX = (int) getX();
-            desiredY = (int) getY();
-        } else {
-            if (isTargetReached(currentCell)) {
-                decision[0] = 0;
-                decision[1] = 0;
-                System.out.println("The target has reached");
+                for (int i = 0; i < inView.size(); i++) {
+                    if(gamePanel.tileM.mapTile[inView.get(i).getX()][inView.get(i).getY()] == 4){
+                        desiredX = inView.get(i).getX();
+                        desiredY = inView.get(i).getY();
+                        desiredAngle=angleBetween(desiredX, desiredY);
+                        return true;
+                    }
+                }
+                do{
+                    int choice = (int) (Math.random()*inView.size());
+                    desiredX = inView.get(choice).getX();
+                    desiredY = inView.get(choice).getY();
+                    desiredAngle= angleBetween(desiredX, desiredY);
+                }while(gamePanel.tileM.mapTile[desiredX][desiredY] == 1);
+                rotate = true;
             }
+
+        }
+        if(desiredAngle != this.vision.getViewAngle()){
+
+            decisions = new int[]{0, this.vision.turnWhichWay(desiredAngle)};
+            return false;
+        }else if(((int) this.movement.getX() != desiredX || (int) this.movement.getY() != desiredY) && desiredAngle == this.vision.getViewAngle()){
+            if(((int) this.movement.getX() == desiredX && (int) this.movement.getY() != desiredY) || ((int) this.movement.getX() != desiredX && (int) this.movement.getY() == desiredY)){
+                if(desiredAngle != angleBetween(desiredX, desiredY)){
+                    desiredAngle = angleBetween(desiredX, desiredY);
+                    decisions = new int[]{0, this.vision.turnWhichWay(desiredAngle)};
+                }else{
+                    decisions = new int[]{1, 0};
+                }
+            }else{
+                decisions = new int[]{1, 0};
+            }
+            return false;
+        }else{
+            decisions = new int[]{0, 0};
+            return false;
         }
     }
 
+    public double angleBetween(int x2, int y2){
+        int deltaX = x2 - (int)this.movement.getX();
+        int deltaY = y2 - (int)this.movement.getY();
 
-    private boolean identifyGuard(Cell currentCell) {
-
-        boolean guard = false;
-
-//        for (int i = 1; i <= getViewRange(); i++) {
-//            // For all cells in front within the viewRange
-//            // if the cells in front is not wall then continue to add to viewing Area
-//            //Only take straight cell infront into account
-//            while (gamePanel.tileM.mapTile[currentCell.getX()][currentCell.getY()] != 1) {
-//                currentCell = map.getCellInFront(currentCell, getViewAngle());
-//                viewingArea.add(currentCell);
-//            }
-//        }
-//
-//        for (Cell cell : viewingArea) {
-//            guard = cell.isGuardThere();
-//        }
-//        System.out.println(guard);
-        return guard;
-
+        double angle = Math.round(Math.toDegrees(Math.atan2(deltaY, deltaX)));
+        if(angle < 0){
+            angle = 360 + angle;
+        }
+        if(angle == 360){
+            angle = 0;
+        }
+        return angle;
     }
 
-    public boolean isTargetReached(Cell currentCell) {
-        return gamePanel.tileM.mapTile[currentCell.getX()][currentCell.getY()] == 4;
-    }
+
 }
