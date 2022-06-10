@@ -33,20 +33,19 @@ public class BrickAndMortar extends Guard {
     public void update(boolean isGuard) {
         BAM();
         setAction(decision[0], decision[1]);
+        // System.out.println("decisions " + decision[0] + " " + decision[1]);
         super.update(isGuard);
     }
 
     public void BAM(){
-        System.out.println("current: " + (int)getX() + " " + (int)getY());
-        System.out.println(desiredX + " " + desiredY);
-        if (moved) {
+        System.out.println("current: " + (int)getX() + " " + (int)getY() + " " + getViewAngle());
+        System.out.println(desiredX + " " + desiredY + " " + desiredAngle);
+        if ((int) getX() == desiredX && (int) getY() == desiredY && getViewAngle() == desiredAngle) {
             Marking();
             Navigation();
-            moved = false;
+            // System.out.println("calculating");
         }
-        else{
-            move();
-        }
+        move();
     }
 
     public void Marking(){
@@ -56,10 +55,13 @@ public class BrickAndMortar extends Guard {
         Cell cellFront = map.getCellInFront(currentCell, getViewAngle());
         Cell cellLeft = map.getLeftCell(currentCell, getViewAngle());
         Cell cellRight = map.getRightCell(currentCell, getViewAngle());
-        Cell[] cellFrontier = {cellFront, cellLeft, cellRight};
+
         accessible = new ArrayList<Cell>();
+        // System.out.println("current: " + (int)getX() + " " + (int)getY());
+        System.out.println("front: " + cellFront.getX() + " " + cellFront.getY());
         if (gamePanel.tileM.mapTile[cellFront.getX()][cellFront.getY()] == 1) {
             cellFront.setStatus(3);
+            System.out.println("updated");
         }
         if (gamePanel.tileM.mapTile[cellLeft.getX()][cellLeft.getY()] == 1) {
             cellLeft.setStatus(3);
@@ -73,7 +75,10 @@ public class BrickAndMortar extends Guard {
         if (gamePanel.tileM.mapTile[getCell4().getX()][getCell4().getY()] == 1) {
             getCell4().setStatus(3);
         }
-
+        Cell[] cellFrontier = new Cell[3];
+        cellFrontier[0] = cellFront;
+        cellFrontier[1] = cellLeft;
+        cellFrontier[2] = cellRight;
         for (int i = 0; i < cellFrontier.length; i++){
             if (cellFrontier[i].getStatus()!=3 && cellFrontier[i].getStatus()!=2){
                 accessible.add(cellFrontier[i]);
@@ -116,6 +121,7 @@ public class BrickAndMortar extends Guard {
             decision[0] = 0;
             decision[1] = 1;
         }
+        // System.out.println("currentCell status " + currentCell.getStatus());
     }
 
     public void Navigation(){
@@ -123,17 +129,31 @@ public class BrickAndMortar extends Guard {
         for (int i = 0; i < accessible.size(); i++){
             wallCount.add(0);
             if (accessible.get(i).getStatus() == 0){
-                Cell cellFront = map.getCellInFront(accessible.get(i), getViewAngle());
-                Cell cellLeft = map.getLeftCell(accessible.get(i), getViewAngle());
-                Cell cellRight = map.getRightCell(accessible.get(i), getViewAngle());
-                Cell[] cellFrontier = {cellFront, cellLeft, cellRight};
-                for (int j = 0; j < cellFrontier.length; j++){
-                    if (cellFrontier[j].getStatus() == 3 || cellFrontier[j].getStatus() == 2){
+                Cell cell1 = map.getCell(accessible.get(i).getX()+1,accessible.get(i).getY());
+                if (gamePanel.tileM.mapTile[cell1.getX()][cell1.getY()] == 1) {
+                    cell1.setStatus(3);
+                }
+                Cell cell2 = map.getCell(accessible.get(i).getX(),accessible.get(i).getY()+1);
+                if (gamePanel.tileM.mapTile[cell2.getX()][cell2.getY()] == 1) {
+                    cell2.setStatus(3);
+                }
+                Cell cell3 = map.getCell(accessible.get(i).getX()-1,accessible.get(i).getY());
+                if (gamePanel.tileM.mapTile[cell3.getX()][cell3.getY()] == 1) {
+                    cell3.setStatus(3);
+                }
+                Cell cell4 = map.getCell(accessible.get(i).getX(),accessible.get(i).getY()-1);
+                if (gamePanel.tileM.mapTile[cell4.getX()][cell4.getY()] == 1) {
+                    cell4.setStatus(3);
+                }
+                Cell[] cellFrontier2 = {cell1,cell2,cell3,cell4};
+                for (int j = 0; j < cellFrontier2.length; j++){
+                    if (cellFrontier2[j].getStatus() == 3 || cellFrontier2[j].getStatus() == 2){
                         wallCount.set(i, wallCount.get(i) + 1);
                     }
                 }
             }
         }
+        System.out.println("wallCount " + wallCount);
         int max = Collections.max(wallCount);
         int index = wallCount.indexOf(max);
         targetCell = accessible.get(index);
@@ -141,6 +161,8 @@ public class BrickAndMortar extends Guard {
         desiredX = targetCell.getX();
         desiredY = targetCell.getY();
         desiredAngle = map.getDirection(currentCell, targetCell);
+        // System.out.println("targetCell: " + targetCell.getX() + " " + targetCell.getY());
+        System.out.println("targetCell status " + targetCell.getStatus());
     }
 
     public void move(){
@@ -149,16 +171,13 @@ public class BrickAndMortar extends Guard {
             // move towards target
             decision[0] = 1;
             decision[1] = 0;
-            desiredX= (int) getX();
-            desiredY= (int) getY();
             moved = true;
         } else {
             // turn towards target
             decision[0] = 0;
             decision[1] = 1;
-            desiredX= targetCell.getX();
-            desiredY= targetCell.getY();
-            desiredAngle = map.getDirection(currentCell, targetCell);
+            System.out.println("turn");
+            moved = false;
         }
     }
 

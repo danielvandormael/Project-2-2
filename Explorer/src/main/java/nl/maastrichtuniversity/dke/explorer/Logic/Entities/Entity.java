@@ -115,7 +115,7 @@ public class Entity {
         } else {
             gamePanel.collisionD.checkTileIntruder(this);
         }
-
+        System.out.println("collisions: " + collision);
         if(collision == false){
             move(isGuard);
         }
@@ -202,13 +202,16 @@ public class Entity {
     private void move(boolean isGuard){
 
         if(actionMove == 1) { // walk
+
             if(isGuard) {
-                x += ( (1 / (double) gamePanel.getTileSize()) * (baseSpeed/speedRatio) ) * Math.cos(Math.toRadians(viewAngle));
-                y += ( (1 / (double) gamePanel.getTileSize()) * (baseSpeed/speedRatio) ) * Math.sin(Math.toRadians(viewAngle));
+                x += 1 * Math.cos(Math.toRadians(viewAngle));
+                y += 1 * Math.sin(Math.toRadians(viewAngle));
+
             } else {
                 x += 1 * Math.cos(Math.toRadians(viewAngle));
                 y += 1 * Math.sin(Math.toRadians(viewAngle));
             }
+
             double xchange = Math.cos(Math.toRadians(viewAngle));
             walkSound = true;
         } else if (actionMove == 2) { //sprint

@@ -13,18 +13,18 @@ public class CollisionDetection {
 
     public void checkTile(Entity entity){
         //check for collisions
-        double entityMoveToX1 = entity.getX() - 0.5;
-        double entityMoveToY1 = entity.getY() - 0.5;
-        double entityMoveToX2 = entity.getX() + 0.5;
-        double entityMoveToY2 = entity.getY() + 0.5;
+        double entityMoveToX1 = entity.getX();
+        double entityMoveToY1 = entity.getY();
+        double entityMoveToX2 = entity.getX();
+        double entityMoveToY2 = entity.getY();
 
 
         if(entity.getActionMove() == 1){ //walk
 
-            entityMoveToX1 += ( (1 / (double) gamePanel.getTileSize()) * (entity.getBaseSpeed()/entity.getSpeedRatio()) ) * Math.cos(Math.toRadians(entity.getViewAngle()));
-            entityMoveToY1 += ( (1 / (double) gamePanel.getTileSize()) * (entity.getBaseSpeed()/entity.getSpeedRatio()) ) * Math.sin(Math.toRadians(entity.getViewAngle()));
-            entityMoveToX2 += ( (1 / (double) gamePanel.getTileSize()) * (entity.getBaseSpeed()/entity.getSpeedRatio()) ) * Math.cos(Math.toRadians(entity.getViewAngle()));
-            entityMoveToY2 += ( (1 / (double) gamePanel.getTileSize()) * (entity.getBaseSpeed()/entity.getSpeedRatio()) ) * Math.sin(Math.toRadians(entity.getViewAngle()));
+            entityMoveToX1 += ( 1 * Math.cos(Math.toRadians(entity.getViewAngle())));
+            entityMoveToY1 += ( 1 * Math.sin(Math.toRadians(entity.getViewAngle())));
+            entityMoveToX2 += ( 1 * Math.cos(Math.toRadians(entity.getViewAngle())));
+            entityMoveToY2 += ( 1 * Math.sin(Math.toRadians(entity.getViewAngle())));
         }else{ //sprint
             entityMoveToX1 += ( (1 / (double) gamePanel.getTileSize()) * (entity.getSprintSpeed()/entity.getSpeedRatio()) ) * Math.cos(Math.toRadians(entity.getViewAngle()));
             entityMoveToY1 += ( (1 / (double) gamePanel.getTileSize()) * (entity.getSprintSpeed()/entity.getSpeedRatio()) ) * Math.sin(Math.toRadians(entity.getViewAngle()));
