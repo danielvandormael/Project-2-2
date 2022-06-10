@@ -40,12 +40,13 @@ public class BrickAndMortar extends Guard {
     public void BAM(){
         System.out.println("current: " + (int)getX() + " " + (int)getY() + " " + getViewAngle());
         System.out.println(desiredX + " " + desiredY + " " + desiredAngle);
-        if ((int) getX() == desiredX && (int) getY() == desiredY && getViewAngle() == desiredAngle) {
+        if (((int) getX() == desiredX && (int) getY() == desiredY && getViewAngle() == desiredAngle) || ((int) getX() > (desiredX + 1) || (int) getX() < (desiredX - 1) || (int) getY() > (desiredY + 1) || (int) getY() < (desiredY - 1))) {
             Marking();
             Navigation();
             // System.out.println("calculating");
         }
         move();
+        System.out.println("accessible size: " + accessible.size());
     }
 
     public void Marking(){
