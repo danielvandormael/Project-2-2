@@ -57,6 +57,7 @@ public class DFSAgent extends Guard{
         targetNode = map.getNode(desiredX, desiredY);
 
         //this.setDeadEnd(false);
+
         //useless
         if (targetNode != null) {
             if (!currentNode.equals(targetNode)) {
@@ -160,7 +161,6 @@ public class DFSAgent extends Guard{
 
         // Will wait and turn randomly if it sees another guard searching nearby or a marker
         if(vision.areGuardsInView() || foundMarker) {
-            Random rn = new Random();
             double random = Math.random();
             if (random < 0.33) {
                 List<Node> candidateNodes = new ArrayList();
@@ -228,7 +228,6 @@ public class DFSAgent extends Guard{
         }
 
         // if there are no unexplored neighbours
-
         // Technically, works as a dead-end (at least for the intruder, whose goal is to explore everything)
         this.setDeadEnd(true);
 

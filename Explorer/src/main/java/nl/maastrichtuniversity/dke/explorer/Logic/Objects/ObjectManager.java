@@ -162,8 +162,6 @@ public class ObjectManager {
         newMarker.setCoord(x,y);
         newMarker.setMarkerType(typeIndex);
 
-        // TODO: Find a way to make markers recognizable what each agent
-        //  should do once they see a certain marker, mostly, switch directions
         activeObjects.add(newMarker);
 
         // Different markers have different lifespans, others are permanent
@@ -198,7 +196,7 @@ public class ObjectManager {
                 Object markerToDraw = activeObjects.get(i);
 //                System.out.println("drawing marker nr." + i + " type " + markerToDraw.getMarkerType()
 //                        + " at " + markerToDraw.getX() + " " + markerToDraw.getY() + " " + markerToDraw);
-                System.out.println("size " + activeObjects.size());
+//                System.out.println("size " + activeObjects.size());
 
                 // Scale each marker to be drawn in the correct position on the panel
                 if(markerToDraw != null) {

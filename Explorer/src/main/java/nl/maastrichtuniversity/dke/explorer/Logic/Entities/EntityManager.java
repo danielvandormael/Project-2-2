@@ -30,7 +30,8 @@ public class EntityManager extends GUIMain {
     public void generateGuards(){
         double [][] tmp = gamePanel.scenario.spawnGuards();
         for(int i = 0; i< gamePanel.scenario.getNumGuards(); i++){
-            guards[i]= new DFSAgent(id, tmp[i][0], tmp[i][1], 0, 6, 180, gamePanel.scenario.getBaseSpeedGuard(), gamePanel.scenario.getBaseSpeedGuard(), gamePanel, i%2);
+            guards[i]= new BrickAndMortar(id, tmp[i][0], tmp[i][1], 0, 8, 180, gamePanel.scenario.getBaseSpeedGuard(), gamePanel.scenario.getBaseSpeedGuard(), gamePanel, (i+2)%2);
+            //guards[i]= new DFSAgent(id, tmp[i][0], tmp[i][1], 0, 6, 180, gamePanel.scenario.getBaseSpeedGuard(), gamePanel.scenario.getBaseSpeedGuard(), gamePanel, i%2);
             id++;
         }
     }
@@ -44,7 +45,7 @@ public class EntityManager extends GUIMain {
         }
     }
 
-    public void generateTest(){
+    public void generateTest() {
         intruders[0]= new Intruder(id, 3, 2, 0, 8, 180, gamePanel.scenario.getBaseSpeedIntruder(), gamePanel.scenario.getSprintSpeedIntruder(), gamePanel);
         id++;
         intruders[1]= new Intruder(id, 10, 2, 180, 8, 180, gamePanel.scenario.getBaseSpeedIntruder(), gamePanel.scenario.getSprintSpeedIntruder(), gamePanel);
@@ -62,7 +63,7 @@ public class EntityManager extends GUIMain {
     }
 
     public void update(){
-        if(stillAreIntruders() != true){
+        if(stillAreIntruders() != true && gamePanel.scenario.getNumIntruders() > 0){
             JOptionPane.showMessageDialog(expSc.getExpFrame(), "The guards have won!");
             System.exit(0);
         }

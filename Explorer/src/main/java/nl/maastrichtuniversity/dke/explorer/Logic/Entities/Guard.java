@@ -59,7 +59,7 @@ public class Guard extends Entity {
         for(int i = 0; i< gamePanel.entityM.intruders.length; i++){
             if(gamePanel.entityM.intruders[i] != null){
                 if(distanceBetween(gamePanel.entityM.intruders[i].movement.getX(),
-                        gamePanel.entityM.intruders[i].movement.getY()) <= (gamePanel.entityM.intruders.length + 0.5)){
+                        gamePanel.entityM.intruders[i].movement.getY()) <= (gamePanel.entityM.intruders.length + 0.5)) {
                     gamePanel.entityM.intruders[i] = null;
                 }
             }

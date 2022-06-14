@@ -5,6 +5,8 @@ import nl.maastrichtuniversity.dke.explorer.GUI.GamePanel;
 import nl.maastrichtuniversity.dke.explorer.Logic.Entities.Senses.*;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Random;
 
 public class Entity extends GUIMain {
 
@@ -27,6 +29,8 @@ public class Entity extends GUIMain {
      */
     private int actionMove, actionRotate;
 
+    public ArrayList<Double> prevX = new ArrayList<>();
+    public ArrayList<Double> prevY = new ArrayList<>();
     public boolean deadEnd, foundMarker;
 
     public Animation animation;
@@ -52,6 +56,8 @@ public class Entity extends GUIMain {
 
     public void update(boolean isGuard) {
 
+        //isStranded(500);
+
         leaveMarker(isGuard);
 
         vision.update();
@@ -68,6 +74,39 @@ public class Entity extends GUIMain {
     public void setAction(int actionMove, int actionRotate) {
         this.actionMove = actionMove;
         this.actionRotate = actionRotate;
+    }
+
+    /**
+     * Solves any issue of stranding that might occur for a panoply of reasons
+     * @param margin the amount of update() runs before it's considered an entity is stranded
+     */
+    public void isStranded(int margin) {
+        int count = 1;
+        this.prevX.add(this.movement.getX());
+        this.prevY.add(this.movement.getY());
+
+        if(this.prevX.size() >= margin) {
+            for (int i = this.prevX.size() - 1; i > (this.prevX.size()-margin); i--) {
+                if (this.movement.getX() == this.prevX.get(i) && this.movement.getY() == this.prevY.get(i)) {
+                    count++;
+                }
+            }
+        }
+
+        if(count == margin) {
+            double threshold = Math.random();
+            if(threshold < 0.5) {
+                this.vision.turnWhichWay(90);
+            } else {
+                this.vision.turnWhichWay(180);
+            }
+            this.prevX.clear();
+            this.prevY.clear();
+        // Memory-saver, so that these array list never get exorbitantly big if no conflicts occur
+        } else if(prevX.size() > margin*2) {
+            this.prevX.clear();
+            this.prevY.clear();
+        }
     }
 
     /**
@@ -116,6 +155,10 @@ public class Entity extends GUIMain {
             //gamePanel.objectM.loopCleanMarker(((int) x)+1, (int) y, isGuard);
         }
 
+        if(foundMarker) {
+            vision.turnWhichWay(90);
+        }
+
         int newMarkerIndex = selectMarkerType(isGuard);
         gamePanel.objectM.addMarker((int) movement.getX(), (int) movement.getY(), newMarkerIndex);
     }
@@ -138,11 +181,13 @@ public class Entity extends GUIMain {
 
         if (isGuard) { // Specific markers for *guards*
 
-            if (isDeadEnd()) {
-                markerTypeIndex = 1; // DEAD END MARKER
-            } else {
-                markerTypeIndex = 0; // The TIME PHEROMONE is the definite one to add (margin of error)
-            }
+            markerTypeIndex = 0;
+
+//            if (isDeadEnd()) {
+//                markerTypeIndex = 1; // DEAD END MARKER
+//            } else {
+//                markerTypeIndex = 0; // The TIME PHEROMONE is the definite one to add (margin of error)
+//            }
 
         } else { // Specific markers for *intruders*
 
