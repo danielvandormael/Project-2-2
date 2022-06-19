@@ -1,5 +1,17 @@
 # Explorer - Project 2.2
 
+### DEFINITE RUN
+
+    [Phase 3's New Run, no need to use builds]
+    - Navigate to the Main class and run its main method
+    - The program should open right after
+    
+    [If on Terminal/CMD]
+    - Navigate to the 'GUI' package
+    - Compile first, and then type 'java Main.java'
+    - The program should open right after
+
+
 #### Run from Terminal/Command Line
 
     [Current Maven Build]
