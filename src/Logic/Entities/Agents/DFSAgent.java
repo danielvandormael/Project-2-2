@@ -11,19 +11,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class DFSAgent extends Guard {
+
+public class DFSAgent extends Guard{
     private static final int OPEN = 0;
     private static final int TRIED = 1;
     private static final int WALL = 2;
 
     private int orientation; // 1. LEFT 2. DOWN 3.RIGHT 4.UP
 
-
+    private double desiredAngle;
+    private int desiredX;
+    private int desiredY;
     Node previousNode;
     Node targetNode;
+    Node lastNode;
 
-    boolean biggerX;
-    boolean biggerY;
+    private boolean turn = false;
+    private int stuck = 0;
 
 
     int [] decision = new int[2]; // 1- movement  2- rotation
@@ -35,6 +39,9 @@ public class DFSAgent extends Guard {
     public DFSAgent(int id, double x, double y, double viewAngle, double viewRange, double viewAngleSize, double baseSpeed, double sprintSpeed, GamePanel gamePanel, int type) {
         super(id, x, y, viewAngle, viewRange, viewAngleSize, baseSpeed, sprintSpeed, gamePanel);
         map = new Map(gamePanel.scenario.getMapWidth(), gamePanel.scenario.getMapHeight());
+        desiredX= (int) x;
+        desiredY= (int) y;
+        desiredAngle = viewAngle;
         this.type = type;
     }
 
@@ -46,16 +53,25 @@ public class DFSAgent extends Guard {
     }
 
     public void DFS() {
-        if ((int) this.movement.getX() == desiredX && (int) this.movement.getY() == desiredY && this.vision.getViewAngle() == desiredAngle) {
-            nextStep();
-        }
-
-        if ((int) this.movement.getX() == desiredX && (int) this.movement.getY() == desiredY && this.vision.getViewAngle() == desiredAngle) {
-            nextStep();
+        if((int) this.movement.getX() == desiredX && (int) this.movement.getY() == desiredY && this.vision.getViewAngle() == desiredAngle){
+            //current x is greater than desired x
+            if( (int) (this.movement.getX() + 0.5) != desiredX){
+                nextStep();
+            }else if( (int) (this.movement.getX() - 0.5) != desiredX){
+                nextStep();
+            }
+        }else if((int) this.movement.getX() == desiredX && (int) this.movement.getY() != desiredY && this.vision.getViewAngle() == desiredAngle){
+            //current y is greater than desired y
+            if( (int) (this.movement.getY() + 0.5) != desiredY){
+                nextStep();
+            }else if( (int) (this.movement.getY() - 0.5) != desiredY){
+                nextStep();
+            }
         }
     }
 
     public boolean nextStep() {
+
         NodeDFS currentNode = map.getNode(this.movement.getX(), this.movement.getY());
         targetNode = map.getNode(desiredX, desiredY);
 
@@ -87,6 +103,17 @@ public class DFSAgent extends Guard {
                 }
                 fromNode.setParent(previousNode);
                 fromNode.setStatus(1);
+            }
+        }
+
+        ArrayList<Node> view = this.vision.tilesInView();
+        for (Node node : view){
+            int x = node.getX();
+            int y = node.getY();
+            if (map.isInDirection(currentNode, node, this.vision.getViewAngle()) && gamePanel.tileM.mapTile[node.getX()][node.getY()] == 1){
+                //System.out.println("Seen wall");
+                map.getNode(x,y).setStatus(3);
+                turn = true;
             }
         }
 
@@ -162,7 +189,8 @@ public class DFSAgent extends Guard {
 
 
         // Will wait and turn randomly if it sees another guard searching nearby or a marker
-        if(this.vision.guardsInView().size() >= 1 || marker.foundMarker){
+        if(this.vision.guardsInView().size() >= 1) {
+            Random rn = new Random();
             double random = Math.random();
             if (random < 0.33) {
                 List<Node> candidateNodes = new ArrayList();
@@ -192,7 +220,11 @@ public class DFSAgent extends Guard {
 
         }
 
-        if (NodeFront.getStatus() == 0) {
+        stuck++;
+        //System.out.println("stuck counter: " + stuck);
+
+        if (NodeFront.getStatus() == 0 && (!turn || stuck > 1)) {
+            stuck = 0;
             // we can continue in same direction
             targetNode = NodeFront;
             desiredX = targetNode.getX();
@@ -202,6 +234,7 @@ public class DFSAgent extends Guard {
             return false;
         }
 
+        turn = false;
 
         // check if left or right is still unexplored, if yes turn to one of them (favor left),
         // if not proceed with next part
