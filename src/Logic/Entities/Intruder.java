@@ -67,8 +67,14 @@ public class Intruder extends Entity{
     public void onTarget(){
         if(gamePanel.tileM.mapTile[(int) this.movement.getX()][(int) this.movement.getY()] == 4){
             if(timeOnTarget >= 3 * gamePanel.getFPS()){
-                System.out.println("Intruders Win!");
-                System.exit(1);
+                gamePanel.intruderWins++;
+                if(gamePanel.intruderWins + gamePanel.guardWins == gamePanel.sampleSize) {
+                    System.out.println("Guards won: "+ gamePanel.guardWins);
+                    System.out.println("Intruders won: "+ gamePanel.intruderWins);
+                    System.exit(0);
+                }
+                gamePanel.resetGamePanel();
+                gamePanel.gameState = gamePanel.intrudersWinState;
             }else{
                 timeOnTarget++;
             }

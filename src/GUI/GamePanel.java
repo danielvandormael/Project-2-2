@@ -39,6 +39,10 @@ public class GamePanel extends JPanel implements Runnable {
     public CollisionDetection collisionDetection;
     public KeyHandler keyHandler;
 
+    public int intruderWins;
+    public int guardWins;
+    public final int sampleSize = 5;
+
     public GamePanel(Scenario scenario){
         this.scenario = scenario;
 
@@ -53,6 +57,9 @@ public class GamePanel extends JPanel implements Runnable {
         this.setDoubleBuffered(true);
         this.addKeyListener(keyHandler);
         this.setFocusable(true);
+
+        guardWins = 0;
+        intruderWins = 0;
 
         gameState = titleState;
     }

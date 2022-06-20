@@ -55,6 +55,13 @@ public class EntityManager {
 
     public void update(){
         if(stillAreIntruders() != true){
+            gamePanel.guardWins++;
+            if(gamePanel.intruderWins + gamePanel.guardWins == gamePanel.sampleSize) {
+                System.out.println("Guards won: "+ gamePanel.guardWins);
+                System.out.println("Intruders won: "+ gamePanel.intruderWins);
+                System.exit(0);
+            }
+            gamePanel.resetGamePanel();
             gamePanel.gameState = gamePanel.guardsWinState;
         }
 
