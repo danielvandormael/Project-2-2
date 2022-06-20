@@ -113,4 +113,8 @@ public class Marker {
         return markerTypeIndex;
     }
 
+    public void setDeadEnd(boolean deadEnd) {
+        this.deadEnd = deadEnd;
+    }
+
 }
