@@ -23,7 +23,7 @@ public class Main {
         frame.setVisible(true);
         BufferedImage icon = ImageIO.read(Main.class.getResource("/resources/bit16/guard/front_stand.png"));
         frame.setIconImage(icon);
-        frame.setTitle("Multi Agent");
+        frame.setTitle("Explorer Simulator 18Some ");
         gamePanel.startGameThread();
     }
 }

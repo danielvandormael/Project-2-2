@@ -1,7 +1,9 @@
 package GUI;
 
+import javax.imageio.ImageIO;
 import javax.swing.plaf.FontUIResource;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -11,8 +13,6 @@ public class UI {
     Graphics2D g;
     Font arial_40;
     Font maruMonica;
-    boolean guardsWin;
-    boolean intrudersWin;
     private int uiHeight;
 
     public boolean hideMenu;
@@ -59,7 +59,7 @@ public class UI {
 
         //TITLE NAME
         g.setFont(g.getFont().deriveFont(Font.BOLD, 98F));
-        String text = "Group 18";
+        String text = "Explorer Simulator 18";
         int x = getXforCenterText(text, gamePanel.screenWidth);
         int y = gamePanel.tileSize*20;
 
@@ -105,14 +105,14 @@ public class UI {
         int height = uiHeight;
 
         drawSubWindow(x, y, width, height);
-        if(commandNum == 0){
+        if(commandNum == 0) {
             displayIntruders(x, y);
-        }else if(commandNum == 1){
+        } else if(commandNum == 1) {
             displayGuards(x, y);
-        }else if(commandNum == 2){
-            displayStats(x, y);
-        }else{
-            displayInfo(x, y);
+        } else if(commandNum == 2) {
+            displayMarkerInfo(x, y);
+        } else {
+            displayExtraInfo(x, y);
         }
     }
 
@@ -124,7 +124,7 @@ public class UI {
         int divisor = 2;
         int lineOutHeight;
         Color c;
-        String[] subMenuNames = {"Intruders", "Guards", "Stats", "Info"};
+        String[] subMenuNames = {"Intruders", "Guards", "Marker Info", "Extra Info"};
         int titleX;
         int titleY;
         for (int i = 0; i < subMenuNames.length; i++) {
@@ -265,17 +265,50 @@ public class UI {
         }
     }
 
-    public void displayStats(int x , int y){
+    public void displayMarkerInfo(int x , int y){
+        int padding = 4;
+        int width = 310;
+        int leftBound = x;
+        int rightBound = x + width;
+        int lowerBound = y + padding*4;
+        int upperBound = lowerBound + (uiHeight-padding*8);
+        String[] names = {"TIME PHEROMONE", "DEAD END MARKER", "WARNING MARKER"};
+        for(int i = 2; i < gamePanel.objectM.objImg.length; i++) {
+            //DIVIDER
+            g.setStroke(new BasicStroke(2));
+            g.setColor(new Color(113, 113, 113, 200));
+            if (i != gamePanel.objectM.objImg.length - 1) {
+                g.drawLine(rightBound, lowerBound, rightBound, upperBound);
+            }
 
+            //TILE IMAGE
+            int size = gamePanel.tileSize * 8;
+            int tempX = leftBound + (rightBound - leftBound) / 2 - size / 2;
+            int tempY = lowerBound;
+            g.setColor(new Color(65, 12, 26, 150));
+            g.fillRoundRect(tempX - padding, tempY - padding, size + padding * 2, size + padding * 2, 5, 5);
+            g.drawImage(gamePanel.objectM.objImg[i], tempX, tempY, size, size, null);
+
+            //TILE NAME
+            g.setFont(g.getFont().deriveFont(Font.BOLD, 34F));
+            g.setColor(Color.WHITE);
+            tempX = getXforCenterText(names[i-2], width) + leftBound;
+            tempY += gamePanel.tileSize * 13;
+            g.drawString(names[i-2], tempX, tempY);
+
+            leftBound += width;
+            rightBound += width;
+        }
     }
 
-    public void displayInfo(int x , int y){
+    public void displayExtraInfo(int x , int y){
         int padding = 4;
         int leftBound = x;
         int rightBound = x + 160;
         int lowerBound = y + padding*4;
         int upperBound = lowerBound + (uiHeight-padding*8);
         String[] names = {"FLOOR", "WALL", "SHADED", "TELEPORT", "TARGET"};
+
         for (int i = 0; i < gamePanel.tileM.tile.length; i++) {
             //DIVIDER
             g.setStroke(new BasicStroke(2));
@@ -283,7 +316,6 @@ public class UI {
             if(i != gamePanel.tileM.tile.length-1){
                 g.drawLine(rightBound, lowerBound, rightBound, upperBound);
             }
-
 
             //TILE IMAGE
             int size = gamePanel.tileSize * 8;

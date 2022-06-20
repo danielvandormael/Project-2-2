@@ -14,7 +14,7 @@ import java.util.TimerTask;
 public class ObjectManager {
 
     GamePanel gamePanel;
-    BufferedImage[] objImg;
+    public BufferedImage[] objImg;
     ArrayList<Object> activeObjects;
 
 /* Types of Markers:
@@ -44,10 +44,10 @@ public class ObjectManager {
         this.gamePanel = gamePanel;
         this.objImg = new BufferedImage[5];
         this.activeObjects = new ArrayList<>();
-        getObjectImage8bit();
+        setObjectImage8bit();
     }
 
-    public void getObjectImage8bit(){
+    public void setObjectImage8bit(){
             // Guard specific, 0 TIME | 1 DEAD END
             objImg[0] = setUp("marker1");
             objImg[1] = setUp("marker2");
