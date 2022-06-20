@@ -73,8 +73,8 @@ public class Intruder extends Entity{
                     System.out.println("Intruders won: "+ gamePanel.intruderWins);
                     System.exit(0);
                 }
+                //gamePanel.gameState = gamePanel.intrudersWinState;
                 gamePanel.resetGamePanel();
-                gamePanel.gameState = gamePanel.intrudersWinState;
             }else{
                 timeOnTarget++;
             }

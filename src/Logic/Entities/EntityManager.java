@@ -61,8 +61,8 @@ public class EntityManager {
                 System.out.println("Intruders won: "+ gamePanel.intruderWins);
                 System.exit(0);
             }
+            //gamePanel.gameState = gamePanel.guardsWinState;
             gamePanel.resetGamePanel();
-            gamePanel.gameState = gamePanel.guardsWinState;
         }
 
         for(int i = 0; i < guards.length; i++){
