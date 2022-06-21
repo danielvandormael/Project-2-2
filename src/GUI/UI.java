@@ -1,12 +1,15 @@
 package GUI;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 
 public class UI {
 
     GamePanel gamePanel;
+    BufferedImage[] stateBgs;
     Graphics2D g;
     Font arial_40;
     Font maruMonica;
@@ -18,10 +21,19 @@ public class UI {
 
     public UI(GamePanel gamePanel){
         this.gamePanel = gamePanel;
+        this.stateBgs = new BufferedImage[3];
         uiHeight = 150;
         arial_40 = new Font("Arial", Font.PLAIN, 40);
         hideMenu = false;
         showDesired = false;
+
+        for(int i = 0; i < stateBgs.length; i++) {
+            try {
+                stateBgs[i] = ImageIO.read(getClass().getResource("/resources/bg" + Integer.toString(i) +".jpg"));
+            } catch (IOException e){
+                e.printStackTrace();
+            }
+        }
 
         InputStream is = getClass().getResourceAsStream("/resources/fonts/x12y16pxMaruMonica.ttf");
         try {
@@ -46,13 +58,16 @@ public class UI {
                 drawMenu();
             }
         }else if(gamePanel.gameState == gamePanel.guardsWinState){
-            drawWin("GUARDS WIN!", new Color(0, 82, 162, 150));
+            drawWin("GUARDS WIN!", new Color(22, 93, 229, 255));
         }else if(gamePanel.gameState == gamePanel.intrudersWinState){
-            drawWin("INTRUDERS WIN!", new Color(71, 255, 31));
+            drawWin("INTRUDERS WIN!", new Color(222, 120, 19, 255));
         }
     }
 
     public void drawTitleScreen(){
+
+        // BACKGROUND
+        g.drawImage(stateBgs[0], 0, 0, gamePanel.maxScreenCol*gamePanel.tileSize, gamePanel.maxScreenRow*gamePanel.tileSize, null);
 
         //TITLE NAME
         g.setFont(g.getFont().deriveFont(Font.BOLD, 98F));
@@ -335,6 +350,14 @@ public class UI {
     }
 
     public void drawWin(String text, Color color){
+
+        // BACKGROUND
+        if(text == "GUARDS WIN!") {
+            g.drawImage(stateBgs[1], 0, 0, gamePanel.maxScreenCol*gamePanel.tileSize, gamePanel.maxScreenRow*gamePanel.tileSize, null);
+        } else {
+            g.drawImage(stateBgs[2], 0, 0, gamePanel.maxScreenCol*gamePanel.tileSize, gamePanel.maxScreenRow*gamePanel.tileSize, null);
+        }
+
         g.setColor(color);
         g.setFont(g.getFont().deriveFont(Font.BOLD, 80F));
 
@@ -343,7 +366,11 @@ public class UI {
 
         g.drawString(text, x, y);
 
-        g.setColor(Color.WHITE);
+        if(text == "GUARDS WIN!") {
+            g.setColor(new Color(255, 255, 255, 255));
+        } else {
+            g.setColor(Color.BLACK);
+        }
         g.setFont(g.getFont().deriveFont(Font.BOLD, 48F));
 
 
