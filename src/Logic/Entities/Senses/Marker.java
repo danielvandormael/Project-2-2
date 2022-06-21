@@ -100,7 +100,6 @@ public class Marker {
 
             if (entity.vision.guardsInView().size() > 0) { // This one is exclusive for intruders
                 markerTypeIndex = 4; // WARNING MARKER
-                // TODO: Also move the intruder that saw the guard
             } else if (isDeadEnd()) {
                 markerTypeIndex = 3; // DEAD END MARKER
             } else {

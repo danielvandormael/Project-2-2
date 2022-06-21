@@ -52,10 +52,10 @@ public class Advance extends Intruder {
         }
     }
 
-    public void update(){
+    public void update(boolean isGuard){
         controller();
         setAction(decisions[0], decisions[1]);
-        super.update();
+        super.update(isGuard);
     }
 
     public boolean controller() {
