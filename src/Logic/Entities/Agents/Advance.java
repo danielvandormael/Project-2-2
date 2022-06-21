@@ -19,6 +19,8 @@ public class Advance extends Intruder {
     public int coordX;
     public int coordY;
 
+    boolean targetInSight = false;
+
 
     int [] decisions = new int[2]; // 1- movement  2- rotation
 
@@ -60,26 +62,30 @@ public class Advance extends Intruder {
 
     public boolean controller() {
         search();
-        if(atHeading()){
-            nextStep();
-            desiredX = headingToNode.getX();
-            desiredY = headingToNode.getY();
-            desiredAngle = vision.angleBetween(desiredX, desiredY);
+        if(!targetInSight){
+            if(atHeading()){
+                nextStep();
+                desiredX = headingToNode.getX();
+                desiredY = headingToNode.getY();
+                desiredAngle = vision.angleBetween(desiredX, desiredY);
+            }
+
+            //Check for target Area
+            ArrayList<Node> inView = this.vision.tilesInView();
+            for (int i = 0; i < inView.size(); i++) {
+                if(gamePanel.tileM.mapTile[inView.get(i).getX()][inView.get(i).getY()] == 4){
+                    desiredX = inView.get(i).getX();
+                    desiredY = inView.get(i).getY();
+                    desiredAngle= vision.angleBetween(desiredX, desiredY);
+                    targetInSight = true;
+                }
+            }
         }
+
         //SET UP COORDS
         coordX = (int) movement.getX();
         coordY = (int) movement.getY();
 
-        //Check for target Area
-        ArrayList<Node> inView = this.vision.tilesInView();
-        for (int i = 0; i < inView.size(); i++) {
-            if(gamePanel.tileM.mapTile[inView.get(i).getX()][inView.get(i).getY()] == 4){
-                desiredX = inView.get(i).getX();
-                desiredY = inView.get(i).getY();
-                desiredAngle= vision.angleBetween(desiredX, desiredY);
-                return true;
-            }
-        }
 
         //when through teleport
         if(this.movement.isThroughTeleport()){
@@ -87,18 +93,9 @@ public class Advance extends Intruder {
             desiredX = coordX;
             desiredY = coordY;
             desiredAngle = this.vision.getViewAngle();
-        }else //ENTITY IN WALL
+        }else //ENTITY IN Target
             if(gamePanel.tileM.mapTile[coordX][coordY] == 4){
                 decisions = new int[]{0, 0};
-            }else if(coordX == desiredX && coordY == desiredY && vision.getViewAngle() == desiredAngle){
-                if(coordX == headingToNode.getX() && coordY == headingToNode.getY() &&  coordX == goalNode.getX() && coordY == goalNode.getY()){
-
-                }else if(coordX == headingToNode.getX() && coordY == headingToNode.getY()){
-
-                }
-                desiredX = headingToNode.getX();
-                desiredY = headingToNode.getY();
-                desiredAngle = vision.angleBetween(desiredX, desiredY);
                 return true;
             }
         if(desiredAngle != this.vision.getViewAngle()){
@@ -415,4 +412,3 @@ public class Advance extends Intruder {
         }
     }
 }
-
