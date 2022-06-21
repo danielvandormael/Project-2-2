@@ -178,9 +178,25 @@ public class ObjectManager {
 
         // Different markers have different lifespans, others are permanent
         if ((newMarker.getMarkerType() == 0) || (newMarker.getMarkerType() == 2)) { // TIME
-            wearOutMarker(newMarker, 2500);
+            if(gamePanel.FPS < 300) {
+                wearOutMarker(newMarker, 2500);
+            } else if(gamePanel.FPS < 500 && gamePanel.FPS >= 300) {
+                wearOutMarker(newMarker, 1500);
+            } else if(gamePanel.FPS < 800 && gamePanel.FPS >= 500) {
+                wearOutMarker(newMarker, 1000);
+            } else {
+                wearOutMarker(newMarker, 500);
+            }
         } else if(newMarker.getMarkerType() == 4) { // WARNING
-            wearOutMarker(newMarker, 5000);
+            if(gamePanel.FPS < 300) {
+                wearOutMarker(newMarker, 5000);
+            } else if(gamePanel.FPS < 500 && gamePanel.FPS >= 300) {
+                wearOutMarker(newMarker, 3000);
+            } else if(gamePanel.FPS < 800 && gamePanel.FPS >= 500) {
+                wearOutMarker(newMarker, 2000);
+            } else {
+                wearOutMarker(newMarker, 1000);
+            }
         }
     }
 
