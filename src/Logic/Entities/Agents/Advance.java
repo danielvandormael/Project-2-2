@@ -32,6 +32,7 @@ public class Advance extends Intruder {
 
         startNode = node[(int) x][(int) y];
         goalNode = node[(int) x][(int) y];
+        headingToNode = node[(int) x][(int) y];
     }
 
     public void instantiateNodes(){
@@ -51,20 +52,15 @@ public class Advance extends Intruder {
         }
     }
 
-    public void update(boolean isGuard){
+    public void update(){
         controller();
         setAction(decisions[0], decisions[1]);
-        super.update(isGuard);
+        super.update();
     }
 
     public boolean controller() {
         search();
-        if(goalInView()){
-            nextStep();
-            desiredX = headingToNode.getX();
-            desiredY = headingToNode.getY();
-            desiredAngle = vision.angleBetween(desiredX, desiredY);
-        }else if(atHeading()){
+        if(atHeading()){
             nextStep();
             desiredX = headingToNode.getX();
             desiredY = headingToNode.getY();
@@ -84,7 +80,7 @@ public class Advance extends Intruder {
                 return true;
             }
         }
-        
+
         //when through teleport
         if(this.movement.isThroughTeleport()){
             reset(coordX, coordY);
@@ -253,9 +249,25 @@ public class Advance extends Intruder {
                                 && node[row][col].isSolid() == false
                                 && gamePanel.tileM.mapTile[row][col] != 1){
                             getCost(node[row][col]);
-                            node[row][col].setParent(node[currentNode.getX()][currentNode.getY()]);
                             node[row][col].setOpen();
                             openNode.add(node[row][col]);
+
+                            boolean closeParent = false;
+                            for (int l = -1; l < 2; l++) {
+                                for (int m = -1; m < 2; m++) {
+                                    if(!(l == 0 && m == 0)){
+                                        if(gamePanel.tileM.mapTile[row+l][col+m] == 1){
+                                            closeParent = true;
+                                        }
+                                    }
+                                }
+                            }
+
+                            if(closeParent){
+                                node[row][col].setParent(node[closedNode.get(i).getX()][closedNode.get(i).getY()]);
+                            }else{
+                                node[row][col].setParent(node[currentNode.getX()][currentNode.getY()]);
+                            }
                         }
                     }
                 }
@@ -403,3 +415,4 @@ public class Advance extends Intruder {
         }
     }
 }
+
