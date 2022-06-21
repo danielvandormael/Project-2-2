@@ -41,7 +41,8 @@ public class GamePanel extends JPanel implements Runnable {
 
     public int intruderWins;
     public int guardWins;
-    public final int sampleSize = 5;
+    public final int sampleSize = 1;
+    public double currentTime;
 
     public GamePanel(Scenario scenario){
         this.scenario = scenario;
@@ -66,11 +67,18 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void startGameThread(){
         gameThread = new Thread(this);
+        currentTime = System.currentTimeMillis();
         gameThread.start();
     }
 
     public void endGameThread(){
         gameThread.interrupt();
+    }
+
+    public void stopGameThread(){
+        System.out.println(System.currentTimeMillis() - currentTime);
+
+        gameThread.stop();
     }
 
     public void resetGamePanel(){

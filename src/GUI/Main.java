@@ -13,7 +13,7 @@ public class Main {
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        File file = new File("src/resources/maps/demomap.txt");
+        File file = new File("src/resources/maps/testmap.txt");
         String absPath = file.getAbsolutePath();
         GamePanel gamePanel= new GamePanel(new Scenario(absPath));
 

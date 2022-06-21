@@ -28,7 +28,7 @@ public class EntityManager {
         double [][] tmp = gamePanel.scenario.spawnGuards();
         for(int i = 0; i< gamePanel.scenario.getNumGuards(); i++){
             guards[i]= new DFSAgent(id, tmp[i][0], tmp[i][1], 0, 6, 180, gamePanel.scenario.getBaseSpeedGuard(), gamePanel.scenario.getBaseSpeedGuard(), gamePanel, i%2);
-            //guards[i]= new BrickAndMortar(id, tmp[i][0], tmp[i][1], 0, 2, 180, gamePanel.scenario.getBaseSpeedGuard(), gamePanel.scenario.getBaseSpeedGuard(), gamePanel, i%2);
+//            guards[i]= new BrickAndMortar(id, tmp[i][0], tmp[i][1], 0, 2, 180, gamePanel.scenario.getBaseSpeedGuard(), gamePanel.scenario.getBaseSpeedGuard(), gamePanel, i%2);
             id++;
         }
     }
@@ -58,6 +58,7 @@ public class EntityManager {
             if(gamePanel.intruderWins + gamePanel.guardWins == gamePanel.sampleSize){
                 System.out.println("Guards won: "+ gamePanel.guardWins);
                 System.out.println("Intruders won: "+ gamePanel.intruderWins);
+                gamePanel.stopGameThread();
                 System.exit(0);
             }
             gamePanel.resetGamePanel();
